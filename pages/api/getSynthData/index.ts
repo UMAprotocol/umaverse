@@ -1,24 +1,11 @@
-import type { NextApiRequest, NextApiResponse } from "next";
+import { NextApiResponse, NextApiRequest } from "next";
+import { generator as timeSeriesGenerator } from "../../../utils";
+import type { TimeSeries } from "../../../components/DataBreakdown";
 
-import { generator as timeSeriesGenerator } from "../../utils";
-import type { TimeSeries } from "../../components/DataBreakdown";
-
-export default function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-): void {
-  console.log({ req: req });
-  if (!req.query.synth) {
-    res.status(200).json({ data: testSynths });
-    return;
-  }
-  const synth = testSynths.find((synth) => synth.address === req.query.synth);
-  if (synth) {
-    res.status(200).json({ data: synth });
-    return;
-  }
-  res.status(404);
+export default function handler(_: NextApiRequest, res: NextApiResponse): void {
+  res.status(200).json({ data: testSynths });
 }
+
 export type SynthCategory = "future" | "index" | "option" | "other";
 export type Synth = {
   name: string;
@@ -27,7 +14,7 @@ export type Synth = {
   tvm: TimeSeries;
   address: string;
 };
-const testSynths: Synth[] = [
+export const testSynths: Synth[] = [
   {
     name: "uGas",
     category: "future",
