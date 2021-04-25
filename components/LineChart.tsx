@@ -1,22 +1,16 @@
 import React, { useMemo, useCallback } from "react";
 import { styled, theme } from "twin.macro";
 import { scaleTime, scaleLinear } from "@visx/scale";
-import { ParentSize } from "@visx/responsive";
+
 import { AreaClosed, Bar, Line } from "@visx/shape";
 import { curveMonotoneX } from "@visx/curve";
 import { LinearGradient } from "@visx/gradient";
 import { localPoint } from "@visx/event";
 import { useTooltip, TooltipWithBounds, defaultStyles } from "@visx/tooltip";
 import { max, extent, bisector } from "d3-array";
-import { interpolate, interpolateDate } from "d3-interpolate";
 
 import type { TimeSeries, TimeSeriesEntry } from "./DataBreakdown";
 import { formatMilions } from "../utils";
-
-interface WrapperStyles extends React.CSSProperties {
-  "--width": string;
-  "--height": string;
-}
 
 type ChartProps = {
   width: number;
@@ -35,9 +29,14 @@ const bisectDate = bisector<TimeSeriesEntry, Date>(
 
 // set up some fancy colors
 const primaryColor = theme`colors.primary`;
-const tickColor = theme`colors.gray[300]`;
+// const tickColor = theme`colors.gray[300]`;
 
-const Chart: React.FC<ChartProps> = ({ width, height, data, onDataHover }) => {
+export const LineChart: React.FC<ChartProps> = ({
+  width,
+  height,
+  data,
+  onDataHover,
+}) => {
   const {
     showTooltip,
     hideTooltip,
@@ -72,9 +71,7 @@ const Chart: React.FC<ChartProps> = ({ width, height, data, onDataHover }) => {
       const index = bisectDate(data, x0);
       const dLow = data[index - 1];
       const dHigh = data[index];
-      // (interpolate = interpolateDate(startDatum.value, endDatum.value)),
-      //   (range = endDatum.time - startDatum.time),
-      //   (valueY = interpolate((timestamp - startDatum.time) / range));
+
       let d = dLow;
       // pick the closest point
       if (dHigh && getDate(dHigh)) {
@@ -97,18 +94,13 @@ const Chart: React.FC<ChartProps> = ({ width, height, data, onDataHover }) => {
     [data, dateScale, onDataHover, showTooltip, valueScale]
   );
 
-  const styles: WrapperStyles = {
-    "--width": `${width}px`,
-    "--height": `${height}px`,
-  };
-
   return (
     <Wrapper>
       <svg width={width} height={height}>
         <LinearGradient
-          from={primaryColor}
           to={primaryColor}
-          fromOpacity={0.3}
+          from={primaryColor}
+          fromOpacity={0.2}
           id="area-gradient"
         />
 
@@ -133,12 +125,44 @@ const Chart: React.FC<ChartProps> = ({ width, height, data, onDataHover }) => {
           onMouseMove={handleTooltip}
           onMouseLeave={hideTooltip}
         />
+        {tooltipData && (
+          <g>
+            <Line
+              from={{ x: 0, y: tooltipTop }}
+              to={{ x: width, y: tooltipTop }}
+              stroke={primaryColor}
+              strokeWidth={2}
+              pointerEvents="none"
+              strokeDasharray="5,2"
+            />
+            <circle
+              cx={tooltipLeft}
+              cy={(tooltipTop ?? 0) + 1}
+              r={4}
+              fill="black"
+              fillOpacity={0.1}
+              stroke="black"
+              strokeOpacity={0.1}
+              strokeWidth={2}
+              pointerEvents="none"
+            />
+            <circle
+              cx={tooltipLeft}
+              cy={tooltipTop}
+              r={4}
+              fill={primaryColor}
+              stroke="white"
+              strokeWidth={2}
+              pointerEvents="none"
+            />
+          </g>
+        )}
       </svg>
       {tooltipData && (
         <TooltipWithBounds
           key={Math.random()}
-          top={(tooltipTop ?? 0) - 12}
-          left={(tooltipLeft ?? 0) + 12}
+          top={tooltipTop ?? 0}
+          left={tooltipLeft ?? 0}
           style={defaultStyles}
         >
           {`$${formatMilions(getValue(tooltipData))}`}
@@ -148,17 +172,6 @@ const Chart: React.FC<ChartProps> = ({ width, height, data, onDataHover }) => {
   );
 };
 
-export const LineChart: React.FC<ChartProps> = ({ ...delegated }) => {
-  return <Chart {...delegated} />;
-};
-
 const Wrapper = styled.div`
-  width: var(--width);
-  height: var(--height);
   position: relative;
-  max-height: 400px;
-
-  @media (min-width: ${theme`screens.md`}) {
-    max-height: 700px;
-  }
 `;

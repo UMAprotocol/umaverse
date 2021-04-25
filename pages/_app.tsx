@@ -36,7 +36,7 @@ const globalStyles = css`
   html,
   body {
     height: 100%;
-    ${tw`bg-primary`}
+    ${tw`bg-gradient-to-r from-pink-600 via-purple-900 to-pink-700`}
   }
   #__next {
     height: 100%;

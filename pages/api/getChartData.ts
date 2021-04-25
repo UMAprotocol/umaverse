@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { generator as timeSeriesGenerator } from "../../utils/generateTimeSeries";
+import { generator as timeSeriesGenerator } from "../../utils";
 
 export default function handler(_: NextApiRequest, res: NextApiResponse): void {
   const fakeData = timeSeriesGenerator(200);

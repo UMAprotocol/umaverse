@@ -1,4 +1,8 @@
-export function formatMilions(value: number, precision = 2, raw = false) {
+export function formatMilions(
+  value: number,
+  precision = 2,
+  raw = false
+): string | number {
   let postFix = "";
   let formattedValue = value;
   switch (true) {
@@ -18,5 +22,11 @@ export function formatMilions(value: number, precision = 2, raw = false) {
   }
   const rounded =
     Math.floor(formattedValue * 10 ** precision) / 10 ** precision;
-  return raw ? rounded : `${rounded}${postFix}`;
+  return raw ? rounded : `${prettyFormatNumber(rounded)}${postFix}`;
+}
+
+const prettyFormatNumber = Intl.NumberFormat("en-US").format;
+
+export function capitalize(s: string): string {
+  return s.slice(0, 1).toUpperCase() + s.slice(1);
 }

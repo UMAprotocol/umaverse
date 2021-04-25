@@ -1,2 +1,2 @@
-export * from "./formatMillions";
+export * from "./format";
 export * from "./generateTimeseries";

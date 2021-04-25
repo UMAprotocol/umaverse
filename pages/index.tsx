@@ -1,17 +1,26 @@
 import React from "react";
 import { GetServerSideProps } from "next";
-import Layout from "../components/Layout";
-import { DataBreakdown } from "../components";
+import { DataBreakdown, Table, Layout, TimeSeries } from "../components";
+import { Synth } from "./api/getSynthData";
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const res = await fetch("http://localhost:3000/api/getChartData");
-  const { data } = await res.json();
-  return { props: { data } };
+  const { data: tvlData } = await fetch(
+    "http://localhost:3000/api/getChartData"
+  ).then((res) => res.json());
+  const { data: synthsData } = await fetch(
+    "http://localhost:3000/api/getSynthData"
+  ).then((res) => res.json());
+
+  return { props: { tvlData, synthsData } };
 };
-const IndexPage: React.FC<{ data: any }> = ({ data }) => {
+const IndexPage: React.FC<{ tvlData: TimeSeries; synthsData: Synth[] }> = ({
+  tvlData,
+  synthsData,
+}) => {
   return (
     <Layout title="Umaverse">
-      <DataBreakdown data={data} />
+      <DataBreakdown data={tvlData} />
+      <Table data={synthsData} />
     </Layout>
   );
 };

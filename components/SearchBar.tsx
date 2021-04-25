@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import tw, { styled, theme } from "twin.macro";
+import tw, { styled } from "twin.macro";
 import { SearchIcon } from "@heroicons/react/solid";
 
 export const SearchBar: React.FC = () => {

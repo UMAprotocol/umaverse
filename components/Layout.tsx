@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React from "react";
 import Head from "next/head";
 import { Header } from "./Header";
 import { MaxWidthWrapper } from "./Wrapper";
@@ -7,7 +7,7 @@ type Props = {
   title?: string;
 };
 
-const Layout: React.FC<Props> = ({
+export const Layout: React.FC<Props> = ({
   children,
   title = "This is the default title",
 }) => (
@@ -21,5 +21,3 @@ const Layout: React.FC<Props> = ({
     <MaxWidthWrapper>{children}</MaxWidthWrapper>
   </div>
 );
-
-export default Layout;
