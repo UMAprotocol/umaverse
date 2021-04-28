@@ -2,6 +2,7 @@ import React from "react";
 import Head from "next/head";
 import { Header } from "./Header";
 import { MaxWidthWrapper } from "./Wrapper";
+import { Footer } from "./Footer";
 
 type Props = {
   title?: string;
@@ -19,5 +20,6 @@ export const Layout: React.FC<Props> = ({
     </Head>
     <Header />
     <MaxWidthWrapper>{children}</MaxWidthWrapper>
+    <Footer />
   </div>
 );

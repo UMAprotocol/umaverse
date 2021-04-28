@@ -24,7 +24,7 @@ type TimeSeriesGenerator = (
   devWidth?: number
 ) => TimeSeries;
 
-export const generator: TimeSeriesGenerator = (
+export const timeSeriesGenerator: TimeSeriesGenerator = (
   n: number,
   initialValue = 21 * 10 ** 6,
   devWidth = 21 * 10 ** 6
@@ -41,3 +41,14 @@ export const generator: TimeSeriesGenerator = (
       },
     ];
   }, [] as TimeSeries);
+
+export const descriptionGenerator = (): string => faker.lorem.paragraphs(7);
+
+export const linksGenerator = (n: number): { name: string; to: string }[] =>
+  Array.from({ length: n }, () => {
+    const name = faker.hacker.adjective();
+    return {
+      name,
+      to: `https://${faker.hacker.adjective()}.finance`,
+    };
+  });

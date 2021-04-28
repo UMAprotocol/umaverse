@@ -1,3 +1,3 @@
 export * from "./format";
-export * from "./generateTimeseries";
+export * from "./generateData";
 export * from "./truncateAddress";
