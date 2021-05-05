@@ -1,14 +1,9 @@
-import { NextApiResponse, NextApiRequest } from "next";
 import {
   timeSeriesGenerator,
-  descriptionGenerator,
   linksGenerator,
-} from "../../../utils";
-import type { TimeSeries } from "../../../components/DataBreakdown";
-
-export default function handler(_: NextApiRequest, res: NextApiResponse): void {
-  res.status(200).json({ data: testSynths });
-}
+  descriptionGenerator,
+} from "./generateData";
+import type { TimeSeries } from "../components/DataBreakdown";
 
 export type SynthCategory = "future" | "index" | "option" | "other";
 export type Synth = {
@@ -21,7 +16,7 @@ export type Synth = {
   description: string;
   relatedLinks: { name: string; to: string }[];
 };
-export const testSynths: Synth[] = [
+const fakeSynths: Synth[] = [
   {
     name: "uGas",
     category: "future",
@@ -83,3 +78,10 @@ export const testSynths: Synth[] = [
     relatedLinks: linksGenerator(1),
   },
 ];
+
+export const getFakeTvl = (): TimeSeries => timeSeriesGenerator(200);
+export const getFakeSynths = (): Synth[] => fakeSynths;
+export const getFakeSynth = (address: string): Synth | undefined => {
+  const synth = fakeSynths.find((synth) => synth.address === address);
+  return synth;
+};

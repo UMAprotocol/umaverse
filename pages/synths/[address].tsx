@@ -4,13 +4,16 @@ import tw, { styled, theme } from "twin.macro";
 import { ExternalLinkIcon, DuplicateIcon } from "@heroicons/react/solid";
 import { Layout, Card, DataBreakdown, Link } from "../../components";
 import { truncateAddress } from "../../utils/truncateAddress";
-import type { Synth } from "../api/getSynthData";
+import { getFakeSynth, Synth } from "../../utils/mockData";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const url = `http://localhost:3000/api/getSynthData/${ctx.query.address}`;
-  const { data } = await fetch(url).then((res) => res.json());
+  const address = Array.isArray(ctx.query.address)
+    ? ctx.query.address[0]
+    : ctx.query.address;
 
-  return { props: { synth: data } };
+  const synth = getFakeSynth(address);
+
+  return { props: { synth }, notFound: !synth };
 };
 
 type Props = {

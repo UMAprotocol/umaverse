@@ -1,15 +1,11 @@
 import React from "react";
 import { GetServerSideProps } from "next";
 import { DataBreakdown, Table, Layout, TimeSeries } from "../components";
-import { Synth } from "./api/getSynthData";
+import { Synth, getFakeSynths, getFakeTvl } from "../utils/mockData";
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const { data: tvlData } = await fetch(
-    "http://localhost:3000/api/getChartData"
-  ).then((res) => res.json());
-  const { data: synthsData } = await fetch(
-    "http://localhost:3000/api/getSynthData"
-  ).then((res) => res.json());
+  const tvlData = getFakeTvl();
+  const synthsData = getFakeSynths();
 
   return { props: { tvlData, synthsData } };
 };
