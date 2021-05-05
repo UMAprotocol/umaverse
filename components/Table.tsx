@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import Link from "next/link";
 import tw, { styled } from "twin.macro";
 import { useTable, Column } from "react-table";
-import type { Synth } from "../pages/api/getSynthData";
+import type { Synth } from "../utils/mockData";
 import { Card } from "./Card";
 import { formatMilions, capitalize } from "../utils";
 
