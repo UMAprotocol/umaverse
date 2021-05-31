@@ -1,18 +1,21 @@
-export function formatMilions(
+export function formatMillions(
+  value: number,
+  precision?: number,
+  raw?: true
+): number;
+
+export function formatMillions(
   value: number,
   precision = 2,
   raw = false
 ): string | number {
-  let postFix = "";
   let formattedValue = value;
   switch (true) {
     case value >= 10 ** 9: {
-      postFix = "B";
       formattedValue = value / 10 ** 9;
       break;
     }
     case value >= 10 ** 6: {
-      postFix = "M";
       formattedValue = value / 10 ** 6;
       break;
     }
@@ -22,7 +25,7 @@ export function formatMilions(
   }
   const rounded =
     Math.floor(formattedValue * 10 ** precision) / 10 ** precision;
-  return raw ? rounded : `${prettyFormatNumber(rounded)}${postFix}`;
+  return raw ? rounded : `${prettyFormatNumber(rounded)}`;
 }
 
 const prettyFormatNumber = Intl.NumberFormat("en-US").format;
