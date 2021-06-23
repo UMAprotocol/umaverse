@@ -85,6 +85,10 @@ const Card = styled(UnstyledCard)`
 `;
 const CardContent = styled.div`
   padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
   & > h3 {
     font-weight: 700;
   }
@@ -106,13 +110,10 @@ const Heading = styled.h1`
   font-weight: 700;
   /* Fluid typography, will make the font range between 2rem and 4.5rem depending on screen size */
   font-size: clamp(2rem, 5.7vw + 0.2rem, 4.5rem);
-  text-align: left;
+  text-align: center;
 
   & > span {
     color: var(--primary);
-  }
-  @media ${QUERIES.laptopAndUp} {
-    text-align: center;
   }
 `;
 const Description = styled.span`

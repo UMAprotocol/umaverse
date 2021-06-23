@@ -23,8 +23,10 @@ const RankCircle = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: var(--grayLight);
-  color: var(--grayDark);
+  @media ${QUERIES.tabletAndUp} {
+    background-color: var(--gray-300);
+    color: var(--gray-700);
+  }
 `;
 
 const Name: React.FC<Pick<Synth, "logoUrl" | "shortDescription" | "name">> = ({
@@ -332,6 +334,11 @@ const Button = styled(BaseButton)<{ pressed?: boolean }>`
     p.pressed ? "var(--primary)" : "var(--gray-300)"};
   border-radius: 4px;
   padding: 8px 20px;
+  transition: all ease-in-out 0.2s;
+  &:hover {
+    background-color: ${(p) =>
+      p.pressed ? "var(--primary)" : "var(--gray-500)"};
+  }
 `;
 
 const ButtonsWrapper = styled.div`
@@ -379,7 +386,10 @@ const Cell = styled.div`
   flex: 1 1 120px;
   &:first-of-type {
     flex: 0 0 30px;
-    margin-right: 50px;
+    margin-right: 25px;
+    @media ${QUERIES.tabletAndUp} {
+      margin-right: 50px;
+    }
   }
   &:nth-of-type(2) {
     flex: 1 2 550px;
@@ -397,6 +407,11 @@ const ActiveFilterWrapper = styled.label`
   padding: 8px 10px;
   background-color: var(--gray-300);
   user-select: none;
+  cursor: pointer;
+  transition: all ease-in-out 0.2s;
+  &:hover {
+    background-color: var(--gray-500);
+  }
 
   & > input {
     margin-right: 10px;

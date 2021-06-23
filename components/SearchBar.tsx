@@ -22,8 +22,9 @@ const Wrapper = styled.label`
 const Input = styled.input`
   width: 100%;
   padding: 10px 0;
-  padding-left: 32px;
+  padding-left: 48px;
   border-radius: 5px;
+  font-size: ${18 / 16}rem;
   border: none;
   &:focus {
     outline-offset: 4px;
@@ -31,14 +32,17 @@ const Input = styled.input`
   &:focus:not(:focus-visible) {
     outline: none;
   }
+  &::placeholder {
+  }
 `;
 
 const Icon = styled(SearchIcon)`
   position: absolute;
   top: 0;
-  left: 0;
-  padding: 10px 8px 10px 5px;
-  width: 40px;
-  height: 40px;
+  bottom: 0;
+  left: 15px;
+  padding: 0;
+  width: 20px;
+  height: 20px;
   margin: auto;
 `;
