@@ -1,35 +1,48 @@
-import React, { useState } from "react";
-import tw, { styled } from "twin.macro";
-import { SearchIcon } from "@heroicons/react/solid";
+import React from "react";
+import styled from "@emotion/styled";
+import SearchIcon from "../public/icons/search.svg";
 
 export const SearchBar: React.FC = () => {
-  const [query, setQuery] = useState("");
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(event.target.value);
-  };
   return (
     <Wrapper>
-      <Label>Search for synths</Label>
-      <Input onChange={handleChange} placeholder="uStonks" value={query} />
       <Icon />
+      <Input placeholder="Search for projects..." />
     </Wrapper>
   );
 };
 
-const Wrapper = tw.label`
-    block text-gray-600 relative focus:ring-primary 
+const Wrapper = styled.label`
+  display: block;
+  position: relative;
+  color: var(--gray-700);
+  display: flex;
+  align-items: baseline;
 `;
 
 const Input = styled.input`
+  width: 100%;
   padding: 10px 0;
   padding-left: 48px;
-  ${tw`bg-gray-100 w-full rounded-lg shadow-md`}
+  border-radius: 5px;
+  font-size: ${18 / 16}rem;
+  border: none;
+  &:focus {
+    outline-offset: 4px;
+  }
+  &:focus:not(:focus-visible) {
+    outline: none;
+  }
+  &::placeholder {
+  }
 `;
 
-const Icon = tw(SearchIcon)`
-  absolute left-0 bottom-0 h-11 opacity-90 p-3
-`;
-
-const Label = tw.h1`
-  text-lg text-gray-100
+const Icon = styled(SearchIcon)`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 15px;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  margin: auto;
 `;

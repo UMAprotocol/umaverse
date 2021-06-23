@@ -1,5 +1,5 @@
 import React from "react";
-import tw, { styled } from "twin.macro";
+import styled from "@emotion/styled";
 
 type Size = "xl" | "lg" | "md" | "sm";
 type Props = {
@@ -37,5 +37,6 @@ export const MaxWidthWrapper: React.FC<Props> = ({
 
 const Wrapper = styled.div`
   max-width: var(--size);
-  ${tw`mx-auto px-3`};
+  margin: 0 auto;
+  padding: 0 12px;
 `;

@@ -1,5 +1,5 @@
 import React from "react";
-import tw, { styled } from "twin.macro";
+import styled from "@emotion/styled";
 import NextLink, { LinkProps } from "next/link";
 
 type Props = React.PropsWithChildren<LinkProps> & {
@@ -24,11 +24,6 @@ export const Link: React.FC<Props> = ({
 
 const StyledLink = styled.a`
   position: relative;
-  &:after {
-    content: "";
-    ${tw`absolute bottom-0 right-0 left-0 h-px bg-current transition-transform transform scale-x-0`}
-  }
-  &:hover:after {
-    ${tw`scale-x-100`}
-  }
+  text-decoration: none;
+  color: inherit;
 `;

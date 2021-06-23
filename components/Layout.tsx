@@ -1,7 +1,7 @@
 import React from "react";
 import Head from "next/head";
 import { Header } from "./Header";
-import { MaxWidthWrapper } from "./Wrapper";
+
 import { Footer } from "./Footer";
 
 type Props = {
@@ -19,7 +19,7 @@ export const Layout: React.FC<Props> = ({
       <meta name="viewport" content="initial-scale=1.0, width=device-width" />
     </Head>
     <Header />
-    <MaxWidthWrapper>{children}</MaxWidthWrapper>
+    {children}
     <Footer />
   </div>
 );

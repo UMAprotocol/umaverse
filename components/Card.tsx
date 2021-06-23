@@ -1,10 +1,12 @@
 import React from "react";
-import tw from "twin.macro";
+import styled from "@emotion/styled";
 
 export const Card: React.FC = ({ children, ...delegated }) => (
   <Wrapper {...delegated}>{children}</Wrapper>
 );
 
-const Wrapper = tw.article`
-    bg-gray-100 p-2 shadow-md rounded md:(shadow-lg rounded-lg py-3 px-4)
+const Wrapper = styled.article`
+  background-color: var(--white);
+  border-radius: 5px;
+  padding: 5px;
 `;
