@@ -1,6 +1,8 @@
 import React, { useMemo } from "react";
 
 import Image from "next/image";
+import { useRouter } from "next/router";
+
 import styled from "@emotion/styled";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -10,11 +12,21 @@ import {
   useFilters,
   useGlobalFilter,
 } from "react-table";
+import { ethers } from "ethers";
 
-import { formatMillions, capitalize, QUERIES } from "../utils";
+import {
+  formatMillions,
+  capitalize,
+  QUERIES,
+  CATEGORIES_PLACEHOLDERS,
+  Category,
+  CATEGORIES,
+  formatContentfulUrl,
+} from "../utils";
 import ChevronLeft from "../public/icons/chevron-left.svg";
 import { MaxWidthWrapper } from "./Wrapper";
 import { BaseButton } from "./Button";
+import { Emp } from "../utils/umaApi";
 
 const RankCircle = styled.div`
   border-radius: 9999px;
@@ -29,20 +41,23 @@ const RankCircle = styled.div`
   }
 `;
 
-const Name: React.FC<Pick<Synth, "logoUrl" | "shortDescription" | "name">> = ({
-  logoUrl,
-  name,
-  shortDescription,
-}) => {
+const Name: React.FC<
+  Pick<Emp, "shortDescription" | "tokenName" | "category" | "logo">
+> = ({ logo, category, tokenName, shortDescription }) => {
+  // Contentful won't return an absolute URL so we have to complete it or next/image won't parse it
+  const formattedUrl = logo?.fields.file.url
+    ? formatContentfulUrl(logo.fields.file.url)
+    : CATEGORIES_PLACEHOLDERS[category];
+
   return (
     <NameWrapper>
       <ImageWrapper>
-        <Image src={logoUrl ?? ""} width="52" height="52" />
+        <Image src={formattedUrl} width="52" height="52" layout="fixed" />
       </ImageWrapper>
 
       <div>
         <NameHeading>
-          {name} <ChevronLeft />
+          {tokenName} <ChevronLeft />
         </NameHeading>
         <span>{shortDescription}</span>
       </div>
@@ -98,9 +113,10 @@ const columns = [
     // eslint-disable-next-line react/display-name
     accessor: (row) => (
       <Name
-        logoUrl={row.logoUrl}
-        name={row.name}
+        logo={row.logo}
+        tokenName={row.tokenName}
         shortDescription={row.shortDescription}
+        category={row.category}
       />
     ),
   },
@@ -108,91 +124,35 @@ const columns = [
     Header: "Category",
     // set the Id here so we can reference it safely when filtering™
     id: "category",
-    accessor: (row: Synth) => capitalize(row.category),
+    accessor: (row: Emp) => capitalize(row.category),
   },
 
   {
     Header: "TVL",
     id: "tvl",
-    accessor: (row: Synth) => `$${formatMillions(row.tvl[0].value)}`,
+    accessor: (row: Emp) => {
+      const parsedTvl = Math.floor(Number(ethers.utils.formatEther(row.tvl)));
+      const postFix =
+        parsedTvl >= 10 ** 6 ? "M" : parsedTvl >= 10 ** 9 ? "B" : "";
+      return `$${formatMillions(parsedTvl)} ${postFix}`;
+    },
   },
   {
     Header: "24h Change",
+    //TODO: Change once we have the TVL timeseries
     // eslint-disable-next-line react/display-name
-    accessor: (row) => (
+    accessor: () => (
       <span
         style={{
-          color: row.change24h > 0 ? "var(--green)" : "var(--primary)",
+          color: "var(--green)",
           textAlign: "right",
         }}
       >
-        {row.change24h}%
+        {3}%
       </span>
     ),
   },
-] as Column<Synth>[];
-type TimeSeries = {
-  value: number;
-  timestamp: number;
-}[];
-
-const CATEGORIES = [
-  "Yield Dollar",
-  "KPI Options",
-  "Synthetic Assets",
-  "Options",
-] as const;
-type Category = typeof CATEGORIES[number];
-type Synth = {
-  name: string;
-  category: Category;
-  shortDescription: string;
-  description: string;
-  logoUrl?: string;
-  tvl: TimeSeries;
-  change24h: number;
-  active: boolean;
-  address: string;
-};
-const data: Synth[] = [
-  {
-    name: "Yield Dollar renBTC Jun 2021",
-    shortDescription:
-      "A short and snappy text describing this project lorem ipsum",
-    description: "nbla nbal bal",
-    category: "Yield Dollar",
-    logoUrl: "/yd.svg",
-    tvl: [{ timestamp: Date.now(), value: 753_072 }],
-    change24h: 2.4,
-    active: true,
-    address: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-  },
-  {
-    name: "Yield Dollar with other Jun 2021",
-    shortDescription:
-      "A short and snappy text describing this project lorem ipsum",
-    description: "nbla nbal bal",
-    category: "Yield Dollar",
-    logoUrl: "/yd.svg",
-    tvl: [{ timestamp: Date.now(), value: 600_000 }],
-
-    change24h: -0.48,
-    active: true,
-    address: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-  },
-  {
-    name: "Some KPI Options May 2021",
-    shortDescription:
-      "A short and snappy text describing this project lorem ipsum",
-    description: "nbla nbal bal",
-    category: "KPI Options",
-    logoUrl: "/yd.svg",
-    tvl: [{ timestamp: Date.now(), value: 5_072 }],
-    change24h: 0.05,
-    active: false,
-    address: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-  },
-];
+] as Column<Emp>[];
 
 function activeSynthsFilter(
   rows: TRow[],
@@ -202,13 +162,16 @@ function activeSynthsFilter(
   if (!globalFilterValue) {
     return rows;
   }
-  return rows.filter((row) => (row.original as Synth).active === true);
+  return rows.filter((row) => (row.original as Emp).isActive);
 }
-
-export const Table: React.FC = () => {
+type Props = {
+  data: Emp[];
+  hasFilters?: boolean;
+};
+export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
   const tableData = useMemo(
-    () => data.sort((a, b) => b.tvl[0].value - a.tvl[0].value),
-    []
+    () => data.sort((a, b) => Number(b.tvl) - Number(a.tvl)),
+    [data]
   );
   const filterTypes = React.useMemo(
     () => ({
@@ -240,45 +203,49 @@ export const Table: React.FC = () => {
     useGlobalFilter
   );
 
+  const router = useRouter();
+
   return (
     <TableWrapper {...getTableProps()}>
       <MaxWidthWrapper>
-        <ControlsWrapper>
-          <ButtonsWrapper>
-            {CATEGORIES.map((category) => {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              const isActive = (state as any).filters.some(
-                ({ id, value }: { id: string; value: string }) =>
-                  id === "category" && value === category
-              );
+        {hasFilters && (
+          <ControlsWrapper>
+            <ButtonsWrapper>
+              {CATEGORIES.map((category) => {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const isActive = (state as any).filters.some(
+                  ({ id, value }: { id: string; value: string }) =>
+                    id === "category" && value === category
+                );
 
-              return (
-                <Button
-                  key={category}
-                  pressed={isActive}
-                  onClick={() => {
-                    setFilter("category", isActive ? undefined : category);
-                  }}
-                >
-                  {category}
-                </Button>
-              );
-            })}
-          </ButtonsWrapper>
-          <ActiveFilterWrapper>
-            <input
-              type="checkbox"
-              onChange={() => {
-                if ((state as any).globalFilter) {
-                  setGlobalFilter(undefined);
-                } else {
-                  setGlobalFilter(true);
-                }
-              }}
-            />
-            <span>Only show Live projects</span>
-          </ActiveFilterWrapper>
-        </ControlsWrapper>
+                return (
+                  <Button
+                    key={category}
+                    pressed={isActive}
+                    onClick={() => {
+                      setFilter("category", isActive ? undefined : category);
+                    }}
+                  >
+                    {category}
+                  </Button>
+                );
+              })}
+            </ButtonsWrapper>
+            <ActiveFilterWrapper>
+              <input
+                type="checkbox"
+                onChange={() => {
+                  if ((state as any).globalFilter) {
+                    setGlobalFilter(undefined);
+                  } else {
+                    setGlobalFilter(true);
+                  }
+                }}
+              />
+              <span>Only show Live projects</span>
+            </ActiveFilterWrapper>
+          </ControlsWrapper>
+        )}
         {headerGroups.map((headerGroup) => (
           <HeadRow {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
             {headerGroup.headers.map((column) => {
@@ -299,12 +266,13 @@ export const Table: React.FC = () => {
               return (
                 <Row
                   {...row.getRowProps({
-                    //@ts-expect-error bla
+                    //@ts-expect-error TS doesn't recognize that getRowProps is forwarding props to the framer motion component
                     exit: { opacity: 0 },
                     animate: { opacity: 1 },
                     initial: { opacity: 0 },
                   })}
                   key={row.id}
+                  onClick={() => router.push(`/${row.original.address}`)}
                 >
                   {row.cells.map((cell) => (
                     <Cell {...cell.getCellProps()} key={cell.value}>
@@ -366,12 +334,18 @@ const Body = styled.div`
 const Row = styled(motion.div)`
   width: 100%;
   background-color: var(--white);
+  cursor: pointer;
   border-radius: 5px;
   display: flex;
   align-items: center;
   padding: 8px 10px;
   &:not(first-of-type) {
     margin-top: 5px;
+  }
+  transition: all linear 0.2s;
+
+  &:hover {
+    background-color: var(--gray-300);
   }
 
   @media ${QUERIES.tabletAndUp} {
@@ -381,6 +355,10 @@ const Row = styled(motion.div)`
 
 const HeadRow = styled(Row)`
   font-weight: 600;
+  cursor: default;
+  &:hover {
+    background-color: revert;
+  }
 `;
 const Cell = styled.div`
   flex: 1 1 120px;

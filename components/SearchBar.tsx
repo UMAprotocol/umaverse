@@ -1,12 +1,34 @@
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styled from "@emotion/styled";
 import SearchIcon from "../public/icons/search.svg";
 
-export const SearchBar: React.FC = () => {
+type Props = {
+  onSubmit: (queryStr: string) => void;
+};
+export const SearchBar: React.FC<Props> = ({ onSubmit }) => {
+  const [query, setQuery] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const enterListener = (evt: KeyboardEvent) => {
+      if (evt.key === "Enter" || evt.key === "NumpadEnter") {
+        onSubmit(query);
+      }
+    };
+    const input = inputRef.current;
+    input?.addEventListener("keydown", enterListener);
+    return () => input?.removeEventListener("keydown", enterListener);
+  }, [onSubmit, query]);
+
   return (
     <Wrapper>
-      <Icon />
-      <Input placeholder="Search for projects..." />
+      <Icon onClick={() => onSubmit(query)} />
+      <Input
+        placeholder="Search for projects..."
+        onChange={(e) => setQuery(e.target.value)}
+        ref={inputRef}
+      />
+      <input type="submit" hidden />
     </Wrapper>
   );
 };

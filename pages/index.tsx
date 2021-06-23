@@ -8,10 +8,60 @@ import {
   Value,
   Table,
 } from "../components";
-import UnstyledInfoIcon from "../public/icons/info.svg";
-import { formatMillions, QUERIES } from "../utils";
 
-const IndexPage: React.FC = () => {
+import {
+  getContenfulClient,
+  ContentfulSynth,
+  formatMillions,
+  QUERIES,
+  errorFilter,
+} from "../utils";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { client, Emp } from "../utils/umaApi";
+import { ethers } from "ethers";
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const contentfulClient = getContenfulClient();
+  const {
+    items: cmsItems,
+  } = await contentfulClient.getEntries<ContentfulSynth>({
+    content_type: "synth",
+  });
+  const cmsData = cmsItems.map((item) => item.fields);
+
+  const data: Emp[] = (
+    await Promise.all(
+      cmsData.map(async (synth) => {
+        try {
+          const stats = await client.getEmpStats(synth.address);
+          const state = await client.getEmpState(synth.address);
+          return {
+            ...stats,
+            ...state,
+            isActive: Date.now() < Number(state.expirationTimestamp) * 1000,
+            ...synth,
+          };
+        } catch (err) {
+          // may be worth to make an error class for this specific thing
+          return new Error(JSON.stringify(synth));
+        }
+      })
+    )
+  ).filter(errorFilter) as Emp[];
+
+  const totalTvl = await client.getTotalTvl();
+
+  return {
+    props: {
+      data,
+      totalTvl,
+    },
+  };
+};
+
+const IndexPage: React.FC<
+  InferGetServerSidePropsType<typeof getServerSideProps>
+> = ({ data, totalTvl }) => {
   return (
     <Layout title="Umaverse">
       <Hero>
@@ -21,16 +71,15 @@ const IndexPage: React.FC = () => {
         <Description>Another header lorem ipsum our projects</Description>
         <CardWrapper>
           <Card>
-            <InfoIcon />
             <CardContent>
               <CardHeading>
                 TVL <span>(Total Value Locked)</span>
               </CardHeading>
               <Value
-                value={22_850_000}
+                value={totalTvl}
                 format={(v) => (
                   <>
-                    ${formatMillions(v)}{" "}
+                    ${formatMillions(Number(ethers.utils.formatEther(v)))}{" "}
                     <span style={{ fontWeight: 400 }}>M</span>
                   </>
                 )}
@@ -38,7 +87,6 @@ const IndexPage: React.FC = () => {
             </CardContent>
           </Card>
           <Card>
-            <InfoIcon />
             <CardContent>
               <CardHeading>
                 TVM <span>(Total Value Minted)</span>
@@ -47,7 +95,6 @@ const IndexPage: React.FC = () => {
             </CardContent>
           </Card>
           <Card>
-            <InfoIcon />
             <CardContent>
               <CardHeading>
                 Change <span>(24h)</span>
@@ -62,7 +109,8 @@ const IndexPage: React.FC = () => {
           </Card>
         </CardWrapper>
       </Hero>
-      <Table />
+
+      <Table data={data} />
     </Layout>
   );
 };
@@ -74,6 +122,7 @@ const CardWrapper = styled.div`
   color: var(--gray-700);
   grid-template-columns: repeat(3, 1fr);
   column-gap: 10px;
+  row-gap: 10px;
   margin-top: 30px;
   @media ${QUERIES.tabletAndUp} {
     column-gap: 20px;
@@ -122,21 +171,5 @@ const Description = styled.span`
   display: block;
   @media ${QUERIES.laptopAndUp} {
     text-align: center;
-  }
-`;
-
-const InfoIcon = styled(UnstyledInfoIcon)`
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  cursor: pointer;
-  display: none;
-
-  @media ${QUERIES.laptopAndUp} {
-    display: revert;
-  }
-  &:hover path {
-    fill-opacity: 1;
-    transition: all 0.1s ease-in;
   }
 `;
