@@ -1,9 +1,9 @@
 import React, { FC } from "react";
 import { TabListItem } from "./Tabs.styled";
 
-interface Props {
+export interface TabProps {
   activeTab: string;
-  label: string;
+  "data-label": string;
   onClick: (tab: string) => void;
 }
 
@@ -12,7 +12,7 @@ export interface ITab {
   element: JSX.Element;
 }
 
-const Tab: FC<Props> = ({ onClick, label, activeTab }) => {
+const Tab: FC<TabProps> = ({ onClick, "data-label": label, activeTab }) => {
   const changeLabel = () => {
     onClick(label);
   };

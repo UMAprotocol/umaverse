@@ -2,24 +2,20 @@ import React, { FC } from "react";
 
 import { Layout } from "../components";
 // import { BaseButton } from "../components/Button";
-import Tabs from "../components/tabs";
+import LSPForm from "../components/lsp-form/LSPForm";
 const Testing: FC = () => {
   // can use all components and stuff here
 
   return (
     <Layout title="Irrelevant">
-      <Tabs
-        tabs={[
-          {
-            label: "test",
-            element: <div key="test">Testing</div>,
-          },
-          {
-            label: "derp",
-            element: <div key="derp">Derp</div>,
-          },
-        ]}
-      />
+      <div
+        style={{
+          margin: "2rem",
+          background: "#f5f5f5",
+        }}
+      >
+        <LSPForm />
+      </div>
     </Layout>
   );
 };
