@@ -12,6 +12,7 @@
     "@emotion/react": "^11.1.5",
     "@emotion/server": "^11.0.0",
     "@emotion/styled": "^11.3.0",
+    "@fortawesome/fontawesome-svg-core": "^1.2.35",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@fortawesome/react-fontawesome": "^0.1.14",
     "@heroicons/react": "^1.0.0",

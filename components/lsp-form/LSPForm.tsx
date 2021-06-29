@@ -1,13 +1,31 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import Tabs from "../tabs";
-import { Wrapper } from "./LSPForm.styled";
+import { Wrapper, FormRow } from "./LSPForm.styled";
+import Dropdown from "../dropdown";
+import TextInput from "../text-input";
+
 const LSPForm: FC = () => {
+  const [collateral, setCollateral] = useState("");
   return (
     <Wrapper>
       <Tabs>
         <div data-label="Mint">
           <h3>Input</h3>
-          <p>123</p>
+          <FormRow>
+            <Dropdown
+              items={[
+                {
+                  label: "test",
+                  value: "test",
+                },
+              ]}
+            />
+            <TextInput
+              placeholder="0.0"
+              value={collateral}
+              setValue={setCollateral}
+            />
+          </FormRow>
         </div>
         <div data-label="Redeem">
           <h2>Derp</h2>
