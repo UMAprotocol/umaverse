@@ -1,12 +1,13 @@
 import React, { FC, useState } from "react";
 import Tab from "./Tab";
 import { TabList } from "./Tabs.styled";
+import { ITab } from "./Tab";
 interface Props {
-  children: JSX.Element[];
+  tabs: ITab[];
 }
 
-const Tabs: FC<Props> = ({ children }) => {
-  const [activeTab, setActiveTab] = useState<string>(children[0].props.label);
+const Tabs: FC<Props> = ({ tabs }) => {
+  const [activeTab, setActiveTab] = useState<string>(tabs[0].label);
 
   const onClickTabItem = (tab: string) => {
     setActiveTab(tab);
@@ -15,9 +16,7 @@ const Tabs: FC<Props> = ({ children }) => {
   return (
     <div>
       <TabList>
-        {children.map((child) => {
-          const { label } = child.props;
-
+        {tabs.map(({ label }) => {
           return (
             <Tab
               key={label}
@@ -29,9 +28,9 @@ const Tabs: FC<Props> = ({ children }) => {
         })}
       </TabList>
       <div className="tab-content">
-        {children.map((child) => {
-          if (child.props.label !== activeTab) return undefined;
-          return child.props.children;
+        {tabs.map(({ label, element }) => {
+          if (label !== activeTab) return undefined;
+          return element;
         })}
       </div>
     </div>

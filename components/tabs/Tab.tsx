@@ -7,6 +7,11 @@ interface Props {
   onClick: (tab: string) => void;
 }
 
+export interface ITab {
+  label: string;
+  element: JSX.Element;
+}
+
 const Tab: FC<Props> = ({ onClick, label, activeTab }) => {
   const changeLabel = () => {
     onClick(label);
