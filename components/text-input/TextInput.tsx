@@ -1,17 +1,27 @@
 import React, { FC, Dispatch, SetStateAction } from "react";
-import { StyledInput } from "./TextInput.styled";
+import { StyledInput, Label } from "./TextInput.styled";
 
 interface Props {
   value: string;
   setValue: Dispatch<SetStateAction<string>>;
   label?: string;
   placeholder?: string;
+  labelPlacement?: LabelPlacement;
+  width?: number;
 }
 
-const TextInput: FC<Props> = ({ value, setValue, label }) => {
+export type LabelPlacement = "default | overlap";
+
+const TextInput: FC<Props> = ({
+  value,
+  setValue,
+  label,
+  labelPlacement = "default" as LabelPlacement,
+  width,
+}) => {
   return (
-    <StyledInput>
-      <label className="label">{label}</label>
+    <StyledInput width={width}>
+      <Label labelPlacement={labelPlacement}>{label}</Label>
       <div>
         <input
           type="text"

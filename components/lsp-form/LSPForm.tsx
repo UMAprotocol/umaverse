@@ -1,11 +1,12 @@
 import React, { FC, useState } from "react";
 import Tabs from "../tabs";
-import { Wrapper, FormRow } from "./LSPForm.styled";
+import { Wrapper, FormRow, SmallTitle } from "./LSPForm.styled";
 import Dropdown from "../dropdown";
 import TextInput from "../text-input";
 import { DropdownVariant } from "../dropdown/Dropdown";
 import EthIcon from "../../public/icons/eth-icon.svg";
 import UniswapIcon from "../../public/icons/uniswap-logo.svg";
+import { LabelPlacement } from "../text-input/TextInput";
 
 const iconStyles = {
   position: "absolute",
@@ -16,18 +17,22 @@ const iconStyles = {
 
 const LSPForm: FC = () => {
   const [collateral, setCollateral] = useState("");
+  const [amount, setAmount] = useState("");
+  const [longTokenAmount, setLongTokenAmount] = useState("");
+  const [shortTokenAmount, setShortTokenAmount] = useState("");
 
   return (
     <Wrapper>
       <Tabs>
         <div data-label="Mint">
-          <h3>Input</h3>
+          <SmallTitle>Input</SmallTitle>
           <FormRow>
             {collateral === "eth" && <EthIcon style={iconStyles} />}
             {collateral === "uniswap" && <UniswapIcon style={iconStyles} />}
             <Dropdown
               setValue={setCollateral}
               variant={"coin" as DropdownVariant}
+              defaultValue={{ label: "ETH", value: "eth" }}
               items={[
                 {
                   label: "ETH",
@@ -36,11 +41,31 @@ const LSPForm: FC = () => {
                 { label: "UNI", value: "uniswap" },
               ]}
             />
-            {/* <TextInput
+            <TextInput
+              label="collateral"
+              labelPlacement={"overlap" as LabelPlacement}
               placeholder="0.0"
-              value={collateral}
-              setValue={setCollateral}
-            /> */}
+              value={amount}
+              setValue={setAmount}
+              width={230}
+            />
+          </FormRow>
+          <SmallTitle>Output</SmallTitle>
+          <FormRow>
+            <TextInput
+              label="long token"
+              labelPlacement={"overlap" as LabelPlacement}
+              placeholder="0.0"
+              value={longTokenAmount}
+              setValue={setLongTokenAmount}
+            />
+            <TextInput
+              label="short token"
+              labelPlacement={"overlap" as LabelPlacement}
+              placeholder="0.0"
+              value={shortTokenAmount}
+              setValue={setShortTokenAmount}
+            />
           </FormRow>
         </div>
         <div data-label="Redeem">

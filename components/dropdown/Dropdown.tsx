@@ -24,11 +24,13 @@ export interface Props {
   // onChange: (selectedItem: string) => void;
   variant?: DropdownVariant;
   setValue: React.Dispatch<React.SetStateAction<string>>;
+  defaultValue?: OptionType;
 }
 
 const Dropdown: FC<Props> = ({
   items,
   setValue,
+  defaultValue,
   variant = "default" as DropdownVariant,
 }) => {
   const {
@@ -38,15 +40,14 @@ const Dropdown: FC<Props> = ({
     getMenuProps,
     highlightedIndex,
     getItemProps,
-  } = useSelect({ items });
+  } = useSelect({ items, defaultSelectedItem: defaultValue });
 
+  // Expose value to parent component
   useEffect(() => {
-    if (setValue) {
-      if (selectedItem) {
-        setValue(selectedItem.value);
-      } else {
-        setValue("");
-      }
+    if (selectedItem) {
+      setValue(selectedItem.value);
+    } else {
+      setValue("");
     }
   }, [selectedItem]);
 
