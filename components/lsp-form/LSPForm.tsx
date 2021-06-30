@@ -10,6 +10,9 @@ import {
   BottomFormWrapper,
   BalanceRow,
   DownArrowWrapper,
+  BalanceRowToken,
+  ButtonWrapper,
+  MintButton,
 } from "./LSPForm.styled";
 import Dropdown from "../dropdown";
 import TextInput from "../text-input";
@@ -63,7 +66,7 @@ const LSPForm: FC = () => {
             </FormRow>
             <BalanceRow>
               <div>
-                <span>Your balance 0.7431</span> <span>Max</span>
+                <span>Your Balance 0.7431</span> <span>Max</span>
               </div>
             </BalanceRow>
           </TopFormWrapper>
@@ -89,7 +92,18 @@ const LSPForm: FC = () => {
                 setValue={setShortTokenAmount}
               />
             </FormRow>
+            <BalanceRowToken>
+              <div>
+                <span>Your Balance 123.45 </span>
+              </div>
+              <div>
+                <span>Your Balance 567.89</span>
+              </div>
+            </BalanceRowToken>
           </BottomFormWrapper>
+          <ButtonWrapper>
+            <MintButton>Mint</MintButton>
+          </ButtonWrapper>
         </div>
         <div data-label="Redeem">
           <h2>Derp</h2>

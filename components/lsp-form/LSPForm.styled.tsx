@@ -1,10 +1,10 @@
 import styled from "@emotion/styled";
 // import { QUERIES } from "../../utils";
+import { BaseButton } from "../Button";
 
 export const Wrapper = styled.div`
   box-shadow: 0px 4px 4px 0px #00000040;
   background: #ffffff;
-  padding-bottom: 1rem;
   max-width: 400px;
 `;
 
@@ -61,6 +61,12 @@ export const BalanceRow = styled.div`
   }
 `;
 
+export const BalanceRowToken = styled(BalanceRow)`
+  div {
+    width: 170px;
+  }
+`;
+
 export const DownArrowWrapper = styled.div`
   position: absolute;
   margin-top: -14px;
@@ -77,4 +83,22 @@ export const DownArrowWrapper = styled.div`
     fill: #272528;
     width: 0.75rem !important;
   }
+`;
+
+export const ButtonWrapper = styled.div`
+  box-shadow: 1px 4px 4px 1px #00000040;
+  background-color: #fefefe;
+  padding: 1rem;
+`;
+
+export const MintButton = styled(BaseButton)`
+  width: 370px;
+  background-color: #ff4b4b;
+  color: #fff;
+  text-align: center;
+  border-radius: 8px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  font-family: "Halyard Display";
+  padding: 0.75rem 0;
 `;
