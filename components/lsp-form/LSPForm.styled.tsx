@@ -60,3 +60,21 @@ export const BalanceRow = styled.div`
     }
   }
 `;
+
+export const DownArrowWrapper = styled.div`
+  position: absolute;
+  margin-top: -14px;
+  margin-left: 184px;
+  background-color: white;
+  height: 30px;
+  width: 30px;
+  border-radius: 16px;
+  box-shadow: 0px 4px 4px 0px #00000040;
+
+  svg {
+    margin-top: 9px;
+    margin-left: 9px;
+    fill: #272528;
+    width: 0.75rem !important;
+  }
+`;

@@ -1,4 +1,6 @@
 import React, { FC, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowDown } from "@fortawesome/free-solid-svg-icons";
 import Tabs from "../tabs";
 import {
   Wrapper,
@@ -7,6 +9,7 @@ import {
   TopFormWrapper,
   BottomFormWrapper,
   BalanceRow,
+  DownArrowWrapper,
 } from "./LSPForm.styled";
 import Dropdown from "../dropdown";
 import TextInput from "../text-input";
@@ -64,6 +67,10 @@ const LSPForm: FC = () => {
               </div>
             </BalanceRow>
           </TopFormWrapper>
+          <DownArrowWrapper>
+            <FontAwesomeIcon icon={faArrowDown} />
+          </DownArrowWrapper>
+
           <BottomFormWrapper>
             <SmallTitle>Output</SmallTitle>
             <FormRow>
