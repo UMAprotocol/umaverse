@@ -3,6 +3,7 @@ import Tabs from "../tabs";
 import { Wrapper, FormRow } from "./LSPForm.styled";
 import Dropdown from "../dropdown";
 import TextInput from "../text-input";
+import { DropdownVariant } from "../dropdown/Dropdown";
 
 const LSPForm: FC = () => {
   const [collateral, setCollateral] = useState("");
@@ -13,6 +14,7 @@ const LSPForm: FC = () => {
           <h3>Input</h3>
           <FormRow>
             <Dropdown
+              variant={"coin" as DropdownVariant}
               items={[
                 {
                   label: "test",
@@ -20,11 +22,11 @@ const LSPForm: FC = () => {
                 },
               ]}
             />
-            <TextInput
+            {/* <TextInput
               placeholder="0.0"
               value={collateral}
               setValue={setCollateral}
-            />
+            /> */}
           </FormRow>
         </div>
         <div data-label="Redeem">

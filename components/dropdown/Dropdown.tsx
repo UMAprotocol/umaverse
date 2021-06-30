@@ -15,14 +15,21 @@ import {
 interface OptionType {
   value: string;
   label: string;
+  img?: JSX.Element;
 }
+
+export type DropdownVariant = "default | coin";
 
 export interface Props {
   items: OptionType[];
   // onChange: (selectedItem: string) => void;
+  variant?: DropdownVariant;
 }
 
-const Dropdown: FC<Props> = ({ items }) => {
+const Dropdown: FC<Props> = ({
+  items,
+  variant = "default" as DropdownVariant,
+}) => {
   const {
     isOpen,
     selectedItem,
@@ -33,20 +40,24 @@ const Dropdown: FC<Props> = ({ items }) => {
   } = useSelect({ items });
 
   return (
-    <DropdownContainer>
-      <DropdownHeader {...getToggleButtonProps()} isOpen={isOpen}>
+    <DropdownContainer variant={variant}>
+      <DropdownHeader
+        variant={variant}
+        {...getToggleButtonProps()}
+        isOpen={isOpen}
+      >
         {(selectedItem && selectedItem.label) || "---"}
         {isOpen ? (
-          <UpArrow>
+          <UpArrow variant={variant}>
             <FontAwesomeIcon icon={faAngleUp} />
           </UpArrow>
         ) : (
-          <DownArrow>
+          <DownArrow variant={variant}>
             <FontAwesomeIcon icon={faAngleDown} />
           </DownArrow>
         )}
       </DropdownHeader>
-      <DropdownList {...getMenuProps()} isOpen={isOpen}>
+      <DropdownList variant={variant} {...getMenuProps()} isOpen={isOpen}>
         {isOpen &&
           items.map((item, index) => (
             <DropdownListItem
@@ -58,6 +69,7 @@ const Dropdown: FC<Props> = ({ items }) => {
             </DropdownListItem>
           ))}
       </DropdownList>
+
       <div tabIndex={0} />
     </DropdownContainer>
   );

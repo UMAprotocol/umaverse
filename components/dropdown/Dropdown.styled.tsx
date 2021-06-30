@@ -1,14 +1,20 @@
 /** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
+import { DropdownVariant } from "./Dropdown";
 
 interface IDropdownStyledProps {
   isOpen?: boolean;
   isHighlighted?: boolean;
   isRHF?: boolean;
+  variant: DropdownVariant;
 }
 
-export const DropdownContainer = styled.div`
-  width: 250px;
+interface IDropdownContainer {
+  variant: DropdownVariant;
+}
+export const DropdownContainer = styled.div<IDropdownContainer>`
+  width: ${(props) =>
+    props.variant === ("coin" as DropdownVariant) ? "125px" : "250px"};
 `;
 
 export const DropdownHeader = styled.button<IDropdownStyledProps>`
@@ -35,11 +41,30 @@ export const DropdownList = styled.ul<IDropdownStyledProps>`
   background-color: #fff;
   list-style: none;
   position: absolute;
-  width: 250px;
+  width: ${(props) =>
+    props.variant === ("coin" as DropdownVariant) ? "125px" : "250px"};
   border-radius: 8px;
   color: #ff4b4b;
   z-index: 1000;
 `;
+
+export const CoinDropdownList = styled.ul<IDropdownStyledProps>`
+  max-height: 200px;
+  overflow-y: "auto";
+  width: 100px;
+  margin: "12px 0 0 0";
+  border-width: ${(props) => (props.isOpen ? "1px" : "0")};
+  border-style: solid;
+  border-color: #e5e4e4;
+  background-color: #fff;
+  list-style: none;
+  position: absolute;
+  width: 125px;
+  border-radius: 8px;
+  color: #ff4b4b;
+  z-index: 1000;
+`;
+
 export const DropdownListItem = styled.li<IDropdownStyledProps>`
   padding: 5px;
   background: ${(props) => (props.isHighlighted ? "#A0AEC0" : "")};
@@ -57,9 +82,14 @@ export const DropdownListItem = styled.li<IDropdownStyledProps>`
   }
 `;
 
-export const Arrow = styled.span`
+interface IArrow {
+  variant: DropdownVariant;
+}
+export const Arrow = styled.span<IArrow>`
   position: absolute;
-  margin-left: 220px;
+  /* margin-left: 220px; */
+  margin-left: ${(props) =>
+    props.variant === ("coin" as DropdownVariant) ? "100px" : "220px"};
 `;
 
 export const UpArrow = styled(Arrow)`
