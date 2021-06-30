@@ -4,6 +4,7 @@ import styled from "@emotion/styled";
 export const Wrapper = styled.div`
   box-shadow: 0px 4px 4px 0px #00000040;
   /* height: 500px; */
+  padding: 2rem;
 `;
 
 export const FormRow = styled.div`

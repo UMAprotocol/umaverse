@@ -18,7 +18,7 @@ export const DropdownContainer = styled.div<IDropdownContainer>`
 `;
 
 export const DropdownHeader = styled.button<IDropdownStyledProps>`
-  padding: 10px;
+  padding: 15px;
   display: flex;
   border-radius: 6px;
   border-width: 1px;
@@ -28,6 +28,12 @@ export const DropdownHeader = styled.button<IDropdownStyledProps>`
   /* width: 297px; */
   background-color: ${(props) => (props.isOpen ? "#fff" : "#F1F0F0")};
   color: ${(props) => (props.isOpen ? "#ff4b4b" : "#919191")};
+  div {
+    &:first-child {
+      text-indent: ${(props) =>
+        props.variant === ("coin" as DropdownVariant) ? "20px" : "12px"};
+    }
+  }
 `;
 
 export const DropdownList = styled.ul<IDropdownStyledProps>`
@@ -89,7 +95,7 @@ export const Arrow = styled.span<IArrow>`
   position: absolute;
   /* margin-left: 220px; */
   margin-left: ${(props) =>
-    props.variant === ("coin" as DropdownVariant) ? "100px" : "220px"};
+    props.variant === ("coin" as DropdownVariant) ? "92px" : "220px"};
 `;
 
 export const UpArrow = styled(Arrow)`

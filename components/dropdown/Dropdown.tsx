@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 
 import { useSelect } from "downshift";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -15,7 +15,6 @@ import {
 interface OptionType {
   value: string;
   label: string;
-  img?: JSX.Element;
 }
 
 export type DropdownVariant = "default | coin";
@@ -24,10 +23,12 @@ export interface Props {
   items: OptionType[];
   // onChange: (selectedItem: string) => void;
   variant?: DropdownVariant;
+  setValue: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const Dropdown: FC<Props> = ({
   items,
+  setValue,
   variant = "default" as DropdownVariant,
 }) => {
   const {
@@ -39,6 +40,16 @@ const Dropdown: FC<Props> = ({
     getItemProps,
   } = useSelect({ items });
 
+  useEffect(() => {
+    if (setValue) {
+      if (selectedItem) {
+        setValue(selectedItem.value);
+      } else {
+        setValue("");
+      }
+    }
+  }, [selectedItem]);
+
   return (
     <DropdownContainer variant={variant}>
       <DropdownHeader
@@ -46,7 +57,7 @@ const Dropdown: FC<Props> = ({
         {...getToggleButtonProps()}
         isOpen={isOpen}
       >
-        {(selectedItem && selectedItem.label) || "---"}
+        {(selectedItem && <div>{selectedItem.label}</div>) || <span>---</span>}
         {isOpen ? (
           <UpArrow variant={variant}>
             <FontAwesomeIcon icon={faAngleUp} />
