@@ -19,6 +19,8 @@ const LongShort: FC<Props> = ({
   setLongTokenAmount,
   shortTokenAmount,
   setShortTokenAmount,
+  redeemForm,
+  collateralOnTop,
 }) => {
   return (
     <>
@@ -41,9 +43,11 @@ const LongShort: FC<Props> = ({
       <BalanceRowToken>
         <div>
           <span>Your Balance 123.45 </span>
+          {!collateralOnTop && redeemForm && <span>Max</span>}
         </div>
         <div>
           <span>Your Balance 567.89</span>
+          {!collateralOnTop && redeemForm && <span>Max</span>}
         </div>
       </BalanceRowToken>
     </>

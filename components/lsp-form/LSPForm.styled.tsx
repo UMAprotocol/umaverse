@@ -72,6 +72,9 @@ export const BalanceRowToken = styled(BalanceRow)`
   div {
     width: 170px;
   }
+  span {
+    font-size: 0.75rem;
+  }
 `;
 
 export const DownArrowWrapper = styled.div`
