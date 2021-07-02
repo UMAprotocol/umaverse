@@ -2,9 +2,16 @@ import styled from "@emotion/styled";
 // import { QUERIES } from "../../utils";
 import { BaseButton } from "../Button";
 
+export const iconStyles = {
+  position: "absolute",
+  marginTop: "8px",
+  marginLeft: "4px",
+  height: "30px",
+} as React.CSSProperties;
+
 export const Wrapper = styled.div`
   box-shadow: 0px 4px 4px 0px #00000040;
-  background: #ffffff;
+  background: #f5f5f5;
   max-width: 400px;
 `;
 
@@ -32,7 +39,7 @@ const FormWrapper = styled.div`
 `;
 
 export const TopFormWrapper = styled(FormWrapper)`
-  background-color: #fff;
+  background-color: #ffffff;
   padding-bottom: 2rem;
 `;
 
