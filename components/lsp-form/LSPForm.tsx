@@ -3,6 +3,7 @@ import Tabs from "../tabs";
 import { Wrapper } from "./LSPForm.styled";
 
 import MintForm from "./MintForm";
+import RedeemForm from "./RedeemForm";
 
 const LSPForm: FC = () => {
   return (
@@ -12,8 +13,7 @@ const LSPForm: FC = () => {
           <MintForm />
         </div>
         <div data-label="Redeem">
-          <h2>Derp</h2>
-          <p>123</p>
+          <RedeemForm />
         </div>
       </Tabs>
     </Wrapper>
