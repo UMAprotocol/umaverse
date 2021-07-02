@@ -3,7 +3,7 @@ import {
   SmallTitle,
   TopFormWrapper,
   BottomFormWrapper,
-  DownArrowWrapper,
+  SwapArrowWrapper,
   ButtonWrapper,
   MintButton,
 } from "./LSPForm.styled";
@@ -19,18 +19,20 @@ const RedeemForm: FC = () => {
   const [amount, setAmount] = useState("");
   const [longTokenAmount, setLongTokenAmount] = useState("");
   const [shortTokenAmount, setShortTokenAmount] = useState("");
-  const [invertForm, setInvertForm] = useState(false);
+  const [collateralOnTop, setCollateralOnTop] = useState(false);
 
   return (
     <div>
       <TopFormWrapper>
         <SmallTitle>Input</SmallTitle>
-        {invertForm ? (
+        {collateralOnTop ? (
           <Collateral
             collateral={collateral}
             setCollateral={setCollateral}
             amount={amount}
             setAmount={setAmount}
+            redeemForm
+            collateralOnTop={collateralOnTop}
           />
         ) : (
           <LongShort
@@ -38,24 +40,28 @@ const RedeemForm: FC = () => {
             setLongTokenAmount={setLongTokenAmount}
             shortTokenAmount={shortTokenAmount}
             setShortTokenAmount={setShortTokenAmount}
+            redeemForm
+            collateralOnTop={collateralOnTop}
           />
         )}
       </TopFormWrapper>
-      <DownArrowWrapper>
+      <SwapArrowWrapper>
         <FontAwesomeIcon
-          onClick={() => setInvertForm((prevValue) => !prevValue)}
+          onClick={() => setCollateralOnTop((prevValue) => !prevValue)}
           icon={faArrowDown}
         />
-      </DownArrowWrapper>
+      </SwapArrowWrapper>
 
       <BottomFormWrapper>
         <SmallTitle>Output</SmallTitle>
-        {invertForm ? (
+        {collateralOnTop ? (
           <LongShort
             longTokenAmount={longTokenAmount}
             setLongTokenAmount={setLongTokenAmount}
             shortTokenAmount={shortTokenAmount}
             setShortTokenAmount={setShortTokenAmount}
+            redeemForm
+            collateralOnTop={collateralOnTop}
           />
         ) : (
           <Collateral
@@ -63,6 +69,8 @@ const RedeemForm: FC = () => {
             setCollateral={setCollateral}
             amount={amount}
             setAmount={setAmount}
+            redeemForm
+            collateralOnTop={collateralOnTop}
           />
         )}
       </BottomFormWrapper>

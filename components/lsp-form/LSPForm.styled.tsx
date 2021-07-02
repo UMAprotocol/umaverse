@@ -92,6 +92,10 @@ export const DownArrowWrapper = styled.div`
   }
 `;
 
+export const SwapArrowWrapper = styled(DownArrowWrapper)`
+  cursor: pointer;
+`;
+
 export const ButtonWrapper = styled.div`
   box-shadow: 1px 4px 4px 1px #00000040;
   background-color: #fefefe;

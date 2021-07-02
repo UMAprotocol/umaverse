@@ -9,6 +9,9 @@ interface Props {
   setLongTokenAmount: React.Dispatch<React.SetStateAction<string>>;
   shortTokenAmount: string;
   setShortTokenAmount: React.Dispatch<React.SetStateAction<string>>;
+  // Adjust CSS slightly if its the redeem form or the mint form.
+  redeemForm?: boolean;
+  collateralOnTop?: boolean;
 }
 
 const LongShort: FC<Props> = ({

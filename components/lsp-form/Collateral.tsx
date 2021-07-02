@@ -12,6 +12,9 @@ interface Props {
   setCollateral: React.Dispatch<React.SetStateAction<string>>;
   amount: string;
   setAmount: React.Dispatch<React.SetStateAction<string>>;
+  // Adjust CSS slightly if its the redeem form or the mint form.
+  redeemForm?: boolean;
+  collateralOnTop?: boolean;
 }
 
 const Collateral: FC<Props> = ({
@@ -19,6 +22,8 @@ const Collateral: FC<Props> = ({
   setCollateral,
   amount,
   setAmount,
+  collateralOnTop,
+  redeemForm,
 }) => {
   return (
     <>
@@ -48,7 +53,8 @@ const Collateral: FC<Props> = ({
       </FormRow>
       <BalanceRow>
         <div>
-          <span>Your Balance 0.7431</span> <span>Max</span>
+          <span>Your Balance 0.7431</span>{" "}
+          {(collateralOnTop || !redeemForm) && <span>Max</span>}
         </div>
       </BalanceRow>
     </>
