@@ -97,6 +97,11 @@ export const DownArrowWrapper = styled.div`
 
 export const SwapArrowWrapper = styled(DownArrowWrapper)`
   cursor: pointer;
+  svg {
+    margin-top: -12px;
+    margin-left: -16px;
+    width: 60px !important;
+  }
 `;
 
 export const ButtonWrapper = styled.div`

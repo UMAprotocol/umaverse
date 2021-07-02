@@ -8,11 +8,9 @@ import {
   MintButton,
 } from "./LSPForm.styled";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowDown } from "@fortawesome/free-solid-svg-icons";
-
 import LongShort from "./LongShort";
 import Collateral from "./Collateral";
+import DoubleArrow from "../../public/icons/arrows-switch.svg";
 
 const RedeemForm: FC = () => {
   const [collateral, setCollateral] = useState("");
@@ -46,9 +44,8 @@ const RedeemForm: FC = () => {
         )}
       </TopFormWrapper>
       <SwapArrowWrapper>
-        <FontAwesomeIcon
+        <DoubleArrow
           onClick={() => setCollateralOnTop((prevValue) => !prevValue)}
-          icon={faArrowDown}
         />
       </SwapArrowWrapper>
 
