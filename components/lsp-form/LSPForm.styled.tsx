@@ -145,7 +145,15 @@ export const SettleTitle = styled.h3`
   margin-bottom: 1.25rem;
 `;
 
-export const TimeRemaining = styled.div`
+export const SettleText = styled.div`
+  text-align: center;
+  font-size: 1rem;
+  font-family: "Halyard Display";
+  color: #a8a8a8;
+  padding: 1rem 2rem;
   margin-bottom: 2rem;
+`;
+
+export const TimeRemaining = styled.div`
   font-size: 0.875rem;
 `;
