@@ -13,7 +13,10 @@ import { faArrowDown } from "@fortawesome/free-solid-svg-icons";
 import LongShort from "./LongShort";
 import Collateral from "./Collateral";
 
-const MintForm: FC = () => {
+interface Props {
+  setShowSettle: React.Dispatch<React.SetStateAction<boolean>>;
+}
+const MintForm: FC<Props> = ({ setShowSettle }) => {
   const [collateral, setCollateral] = useState("");
   const [amount, setAmount] = useState("");
   const [longTokenAmount, setLongTokenAmount] = useState("");
@@ -44,7 +47,7 @@ const MintForm: FC = () => {
         />
       </BottomFormWrapper>
       <ButtonWrapper>
-        <MintButton>Mint</MintButton>
+        <MintButton onClick={() => setShowSettle(true)}>Mint</MintButton>
       </ButtonWrapper>
     </div>
   );

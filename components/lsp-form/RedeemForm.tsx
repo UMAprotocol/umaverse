@@ -75,7 +75,7 @@ const RedeemForm: FC = () => {
         )}
       </BottomFormWrapper>
       <ButtonWrapper>
-        <MintButton>Mint</MintButton>
+        <MintButton>Redeem</MintButton>
       </ButtonWrapper>
     </div>
   );

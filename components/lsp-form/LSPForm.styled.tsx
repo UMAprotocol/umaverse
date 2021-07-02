@@ -116,3 +116,36 @@ export const MintButton = styled(BaseButton)`
   font-family: "Halyard Display";
   padding: 0.75rem 0;
 `;
+
+export const SettleWrapper = styled.div`
+  height: 100%;
+  min-height: 400px;
+  border-top: 4px solid #ff4b4b;
+  text-align: center;
+  background: #fefefe;
+`;
+
+export const SettleButton = styled(BaseButton)`
+  width: 95%;
+  margin: 0 auto;
+  background-color: #ff4b4b;
+  color: #fff;
+  text-align: center;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: "Halyard Display";
+  padding: 0.66rem 0;
+`;
+
+export const SettleTitle = styled.h3`
+  margin-top: 1rem;
+  font-weight: 600;
+  font-size: 1.25rem;
+  margin-bottom: 1.25rem;
+`;
+
+export const TimeRemaining = styled.div`
+  margin-bottom: 2rem;
+  font-size: 0.875rem;
+`;
