@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import { DropdownVariant } from "./Dropdown";
+import { QUERIES } from "../../utils";
 
 interface IDropdownStyledProps {
   isOpen?: boolean;
@@ -95,7 +96,11 @@ export const Arrow = styled.span<IArrow>`
   position: absolute;
   /* margin-left: 220px; */
   margin-left: ${(props) =>
-    props.variant === ("coin" as DropdownVariant) ? "92px" : "220px"};
+    props.variant === ("coin" as DropdownVariant) ? "85px" : "220px"};
+  @media ${QUERIES.tabletAndUp} {
+    margin-left: ${(props) =>
+      props.variant === ("coin" as DropdownVariant) ? "92px" : "220px"};
+  }
 `;
 
 export const UpArrow = styled(Arrow)`

@@ -6,6 +6,7 @@ import Dropdown from "../dropdown";
 import TextInput from "../text-input";
 import { DropdownVariant } from "../dropdown/Dropdown";
 import { LabelPlacement } from "../text-input/TextInput";
+import useWindowSize from "../../hooks/useWindowSize";
 
 interface Props {
   collateral: string;
@@ -25,6 +26,8 @@ const Collateral: FC<Props> = ({
   collateralOnTop,
   redeemForm,
 }) => {
+  const size = useWindowSize();
+
   return (
     <>
       <FormRow>
@@ -48,7 +51,7 @@ const Collateral: FC<Props> = ({
           placeholder="0.0"
           value={amount}
           setValue={setAmount}
-          width={230}
+          width={size.width && size.width > 728 ? "230px" : "100%"}
         />
       </FormRow>
       <BalanceRow>

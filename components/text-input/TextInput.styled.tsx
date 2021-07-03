@@ -1,8 +1,9 @@
 import styled from "@emotion/styled";
 import { LabelPlacement } from "./TextInput";
+// import { QUERIES } from "../../utils";
 
 interface IStyledInput {
-  width?: number;
+  width?: string;
 }
 export const StyledInput = styled.div<IStyledInput>`
   display: flex;
@@ -10,7 +11,7 @@ export const StyledInput = styled.div<IStyledInput>`
 
   input {
     min-height: 25px;
-    width: ${(props) => (props.width ? `${props.width}px` : "100%")};
+    width: ${(props) => (props.width ? `${props.width}` : "100%")};
     background-color: #fff;
     padding: 1rem 1.25rem;
     border: 1px solid #d4d3d4;

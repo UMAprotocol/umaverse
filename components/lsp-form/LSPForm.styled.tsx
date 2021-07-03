@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-// import { QUERIES } from "../../utils";
+import { QUERIES } from "../../utils";
 import { BaseButton } from "../Button";
 
 export const iconStyles = {
@@ -13,13 +13,28 @@ export const Wrapper = styled.div`
   box-shadow: 0px 4px 4px 0px #00000040;
   background: #f5f5f5;
   max-width: 400px;
+  width: 100%;
+  @media ${QUERIES.tabletAndUp} {
+    margin-left: 92px;
+  }
 `;
 
 export const FormRow = styled.div`
   display: flex;
+  width: 100%;
   div {
     margin: 0 5px;
     > div {
+      &:nth-child(1) {
+        button {
+          span {
+            margin-left: 50px;
+          }
+        }
+        @media ${QUERIES.tabletAndUp} {
+          margin-left: 92px;
+        }
+      }
       &:nth-child(2) {
         flex-grow: 16;
       }
@@ -80,13 +95,15 @@ export const BalanceRowToken = styled(BalanceRow)`
 export const DownArrowWrapper = styled.div`
   position: absolute;
   margin-top: -14px;
-  margin-left: 184px;
   background-color: white;
   height: 30px;
   width: 30px;
   border-radius: 16px;
   box-shadow: 0px 4px 4px 0px #00000040;
-
+  margin-left: 160px;
+  @media ${QUERIES.tabletAndUp} {
+    margin-left: 184px;
+  }
   svg {
     margin-top: 9px;
     margin-left: 9px;
@@ -111,7 +128,6 @@ export const ButtonWrapper = styled.div`
 `;
 
 export const MintButton = styled(BaseButton)`
-  width: 370px;
   background-color: #ff4b4b;
   color: #fff;
   text-align: center;
@@ -120,6 +136,10 @@ export const MintButton = styled(BaseButton)`
   font-weight: 600;
   font-family: "Halyard Display";
   padding: 0.75rem 0;
+  width: 100%;
+  @media ${QUERIES.laptopAndUp} {
+    width: 370px;
+  }
 `;
 
 export const SettleWrapper = styled.div`
@@ -141,6 +161,9 @@ export const SettleButton = styled(BaseButton)`
   font-weight: 600;
   font-family: "Halyard Display";
   padding: 0.66rem 0;
+  @media ${QUERIES.laptopAndUp} {
+    width: 400px;
+  }
 `;
 
 export const SettleTitle = styled.h3`
