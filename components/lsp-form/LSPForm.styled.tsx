@@ -105,7 +105,7 @@ export const SwapArrowWrapper = styled(DownArrowWrapper)`
 `;
 
 export const ButtonWrapper = styled.div`
-  box-shadow: 1px 4px 4px 1px #00000040;
+  /* box-shadow: 1px 4px 4px 1px #00000040; */
   background-color: #fefefe;
   padding: 1rem;
 `;
