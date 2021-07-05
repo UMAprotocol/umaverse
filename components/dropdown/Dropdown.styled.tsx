@@ -99,7 +99,6 @@ interface IArrow {
 }
 export const Arrow = styled.span<IArrow>`
   position: absolute;
-  /* margin-left: 220px; */
   margin-left: ${(props) =>
     props.variant === ("coin" as DropdownVariant) ? "85px" : "220px"};
   display: none;
