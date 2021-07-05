@@ -66,18 +66,26 @@ export const BalanceRow = styled.div`
   display: flex;
   div {
     display: flex;
-    margin-left: auto;
     justify-content: space-between;
-    width: 230px;
     font-family: "Halyard Display";
     font-size: ${14 / 16}rem;
     color: #a8a8a8;
+    width: 100%;
+    padding: 0 1rem;
+    @media ${QUERIES.tabletAndUp} {
+      margin-left: auto;
+      padding: 0;
+      width: 230px;
+    }
     span {
       &:nth-child(2) {
         color: #ff4b4b;
-        margin-right: 24px;
         text-decoration: underline;
         cursor: pointer;
+        margin-right: 12px;
+        @media ${QUERIES.tabletAndUp} {
+          margin-right: 24px;
+        }
       }
     }
   }
