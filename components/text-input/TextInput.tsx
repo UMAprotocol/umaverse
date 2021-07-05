@@ -7,7 +7,7 @@ interface Props {
   label?: string;
   placeholder?: string;
   labelPlacement?: LabelPlacement;
-  width?: number;
+  width?: string;
 }
 
 export type LabelPlacement = "default | overlap";

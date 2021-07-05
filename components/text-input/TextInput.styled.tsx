@@ -5,6 +5,7 @@ import { LabelPlacement } from "./TextInput";
 interface IStyledInput {
   width?: string;
 }
+
 export const StyledInput = styled.div<IStyledInput>`
   display: flex;
   flex-direction: column;

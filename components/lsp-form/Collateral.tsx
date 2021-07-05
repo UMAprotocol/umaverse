@@ -27,7 +27,7 @@ const Collateral: FC<Props> = ({
   redeemForm,
 }) => {
   const size = useWindowSize();
-
+  const width = size.width && size.width > 728 ? "230px" : "100%";
   return (
     <>
       <FormRow>
@@ -51,7 +51,7 @@ const Collateral: FC<Props> = ({
           placeholder="0.0"
           value={amount}
           setValue={setAmount}
-          width={size.width && size.width > 728 ? "230px" : "100%"}
+          width={width}
         />
       </FormRow>
       <BalanceRow>
