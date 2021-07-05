@@ -1,9 +1,9 @@
 import styled from "@emotion/styled";
 import { LabelPlacement } from "./TextInput";
-// import { QUERIES } from "../../utils";
+import { QUERIES } from "../../utils";
 
 interface IStyledInput {
-  width?: string;
+  inputWidth?: string;
 }
 
 export const StyledInput = styled.div<IStyledInput>`
@@ -12,15 +12,28 @@ export const StyledInput = styled.div<IStyledInput>`
 
   input {
     min-height: 25px;
-    width: ${(props) => (props.width ? `${props.width}` : "100%")};
+    width: ${(props) => (props.inputWidth ? `${props.inputWidth}` : "100%")};
     background-color: #fff;
-    padding: 1rem 1.25rem;
     border: 1px solid #d4d3d4;
+    padding: 1rem 1.25rem;
     border-radius: 8px;
+    &:first-child {
+      margin-left: -8px;
+    }
+    &:nth-child(2) {
+      margin-left: 8px;
+    }
     &:focus {
       background-color: #fff;
       color: #ff4d4c;
       outline-color: #ff4d4c;
+    }
+    @media ${QUERIES.tabletAndUp} {
+      padding: 1rem 1.25rem;
+      &:first-child,
+      &:nth-child(2) {
+        margin-left: 0;
+      }
     }
   }
 `;

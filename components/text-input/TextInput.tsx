@@ -20,7 +20,7 @@ const TextInput: FC<Props> = ({
   width,
 }) => {
   return (
-    <StyledInput width={width}>
+    <StyledInput inputWidth={width}>
       <Label labelPlacement={labelPlacement}>{label}</Label>
       <div>
         <input

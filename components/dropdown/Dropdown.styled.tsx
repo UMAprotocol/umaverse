@@ -49,10 +49,15 @@ export const DropdownList = styled.ul<IDropdownStyledProps>`
   list-style: none;
   position: absolute;
   width: ${(props) =>
-    props.variant === ("coin" as DropdownVariant) ? "125px" : "250px"};
+    props.variant === ("coin" as DropdownVariant) ? "210px" : "250px"};
+
   border-radius: 8px;
   color: #ff4b4b;
   z-index: 1000;
+  @media ${QUERIES.tabletAndUp} {
+    width: ${(props) =>
+      props.variant === ("coin" as DropdownVariant) ? "125px" : "250px"};
+  }
 `;
 
 export const CoinDropdownList = styled.ul<IDropdownStyledProps>`
