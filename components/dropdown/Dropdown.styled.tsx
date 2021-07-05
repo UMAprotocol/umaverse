@@ -49,7 +49,7 @@ export const DropdownList = styled.ul<IDropdownStyledProps>`
   list-style: none;
   position: absolute;
   width: ${(props) =>
-    props.variant === ("coin" as DropdownVariant) ? "210px" : "250px"};
+    props.variant === ("coin" as DropdownVariant) ? "125px" : "250px"};
 
   border-radius: 8px;
   color: #ff4b4b;
@@ -102,9 +102,13 @@ export const Arrow = styled.span<IArrow>`
   /* margin-left: 220px; */
   margin-left: ${(props) =>
     props.variant === ("coin" as DropdownVariant) ? "85px" : "220px"};
+  display: none;
   @media ${QUERIES.tabletAndUp} {
     margin-left: ${(props) =>
       props.variant === ("coin" as DropdownVariant) ? "92px" : "220px"};
+  }
+  @media ${QUERIES.laptopAndUp} {
+    display: block;
   }
 `;
 

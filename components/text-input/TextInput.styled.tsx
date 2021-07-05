@@ -9,12 +9,14 @@ interface IStyledInput {
 export const StyledInput = styled.div<IStyledInput>`
   display: flex;
   flex-direction: column;
+  width: ${(props) => (props.inputWidth ? `${props.inputWidth}` : "100%")};
 
   input {
     min-height: 25px;
-    width: ${(props) => (props.inputWidth ? `${props.inputWidth}` : "100%")};
     background-color: #fff;
     border: 1px solid #d4d3d4;
+    width: ${(props) => (props.inputWidth ? `${props.inputWidth}` : "100%")};
+    margin-left: 16px;
     padding: 1rem 1.25rem;
     border-radius: 8px;
     &:first-child {
