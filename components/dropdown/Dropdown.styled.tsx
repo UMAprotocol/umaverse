@@ -26,11 +26,10 @@ export const DropdownHeader = styled.button<IDropdownStyledProps>`
   border-style: solid;
   border-color: ${(props) => (props.isOpen ? "#ff4b4b" : "transparent")};
   min-width: 100%;
-  /* width: 297px; */
   background-color: ${(props) => (props.isOpen ? "#fff" : "#F1F0F0")};
   color: ${(props) => (props.isOpen ? "#ff4b4b" : "#919191")};
   div {
-    &:first-child {
+    &:first-of-type {
       text-indent: ${(props) =>
         props.variant === ("coin" as DropdownVariant) ? "20px" : "12px"};
     }

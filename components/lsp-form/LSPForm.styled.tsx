@@ -14,6 +14,8 @@ export const Wrapper = styled.div`
   background: #f5f5f5;
   max-width: 400px;
   width: 100%;
+  font-family: "Halyard Display";
+
   @media ${QUERIES.tabletAndUp} {
     margin-left: 92px;
   }
@@ -25,7 +27,7 @@ export const FormRow = styled.div`
   div {
     margin: 0 5px;
     > div {
-      &:nth-child(1) {
+      &:nth-of-type(1) {
         button {
           span {
             margin-left: 50px;
@@ -35,7 +37,7 @@ export const FormRow = styled.div`
           margin-left: 92px;
         }
       }
-      &:nth-child(2) {
+      &:nth-of-type(2) {
         flex-grow: 16;
       }
     }
@@ -67,7 +69,7 @@ export const BalanceRow = styled.div`
   div {
     display: flex;
     justify-content: space-between;
-    font-family: "Halyard Display";
+    font-family: inherit;
     font-size: ${14 / 16}rem;
     color: #a8a8a8;
     width: 100%;
@@ -78,7 +80,7 @@ export const BalanceRow = styled.div`
       width: 230px;
     }
     span {
-      &:nth-child(2) {
+      &:nth-of-type(2) {
         color: #ff4b4b;
         text-decoration: underline;
         cursor: pointer;
@@ -141,7 +143,7 @@ export const MintButton = styled(BaseButton)`
   border-radius: 8px;
   font-size: 1.25rem;
   font-weight: 600;
-  font-family: "Halyard Display";
+  font-family: inherit;
   padding: 0.75rem 0;
   width: 100%;
   @media ${QUERIES.laptopAndUp} {
@@ -166,7 +168,7 @@ export const SettleButton = styled(BaseButton)`
   border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
-  font-family: "Halyard Display";
+  font-family: inherit;
   padding: 0.66rem 0;
   @media ${QUERIES.laptopAndUp} {
     width: 400px;
@@ -183,7 +185,7 @@ export const SettleTitle = styled.h3`
 export const SettleText = styled.div`
   text-align: center;
   font-size: 1rem;
-  font-family: "Halyard Display";
+  font-family: inherit;
   color: #a8a8a8;
   padding: 1rem 2rem;
   margin-bottom: 2rem;
