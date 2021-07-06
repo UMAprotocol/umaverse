@@ -110,7 +110,7 @@ export const DownArrowWrapper = styled.div`
   width: 30px;
   border-radius: 16px;
   box-shadow: 0px 4px 4px 0px #00000040;
-  margin-left: 160px;
+  margin-left: 150px;
   @media ${QUERIES.tabletAndUp} {
     margin-left: 184px;
   }
@@ -118,7 +118,7 @@ export const DownArrowWrapper = styled.div`
     margin-top: 9px;
     margin-left: 9px;
     fill: #272528;
-    width: 0.75rem !important;
+    width: 100%;
   }
 `;
 
