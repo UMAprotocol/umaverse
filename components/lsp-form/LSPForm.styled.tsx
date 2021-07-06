@@ -27,7 +27,7 @@ export const FormRow = styled.div`
   div {
     margin: 0 5px;
     > div {
-      &:nth-of-type(1) {
+      &:nth-child(1) {
         button {
           span {
             margin-left: 50px;
