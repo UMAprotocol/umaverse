@@ -21,7 +21,6 @@ export type DropdownVariant = "default | coin";
 
 export interface Props {
   items: OptionType[];
-  // onChange: (selectedItem: string) => void;
   variant?: DropdownVariant;
   setValue: React.Dispatch<React.SetStateAction<string>>;
   defaultValue?: OptionType;
