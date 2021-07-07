@@ -80,6 +80,7 @@ export const BalanceRow = styled.div`
       width: 230px;
     }
     span {
+      font-size: 0.75rem;
       &:nth-of-type(2) {
         color: var(--primary);
         text-decoration: underline;
@@ -96,9 +97,6 @@ export const BalanceRow = styled.div`
 export const BalanceRowToken = styled(BalanceRow)`
   div {
     width: 170px;
-  }
-  span {
-    font-size: 0.75rem;
   }
 `;
 
