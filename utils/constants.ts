@@ -22,6 +22,10 @@ export const COLORS = {
   green: "133deg 68% 39%",
   white: "0deg 100% 100%",
   black: "0deg 0% 0%",
+  red: {
+    100: "0deg 0% 0%",
+    900: "0deg 100% 65%",
+  },
 };
 
 export const CATEGORIES = [
