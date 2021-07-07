@@ -61,7 +61,7 @@ export const TopFormWrapper = styled(FormWrapper)`
 `;
 
 export const BottomFormWrapper = styled(FormWrapper)`
-  background-color: #fafbfb;
+  background-color: var(--gray-300);
 `;
 
 export const BalanceRow = styled.div`
@@ -71,7 +71,7 @@ export const BalanceRow = styled.div`
     justify-content: space-between;
     font-family: inherit;
     font-size: ${14 / 16}rem;
-    color: #a8a8a8;
+    color: var(--gray-700);
     width: 100%;
     padding: 0 1rem;
     @media ${QUERIES.tabletAndUp} {
@@ -161,7 +161,7 @@ export const SettleButton = styled(BaseButton)`
   width: 90%;
   margin: 0 auto;
   background-color: var(--primary);
-  color: #fff;
+  color: var(--white);
   text-align: center;
   border-radius: 8px;
   font-size: 1rem;
@@ -184,7 +184,7 @@ export const SettleText = styled.div`
   text-align: center;
   font-size: 1rem;
   font-family: inherit;
-  color: #a8a8a8;
+  color: var(--gray-700);
   padding: 1rem 2rem;
   margin-bottom: 2rem;
 `;
