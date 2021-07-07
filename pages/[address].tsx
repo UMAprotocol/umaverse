@@ -110,6 +110,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         })
       )
     ).filter(errorFilter) as Emp[];
+
     return {
       props: {
         data: data as Emp,
@@ -188,7 +189,7 @@ const SynthPage: React.FC<
         <Links>
           <SecondaryHeading>Manage Position</SecondaryHeading>
           <ul>
-            <Link href={"ffhh"}>
+            <Link href={data.mintmanage}>
               Mint / Manage <ExternalLink />
             </Link>
 
