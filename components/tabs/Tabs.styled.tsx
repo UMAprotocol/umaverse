@@ -21,15 +21,13 @@ export const TabListItem = styled.li`
   background-color: #f7f7f6;
   text-align: center;
   padding: 1rem 0;
+  cursor: pointer;
 
   &.tab-list-active {
-    background-color: white;
-    border: solid #ff4a4a;
+    background-color: var(--white));
+    border: solid var(--primary);
     border-width: 4px 0px 0 0px;
     background-color: #ffffff;
     font-weight: 600;
-  }
-  &:hover {
-    cursor: pointer;
   }
 `;

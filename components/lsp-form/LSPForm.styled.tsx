@@ -11,7 +11,7 @@ export const iconStyles = {
 
 export const Wrapper = styled.div`
   box-shadow: 0px 4px 4px 0px #00000040;
-  background: #f5f5f5;
+  background: var(--white);
   max-width: 400px;
   width: 100%;
   font-family: "Halyard Display";
@@ -56,7 +56,7 @@ const FormWrapper = styled.div`
 `;
 
 export const TopFormWrapper = styled(FormWrapper)`
-  background-color: #ffffff;
+  background-color: var(--white);
   padding-bottom: 2rem;
 `;
 
@@ -81,7 +81,7 @@ export const BalanceRow = styled.div`
     }
     span {
       &:nth-of-type(2) {
-        color: #ff4b4b;
+        color: var(--primary);
         text-decoration: underline;
         cursor: pointer;
         margin-right: 12px;
@@ -105,7 +105,7 @@ export const BalanceRowToken = styled(BalanceRow)`
 export const DownArrowWrapper = styled.div`
   position: absolute;
   margin-top: -14px;
-  background-color: white;
+  background-color: var(--white);
   height: 30px;
   width: 30px;
   border-radius: 16px;
@@ -132,13 +132,13 @@ export const SwapArrowWrapper = styled(DownArrowWrapper)`
 `;
 
 export const ButtonWrapper = styled.div`
-  background-color: #fefefe;
+  background-color: var(--gray-300);
   padding: 1rem;
 `;
 
 export const MintButton = styled(BaseButton)`
-  background-color: #ff4b4b;
-  color: #fff;
+  background-color: var(--primary);
+  color: var(--white);
   text-align: center;
   border-radius: 8px;
   font-size: 1.25rem;
@@ -154,15 +154,15 @@ export const MintButton = styled(BaseButton)`
 export const SettleWrapper = styled.div`
   height: 100%;
   min-height: 400px;
-  border-top: 4px solid #ff4b4b;
+  border-top: 4px solid var(--primary);
   text-align: center;
-  background: #fefefe;
+  background: var(--gray-300);
 `;
 
 export const SettleButton = styled(BaseButton)`
-  width: 95%;
+  width: 90%;
   margin: 0 auto;
-  background-color: #ff4b4b;
+  background-color: var(--primary);
   color: #fff;
   text-align: center;
   border-radius: 8px;
@@ -171,7 +171,7 @@ export const SettleButton = styled(BaseButton)`
   font-family: inherit;
   padding: 0.66rem 0;
   @media ${QUERIES.laptopAndUp} {
-    width: 400px;
+    width: 380px;
   }
 `;
 
