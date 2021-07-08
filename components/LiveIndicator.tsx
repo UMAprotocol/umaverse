@@ -17,7 +17,7 @@ export const LiveIndicator: React.FC<LiveIndicatorProps> = ({
         // @ts-expect-error TS doesn't like setting CSS variables in inline styles
         style={{ "--dotColor": isLive ? "var(--green)" : "var(--primary)" }}
       />
-      <div>Live</div>
+      <div>{isLive ? "Live" : "Expired"}</div>
     </Wrapper>
   );
 };

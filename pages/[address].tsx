@@ -2,7 +2,6 @@ import React from "react";
 import styled from "@emotion/styled";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Image from "next/image";
-import { ethers } from "ethers";
 
 import {
   Layout,
@@ -25,11 +24,17 @@ import {
   ContentfulSynth,
   formatContentfulUrl,
   errorFilter,
+  formatWeiString,
 } from "../utils";
 import LeftArrow from "../public/icons/arrow-left.svg";
 import UnstyledRightArrow from "../public/icons/arrow-right.svg";
 import UnstyledExternalLink from "../public/icons/external-link.svg";
-import { client, EmpState, EmpStats } from "../utils/umaApi";
+import {
+  client,
+  EmpState,
+  EmpStats,
+  fetchCompleteSynth,
+} from "../utils/umaApi";
 
 const BackAction = () => {
   return (
@@ -52,7 +57,7 @@ const ActionWrapper = styled(UnstyledLink)`
 
 type Emp = ContentfulSynth & EmpStats & EmpState;
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { address } = ctx.params as any;
+  const { address } = ctx.params as { address: string };
   try {
     const contentfulClient = getContenfulClient();
     const {
@@ -67,7 +72,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const apiData = {
       ...stats,
       ...state,
-      isActive: Date.now() < Number(state.expirationTimestamp) * 1000,
     };
 
     if (!apiData) {
@@ -92,29 +96,15 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       .map((item) => item.fields)
       .filter((items) => items.address !== data.address);
     const relatedSynths = (
-      await Promise.all(
-        relatedCmsItems.map(async (synth) => {
-          try {
-            const stats = await client.getEmpStats(synth.address);
-            const state = await client.getEmpState(synth.address);
-            return {
-              ...stats,
-              ...state,
-              isActive: Date.now() < Number(state.expirationTimestamp) * 1000,
-              ...synth,
-            };
-          } catch (err) {
-            // may be worth to make an error class for this specific thing
-            return new Error(JSON.stringify(synth));
-          }
-        })
-      )
+      await Promise.all(relatedCmsItems.map(fetchCompleteSynth))
     ).filter(errorFilter) as Emp[];
 
     return {
       props: {
         data: data as Emp,
-        relatedSynths,
+        relatedSynths: relatedSynths
+          .sort((a, b) => formatWeiString(b.tvl) - formatWeiString(a.tvl))
+          .slice(0, 5),
       },
     };
   } catch (err) {
@@ -142,22 +132,31 @@ const SynthPage: React.FC<
             <Heading>{data.tokenName}</Heading>
             <Description>{data.address}</Description>
           </div>
-          <StyledLiveIndicator isLive={data.isActive} />
+          <StyledLiveIndicator isLive={!data.expired} />
         </HeroContentWrapper>
         <CardWrapper>
           <Card>
             <CardContent>
               <CardHeading>
-                TVL <span>(Total Value Locked)</span>
+                Total Value Locked <span>(TVL)</span>
               </CardHeading>
               <Value
                 value={data.tvl}
-                format={(v) => (
-                  <>
-                    ${formatMillions(Number(ethers.utils.formatEther(v)))}{" "}
-                    <span style={{ fontWeight: 400 }}>M</span>
-                  </>
-                )}
+                format={(v) => {
+                  const formattedValue = formatWeiString(v);
+                  return (
+                    <>
+                      ${formatMillions(Math.floor(formattedValue))}{" "}
+                      <span style={{ fontWeight: 400 }}>
+                        {formattedValue >= 10 ** 9
+                          ? "B"
+                          : formattedValue >= 10 ** 6
+                          ? "M"
+                          : ""}
+                      </span>
+                    </>
+                  );
+                }}
               />
             </CardContent>
           </Card>
@@ -193,7 +192,9 @@ const SynthPage: React.FC<
               Mint / Manage <ExternalLink />
             </Link>
 
-            <Link href={`https://matcha.xyz/markets/1/${data.tokenCurrency}`}>
+            <Link
+              href={`https://matcha.xyz/markets/1/${data.tokenCurrency.toLowerCase()}`}
+            >
               Trade
               <ExternalLink />
             </Link>
@@ -276,7 +277,7 @@ const Heading = styled.h1`
   }
 `;
 const Description = styled.span`
-  font-size: ${20 / 16}rem;
+  font-size: ${14 / 16}rem;
   display: none;
 
   @media ${QUERIES.tabletAndUp} {

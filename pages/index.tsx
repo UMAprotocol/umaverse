@@ -15,10 +15,10 @@ import {
   formatMillions,
   QUERIES,
   errorFilter,
+  formatWeiString,
 } from "../utils";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { client, Emp } from "../utils/umaApi";
-import { ethers } from "ethers";
+import { client, Emp, fetchCompleteSynth } from "../utils/umaApi";
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const contentfulClient = getContenfulClient();
@@ -30,68 +30,83 @@ export const getServerSideProps: GetServerSideProps = async () => {
   const cmsData = cmsItems.map((item) => item.fields);
 
   const data: Emp[] = (
-    await Promise.all(
-      cmsData.map(async (synth) => {
-        try {
-          const stats = await client.getEmpStats(synth.address);
-          const state = await client.getEmpState(synth.address);
-          return {
-            ...stats,
-            ...state,
-            isActive: Date.now() < Number(state.expirationTimestamp) * 1000,
-            ...synth,
-          };
-        } catch (err) {
-          // may be worth to make an error class for this specific thing
-          return new Error(JSON.stringify(synth));
-        }
-      })
-    )
+    await Promise.all(cmsData.map(fetchCompleteSynth))
   ).filter(errorFilter) as Emp[];
 
-  const totalTvl = await client.getTotalTvl();
+  const totalTvl = await client.getLatestTvl();
+  const totalTvm = await client.getLatestTvm();
 
   return {
     props: {
       data,
       totalTvl,
+      totalTvm,
     },
   };
 };
 
 const IndexPage: React.FC<
   InferGetServerSidePropsType<typeof getServerSideProps>
-> = ({ data, totalTvl }) => {
+> = ({ data, totalTvl, totalTvm }) => {
   return (
     <Layout title="Umaverse">
       <Hero>
         <Heading>
           Explore the <span>UMA</span>verse
         </Heading>
-        <Description>Another header lorem ipsum our projects</Description>
+        <Description>
+          A fast, flexible, and secure protocol for decentralized financial
+          products.
+        </Description>
         <CardWrapper>
           <Card>
             <CardContent>
               <CardHeading>
-                TVL <span>(Total Value Locked)</span>
+                Total Value Locked <span>(TVL)</span>
               </CardHeading>
               <Value
                 value={totalTvl}
-                format={(v) => (
-                  <>
-                    ${formatMillions(Number(ethers.utils.formatEther(v)))}{" "}
-                    <span style={{ fontWeight: 400 }}>M</span>
-                  </>
-                )}
+                format={(v) => {
+                  const formattedValue = formatWeiString(v);
+                  return (
+                    <>
+                      ${formatMillions(Math.floor(formattedValue))}{" "}
+                      <span style={{ fontWeight: 400 }}>
+                        {formattedValue >= 10 ** 9
+                          ? "B"
+                          : formattedValue >= 10 ** 6
+                          ? "M"
+                          : ""}
+                      </span>
+                    </>
+                  );
+                }}
               />
             </CardContent>
           </Card>
           <Card>
             <CardContent>
               <CardHeading>
-                TVM <span>(Total Value Minted)</span>
+                Total Value Minted <span>(TVM)</span>
               </CardHeading>
-              <Value value={1.03} format={(v) => `$${v}`}></Value>
+              <Value
+                value={totalTvm}
+                format={(v) => {
+                  const formattedValue = formatWeiString(v);
+                  return (
+                    <>
+                      ${formatMillions(Math.floor(formattedValue))}{" "}
+                      <span style={{ fontWeight: 400 }}>
+                        {formattedValue >= 10 ** 9
+                          ? "B"
+                          : formattedValue >= 10 ** 6
+                          ? "M"
+                          : ""}
+                      </span>
+                    </>
+                  );
+                }}
+              />
             </CardContent>
           </Card>
           <Card>
@@ -166,10 +181,7 @@ const Heading = styled.h1`
   }
 `;
 const Description = styled.span`
-  text-align: left;
+  text-align: center;
   font-size: ${20 / 16}rem;
   display: block;
-  @media ${QUERIES.laptopAndUp} {
-    text-align: center;
-  }
 `;

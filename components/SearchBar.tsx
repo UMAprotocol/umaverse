@@ -24,7 +24,7 @@ export const SearchBar: React.FC<Props> = ({ onSubmit }) => {
     <Wrapper>
       <Icon onClick={() => onSubmit(query)} />
       <Input
-        placeholder="Search for projects..."
+        placeholder="Search by token address"
         onChange={(e) => setQuery(e.target.value)}
         ref={inputRef}
       />

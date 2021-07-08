@@ -45,5 +45,5 @@ export type ContentfulSynth = {
 };
 
 export function formatContentfulUrl(url: string): string {
-  return `https://${url.substring(2)}`;
+  return `https:${url}`;
 }

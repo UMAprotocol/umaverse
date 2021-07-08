@@ -10,7 +10,7 @@ export const GettingStarted: React.FC = () => {
   return (
     <Wrapper>
       <Header>Interested in creating your own token?</Header>
-      <div>Lorem ipsum dolor sit dolor sit desm second row</div>
+      <div>Easily build fast, secure and flexible financial products</div>
       {/* @ts-expect-error will complain about href */}
       <Button as="a" href={GETTING_STARTED_LINK}>
         Get Started

@@ -55,6 +55,7 @@ export type EmpState = {
   totalPositionCollateral: string;
   rawTotalPositionCollateral: string;
   expiryPrice: string;
+  expired: boolean;
   sponsors: string[];
   tokenDecimals: number;
   collateralDecimals: number;
@@ -69,14 +70,13 @@ export type EmpStats = {
   id: string;
   address: string;
   tvl: string;
-  timestamp: number;
+  tvm: string;
 };
 type GetEmpsAddresses = () => Promise<string[]>;
 type GetEmpState = (address: string) => Promise<EmpState>;
 type GetEmpsState = (address: string) => Promise<EmpState[]>;
 type GetEmpStats = (address: string) => Promise<EmpStats>;
-type GetEmpsStats = () => Promise<EmpStats[]>;
-type GetTotalTvl = () => Promise<number>;
+type GetStat = (address?: string) => Promise<string>;
 
 const getEmpsAddresses: GetEmpsAddresses = () => request("listEmpAddresses");
 const getEmpState: GetEmpState = (address) => request("getEmpState", address);
@@ -85,10 +85,17 @@ const getEmpsState: GetEmpsState = () =>
     Promise.all(addresses.map(getEmpState))
   );
 
-const getEmpStats: GetEmpStats = (address) => request("getEmpStats", address);
-const getEmpsStats: GetEmpsStats = () => request("listEmpStats");
+const getEmpStats: GetEmpStats = async (address) => {
+  return {
+    id: address,
+    address,
+    tvl: await getLatestTvl(address),
+    tvm: await getLatestTvm(address),
+  };
+};
 
-const getTotalTvl: GetTotalTvl = () => request("tvl");
+const getLatestTvl: GetStat = (address?: string) => request("tvl", address);
+const getLatestTvm: GetStat = (address?: string) => request("tvm", address);
 
 export const client = {
   request,
@@ -96,8 +103,24 @@ export const client = {
   getEmpState,
   getEmpsState,
   getEmpStats,
-  getEmpsStats,
-  getTotalTvl,
+  getLatestTvl,
+  getLatestTvm,
 };
 
-export type Emp = ContentfulSynth & EmpStats & EmpState & { isActive: boolean };
+export type Emp = ContentfulSynth & EmpStats & EmpState;
+
+export async function fetchCompleteSynth(
+  synth: ContentfulSynth
+): Promise<Emp | Error> {
+  try {
+    const stats = await client.getEmpStats(synth.address);
+    const state = await client.getEmpState(synth.address);
+    return {
+      ...stats,
+      ...state,
+      ...synth,
+    };
+  } catch (err) {
+    return new Error(JSON.stringify(synth));
+  }
+}

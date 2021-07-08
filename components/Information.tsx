@@ -1,14 +1,19 @@
 import React from "react";
 import styled from "@emotion/styled";
+import { ethers } from "ethers";
+import { DateTime } from "luxon";
 
 import { QUERIES } from "../utils";
 import type { Emp } from "../utils/umaApi";
-import { ethers } from "ethers";
+import DuplicateIcon from "../public/icons/duplicate.svg";
 
 type Props = {
   synth: Emp;
 };
 export const Information: React.FC<Props> = ({ synth }) => {
+  const handleCopyClick = () => {
+    window.navigator.clipboard.writeText(synth.tokenCurrency);
+  };
   return (
     <Wrapper>
       <Heading>Token Information</Heading>
@@ -23,7 +28,10 @@ export const Information: React.FC<Props> = ({ synth }) => {
         </Row>
         <Row>
           <div>Address:</div>
-          <div>{synth.tokenCurrency}</div>
+          <div>
+            {synth.tokenCurrency}{" "}
+            <StyledDuplicateIcon onClick={handleCopyClick} />
+          </div>
         </Row>
         <Row>
           <div>Category:</div>
@@ -32,7 +40,9 @@ export const Information: React.FC<Props> = ({ synth }) => {
         <Row>
           <div>Expiry Date:</div>
           <div>
-            {new Date(Number(synth.expirationTimestamp) * 1000).toUTCString()}
+            {DateTime.fromSeconds(Number(synth.expirationTimestamp))
+              .setLocale("en-US")
+              .toLocaleString(DateTime.DATETIME_FULL)}
           </div>
         </Row>
         <Row>
@@ -76,6 +86,7 @@ const Row = styled.div`
   @media ${QUERIES.tabletAndUp} {
     padding: 0 20px;
     justify-content: space-between;
+    align-items: baseline;
   }
   & > div:first-of-type {
     font-weight: bold;
@@ -98,4 +109,12 @@ const Table = styled.div`
 const Heading = styled.h3`
   font-weight: 700;
   font-size: ${26 / 16}rem;
+  margin-bottom: 10px;
+`;
+
+const StyledDuplicateIcon = styled(DuplicateIcon)`
+  color: var(--primary);
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
 `;

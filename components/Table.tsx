@@ -22,6 +22,7 @@ import {
   Category,
   CATEGORIES,
   formatContentfulUrl,
+  formatWeiString,
 } from "../utils";
 import ChevronLeft from "../public/icons/chevron-left.svg";
 import { MaxWidthWrapper } from "./Wrapper";
@@ -97,7 +98,14 @@ const NameHeading = styled.h6`
     display: none;
 
     @media ${QUERIES.tabletAndUp} {
-      display: revert;
+      max-width: 40ch;
+      // give it one character of breathing room
+      padding-right: 1ch;
+      // Some CSS trick to get the span to add an ellipsis only after 2 lines
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
     }
   }
 `;
@@ -131,10 +139,10 @@ const columns = [
     Header: "TVL",
     id: "tvl",
     accessor: (row: Emp) => {
-      const parsedTvl = Math.floor(Number(ethers.utils.formatEther(row.tvl)));
+      const parsedTvl = formatWeiString(row.tvl);
       const postFix =
-        parsedTvl >= 10 ** 6 ? "M" : parsedTvl >= 10 ** 9 ? "B" : "";
-      return `$${formatMillions(parsedTvl)} ${postFix}`;
+        parsedTvl >= 10 ** 9 ? "B" : parsedTvl >= 10 ** 6 ? "M" : "";
+      return `$${formatMillions(Math.floor(parsedTvl))} ${postFix}`;
     },
   },
   {
@@ -162,7 +170,7 @@ function activeSynthsFilter(
   if (!globalFilterValue) {
     return rows;
   }
-  return rows.filter((row) => (row.original as Emp).isActive);
+  return rows.filter((row) => !(row.original as Emp).expired);
 }
 type Props = {
   data: Emp[];
@@ -170,7 +178,7 @@ type Props = {
 };
 export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
   const tableData = useMemo(
-    () => data.sort((a, b) => Number(b.tvl) - Number(a.tvl)),
+    () => data.sort((a, b) => formatWeiString(b.tvl) - formatWeiString(a.tvl)),
     [data]
   );
   const filterTypes = React.useMemo(
@@ -271,7 +279,7 @@ export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
                     animate: { opacity: 1 },
                     initial: { opacity: 0 },
                   })}
-                  key={row.id}
+                  key={row.original.address}
                   onClick={() => router.push(`/${row.original.address}`)}
                 >
                   {row.cells.map((cell) => (
