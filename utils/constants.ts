@@ -14,10 +14,26 @@ export const COLORS = {
   gray: {
     300: "0deg 0% 96%",
     500: "0deg 0% 90%",
+    600: "0deg 0% 35%",
     700: "280deg 4% 15%",
   },
-  primary: "0deg 100% 65%",
+  primary: { 500: "0deg 100% 65%", 700: "0deg 100% 45%" },
   green: "133deg 68% 39%",
   white: "0deg 100% 100%",
   black: "0deg 0% 0%",
+};
+
+export const CATEGORIES = [
+  "Yield Dollar",
+  "KPI Option",
+  "Synthetic Asset",
+  "Option",
+] as const;
+export type Category = typeof CATEGORIES[number];
+
+export const CATEGORIES_PLACEHOLDERS: Record<Category, string> = {
+  "Yield Dollar": "/placeholders/yield-dollar.svg",
+  "KPI Option": "/placeholders/kpi-option.svg",
+  "Synthetic Asset": "/placeholders/synthetic-asset.svg",
+  Option: "/placeholders/option.svg",
 };

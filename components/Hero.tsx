@@ -1,14 +1,20 @@
 import React from "react";
 import styled from "@emotion/styled";
+import { useRouter } from "next/router";
 import { MaxWidthWrapper } from "./Wrapper";
 import { SearchBar } from "./SearchBar";
 import { QUERIES } from "../utils/constants";
 
-export const Hero: React.FC = ({ children }) => {
+type HeroProps = {
+  topAction?: React.ReactNode;
+};
+export const Hero: React.FC<HeroProps> = ({ children, topAction = null }) => {
+  const router = useRouter();
   return (
     <Wrapper>
       <MaxWidthWrapper>
-        <SearchBar />
+        {topAction}
+        <SearchBar onSubmit={(queryStr) => router.push(`/${queryStr}`)} />
         {children}
       </MaxWidthWrapper>
     </Wrapper>

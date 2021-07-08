@@ -8,46 +8,108 @@ import {
   Value,
   Table,
 } from "../components";
-import UnstyledInfoIcon from "../public/icons/info.svg";
-import { formatMillions, QUERIES } from "../utils";
 
-const IndexPage: React.FC = () => {
+import {
+  getContenfulClient,
+  ContentfulSynth,
+  formatMillions,
+  QUERIES,
+  errorFilter,
+  formatWeiString,
+} from "../utils";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { client, Emp, fetchCompleteSynth } from "../utils/umaApi";
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const contentfulClient = getContenfulClient();
+  const {
+    items: cmsItems,
+  } = await contentfulClient.getEntries<ContentfulSynth>({
+    content_type: "synth",
+  });
+  const cmsData = cmsItems.map((item) => item.fields);
+
+  const data: Emp[] = (
+    await Promise.all(cmsData.map(fetchCompleteSynth))
+  ).filter(errorFilter) as Emp[];
+
+  const totalTvl = await client.getLatestTvl();
+  const totalTvm = await client.getLatestTvm();
+
+  return {
+    props: {
+      data,
+      totalTvl,
+      totalTvm,
+    },
+  };
+};
+
+const IndexPage: React.FC<
+  InferGetServerSidePropsType<typeof getServerSideProps>
+> = ({ data, totalTvl, totalTvm }) => {
   return (
     <Layout title="Umaverse">
       <Hero>
         <Heading>
           Explore the <span>UMA</span>verse
         </Heading>
-        <Description>Another header lorem ipsum our projects</Description>
+        <Description>
+          A fast, flexible, and secure protocol for decentralized financial
+          products.
+        </Description>
         <CardWrapper>
           <Card>
-            <InfoIcon />
             <CardContent>
               <CardHeading>
-                TVL <span>(Total Value Locked)</span>
+                Total Value Locked <span>(TVL)</span>
               </CardHeading>
               <Value
-                value={22_850_000}
-                format={(v) => (
-                  <>
-                    ${formatMillions(v)}{" "}
-                    <span style={{ fontWeight: 400 }}>M</span>
-                  </>
-                )}
+                value={totalTvl}
+                format={(v) => {
+                  const formattedValue = formatWeiString(v);
+                  return (
+                    <>
+                      ${formatMillions(Math.floor(formattedValue))}{" "}
+                      <span style={{ fontWeight: 400 }}>
+                        {formattedValue >= 10 ** 9
+                          ? "B"
+                          : formattedValue >= 10 ** 6
+                          ? "M"
+                          : ""}
+                      </span>
+                    </>
+                  );
+                }}
               />
             </CardContent>
           </Card>
           <Card>
-            <InfoIcon />
             <CardContent>
               <CardHeading>
-                TVM <span>(Total Value Minted)</span>
+                Total Value Minted <span>(TVM)</span>
               </CardHeading>
-              <Value value={1.03} format={(v) => `$${v}`}></Value>
+              <Value
+                value={totalTvm}
+                format={(v) => {
+                  const formattedValue = formatWeiString(v);
+                  return (
+                    <>
+                      ${formatMillions(Math.floor(formattedValue))}{" "}
+                      <span style={{ fontWeight: 400 }}>
+                        {formattedValue >= 10 ** 9
+                          ? "B"
+                          : formattedValue >= 10 ** 6
+                          ? "M"
+                          : ""}
+                      </span>
+                    </>
+                  );
+                }}
+              />
             </CardContent>
           </Card>
           <Card>
-            <InfoIcon />
             <CardContent>
               <CardHeading>
                 Change <span>(24h)</span>
@@ -62,7 +124,8 @@ const IndexPage: React.FC = () => {
           </Card>
         </CardWrapper>
       </Hero>
-      <Table />
+
+      <Table data={data} />
     </Layout>
   );
 };
@@ -74,6 +137,7 @@ const CardWrapper = styled.div`
   color: var(--gray-700);
   grid-template-columns: repeat(3, 1fr);
   column-gap: 10px;
+  row-gap: 10px;
   margin-top: 30px;
   @media ${QUERIES.tabletAndUp} {
     column-gap: 20px;
@@ -117,26 +181,7 @@ const Heading = styled.h1`
   }
 `;
 const Description = styled.span`
-  text-align: left;
+  text-align: center;
   font-size: ${20 / 16}rem;
   display: block;
-  @media ${QUERIES.laptopAndUp} {
-    text-align: center;
-  }
-`;
-
-const InfoIcon = styled(UnstyledInfoIcon)`
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  cursor: pointer;
-  display: none;
-
-  @media ${QUERIES.laptopAndUp} {
-    display: revert;
-  }
-  &:hover path {
-    fill-opacity: 1;
-    transition: all 0.1s ease-in;
-  }
 `;

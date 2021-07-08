@@ -1,3 +1,5 @@
+import { ethers } from "ethers";
+
 export function formatMillions(
   value: number,
   precision?: number,
@@ -32,4 +34,8 @@ const prettyFormatNumber = Intl.NumberFormat("en-US").format;
 
 export function capitalize(s: string): string {
   return s.slice(0, 1).toUpperCase() + s.slice(1);
+}
+
+export function formatWeiString(v: ethers.BigNumberish): number {
+  return Number(ethers.utils.formatEther(v));
 }
