@@ -12,7 +12,6 @@ import {
   useFilters,
   useGlobalFilter,
 } from "react-table";
-import { ethers } from "ethers";
 
 import {
   formatMillions,
@@ -238,20 +237,20 @@ export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
                   </Button>
                 );
               })}
+              <ActiveFilterWrapper>
+                <input
+                  type="checkbox"
+                  onChange={() => {
+                    if ((state as any).globalFilter) {
+                      setGlobalFilter(undefined);
+                    } else {
+                      setGlobalFilter(true);
+                    }
+                  }}
+                />
+                <span>Only show Live projects</span>
+              </ActiveFilterWrapper>
             </ButtonsWrapper>
-            <ActiveFilterWrapper>
-              <input
-                type="checkbox"
-                onChange={() => {
-                  if ((state as any).globalFilter) {
-                    setGlobalFilter(undefined);
-                  } else {
-                    setGlobalFilter(true);
-                  }
-                }}
-              />
-              <span>Only show Live projects</span>
-            </ActiveFilterWrapper>
           </ControlsWrapper>
         )}
         {headerGroups.map((headerGroup) => (
@@ -309,7 +308,7 @@ const Button = styled(BaseButton)<{ pressed?: boolean }>`
   background-color: ${(p) =>
     p.pressed ? "var(--primary)" : "var(--gray-300)"};
   border-radius: 4px;
-  padding: 8px 20px;
+  padding: 8px 10px;
   transition: all ease-in-out 0.2s;
   &:hover {
     background-color: ${(p) =>
@@ -319,20 +318,16 @@ const Button = styled(BaseButton)<{ pressed?: boolean }>`
 
 const ButtonsWrapper = styled.div`
   display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
   gap: 5px;
 
   @media ${QUERIES.tabletAndUp} {
-    justify-content: flex-start;
     gap: 10px;
   }
 `;
 
-const ControlsWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  flex-wrap: wrap;
-`;
+const ControlsWrapper = styled.div``;
 
 const Body = styled.div`
   padding: 15px 0;
@@ -395,6 +390,8 @@ const ActiveFilterWrapper = styled.label`
   user-select: none;
   cursor: pointer;
   transition: all ease-in-out 0.2s;
+  margin-left: auto;
+  flex: 1;
   &:hover {
     background-color: var(--gray-500);
   }
