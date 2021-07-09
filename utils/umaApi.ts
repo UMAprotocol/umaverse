@@ -140,6 +140,12 @@ export async function fetchCompleteSynth(
   try {
     const stats = await client.getEmpStats(synth.address);
     const state = await client.getEmpState(synth.address);
+    const lastTvl = await client.getLatestTvl(synth.address);
+    const ydayTvl = await client.request(
+      "",
+      synth.address,
+      Math.floor(oneDayAgo().toSeconds())
+    );
     return {
       ...stats,
       ...state,

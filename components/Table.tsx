@@ -393,7 +393,7 @@ const ActiveFilterWrapper = styled.label`
   user-select: none;
   cursor: pointer;
   transition: all ease-in-out 0.2s;
-  margin-left: auto;
+
   &:hover {
     background-color: var(--gray-500);
   }

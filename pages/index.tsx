@@ -40,6 +40,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
     data.map((synth) => synth.address)
   );
 
+  console.log(totalTvm);
   return {
     props: {
       data,
