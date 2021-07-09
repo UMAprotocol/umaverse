@@ -1,5 +1,6 @@
 import type { ContentfulSynth } from "./contentful";
 import { nDaysAgo } from "./time";
+import { formatWeiString } from "./format";
 
 const baseOptions = {
   headers: {
@@ -27,7 +28,6 @@ export async function request<T>(
     `${baseUrl}/${method}`,
     constructRequest(...params)
   );
-  console.log(method, constructRequest(...params));
 
   if (!response.ok) {
     throw new Error(
@@ -132,7 +132,9 @@ export const client = {
   getYesterdayPrice,
 };
 
-export type Emp = ContentfulSynth & EmpStats & EmpState;
+export type Emp = ContentfulSynth &
+  EmpStats &
+  EmpState & { tvl24hChange: number };
 
 export async function fetchCompleteSynth(
   synth: ContentfulSynth
@@ -141,14 +143,22 @@ export async function fetchCompleteSynth(
     const stats = await client.getEmpStats(synth.address);
     const state = await client.getEmpState(synth.address);
     const lastTvl = await client.getLatestTvl(synth.address);
-    const ydayTvl = await client.request(
-      "",
+    const [{ value: ydayTvl }] = await client.request(
+      "tvlHistorySlice",
       synth.address,
       Math.floor(oneDayAgo().toSeconds())
     );
+    const tvl24hChange =
+      Math.round(
+        ((formatWeiString(lastTvl) - formatWeiString(ydayTvl)) /
+          formatWeiString(ydayTvl)) *
+          1000
+      ) / 10;
+
     return {
       ...stats,
       ...state,
+      tvl24hChange,
       ...synth,
     };
   } catch (err) {

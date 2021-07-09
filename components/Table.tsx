@@ -135,7 +135,7 @@ const columns = [
   {
     Header: "TVL",
     id: "tvl",
-    accessor: (row: Emp) => {
+    accessor: (row) => {
       const parsedTvl = formatWeiString(row.tvl);
       const postFix =
         parsedTvl >= 10 ** 9 ? "B" : parsedTvl >= 10 ** 6 ? "M" : "";
@@ -144,16 +144,21 @@ const columns = [
   },
   {
     Header: "24h Change",
-    //TODO: Change once we have the TVL timeseries
+
     // eslint-disable-next-line react/display-name
-    accessor: () => (
+    accessor: (row) => (
       <span
         style={{
-          color: "var(--green)",
+          color:
+            row.tvl24hChange > 0
+              ? "var(--green)"
+              : row.tvl24hChange < 0
+              ? "var(--primary)"
+              : "inherit",
           textAlign: "right",
         }}
       >
-        {3}%
+        {Number.isNaN(row.tvl24hChange) ? "-" : row.tvl24hChange}%
       </span>
     ),
   },
@@ -247,7 +252,7 @@ export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
                   }
                 }}
               />
-              <span>Only show Live projects</span>
+              <span>Only Live projects</span>
             </ActiveFilterWrapper>
           </ControlsWrapper>
         )}

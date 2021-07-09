@@ -19,6 +19,10 @@ export const About: React.FC<Props> = ({ description, ...delegated }) => {
 
 const Wrapper = styled.div`
   padding: var(--sectionsVerticalDistance) 0;
+
+  & a {
+    color: var(--primary);
+  }
 `;
 const Heading = styled.h1`
   font-size: ${26 / 16}rem;
