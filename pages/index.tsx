@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
+import { DateTime } from "luxon";
 
 import {
   Layout,
@@ -34,7 +35,10 @@ export const getServerSideProps: GetServerSideProps = async () => {
   ).filter(errorFilter) as Emp[];
 
   const totalTvl = await client.getLatestTvl();
-  const totalTvm = await client.getLatestTvm();
+  // TODO: when bug in API fixed change back to all synths, for now only curated ones
+  const totalTvm = await client.getLatestTvm(
+    data.map((synth) => synth.address)
+  );
 
   return {
     props: {
@@ -93,6 +97,7 @@ const IndexPage: React.FC<
                 value={totalTvm}
                 format={(v) => {
                   const formattedValue = formatWeiString(v);
+
                   return (
                     <>
                       ${formatMillions(Math.floor(formattedValue))}{" "}

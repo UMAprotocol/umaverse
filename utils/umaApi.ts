@@ -1,4 +1,5 @@
 import type { ContentfulSynth } from "./contentful";
+import { nDaysAgo } from "./time";
 
 const baseOptions = {
   headers: {
@@ -26,6 +27,8 @@ export async function request<T>(
     `${baseUrl}/${method}`,
     constructRequest(...params)
   );
+  console.log(method, constructRequest(...params));
+
   if (!response.ok) {
     throw new Error(
       JSON.stringify({ status: response.status, message: response.statusText })
@@ -65,6 +68,7 @@ export type EmpState = {
   collateralSymbol?: string;
   gcr: string;
   identifierPrice: string;
+  tokenMarketPrice: string;
 };
 export type EmpStats = {
   id: string;
@@ -72,11 +76,17 @@ export type EmpStats = {
   tvl: string;
   tvm: string;
 };
+export type TimeSeries = {
+  id: string;
+  address: string;
+  value: string;
+  timestamp: number;
+}[];
 type GetEmpsAddresses = () => Promise<string[]>;
 type GetEmpState = (address: string) => Promise<EmpState>;
 type GetEmpsState = (address: string) => Promise<EmpState[]>;
 type GetEmpStats = (address: string) => Promise<EmpStats>;
-type GetStat = (address?: string) => Promise<string>;
+type GetStat = (...address: string[]) => Promise<string>;
 
 const getEmpsAddresses: GetEmpsAddresses = () => request("listEmpAddresses");
 const getEmpState: GetEmpState = (address) => request("getEmpState", address);
@@ -94,9 +104,22 @@ const getEmpStats: GetEmpStats = async (address) => {
   };
 };
 
-const getLatestTvl: GetStat = (address?: string) => request("tvl", address);
-const getLatestTvm: GetStat = (address?: string) => request("tvm", address);
+const time90DaysAgo = nDaysAgo(90);
+const oneDayAgo = nDaysAgo(1);
 
+const getLatestTvl: GetStat = (address) => request("tvl", address);
+const getLatestTvm: any = (address: string[]) => request("tvm", address);
+const getTvl: any = (
+  address: string[],
+  startTimestamp = Math.floor(time90DaysAgo().toSeconds())
+) => request("tvlHistoryBetween", address, startTimestamp);
+
+const getYesterdayPrice: any = (address: string) =>
+  request(
+    "sliceHistoricalSynthPrices",
+    address,
+    Math.floor(oneDayAgo().toSeconds())
+  );
 export const client = {
   request,
   getEmpsAddresses,
@@ -105,6 +128,8 @@ export const client = {
   getEmpStats,
   getLatestTvl,
   getLatestTvm,
+  getTvl,
+  getYesterdayPrice,
 };
 
 export type Emp = ContentfulSynth & EmpStats & EmpState;

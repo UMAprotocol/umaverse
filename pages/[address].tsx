@@ -16,6 +16,7 @@ import {
   LiveIndicator,
   MaxWidthWrapper,
   Table,
+  ResponsiveLineChart,
 } from "../components";
 import {
   formatMillions,
@@ -99,12 +100,27 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       await Promise.all(relatedCmsItems.map(fetchCompleteSynth))
     ).filter(errorFilter) as Emp[];
 
+    // get TVL history for this synth
+    const tvlHistory = await client.getTvl(address);
+    // compute the 24h price change
+    // const [_ydayTimestamp, ydayPrice] = await client
+    //   .getYesterdayPrice(address)
+    //   .catch((err: Error) => {
+    //     console.log(`getYesterdayPrice failed for synth: ${address}`);
+    //     return err;
+    //   });
+
+    const change24h = 3;
+    console.log(change24h);
+
     return {
       props: {
         data: data as Emp,
         relatedSynths: relatedSynths
           .sort((a, b) => formatWeiString(b.tvl) - formatWeiString(a.tvl))
           .slice(0, 5),
+        tvlHistory,
+        change24h,
       },
     };
   } catch (err) {
@@ -114,7 +130,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
 const SynthPage: React.FC<
   InferGetServerSidePropsType<typeof getServerSideProps>
-> = ({ data, relatedSynths }) => {
+> = ({ data, relatedSynths, tvlHistory, change24h }) => {
   const formattedLogo = data?.logo?.fields.file.url
     ? formatContentfulUrl(data.logo.fields.file.url)
     : null;
@@ -163,7 +179,10 @@ const SynthPage: React.FC<
           <Card>
             <CardContent>
               <CardHeading>Token Price</CardHeading>
-              <Value value={1.03} format={(v) => `$${v}`}></Value>
+              <Value
+                value={data.tokenMarketPrice}
+                format={(v) => `$${formatWeiString(v).toFixed(2)}`}
+              ></Value>
             </CardContent>
           </Card>
           <Card>
@@ -172,7 +191,7 @@ const SynthPage: React.FC<
                 Change <span>(24h)</span>
               </CardHeading>
               <Value
-                value={3.2}
+                value={change24h}
                 format={(v: number) => (
                   <span style={{ color: "var(--green)" }}>{v} %</span>
                 )}
@@ -183,41 +202,44 @@ const SynthPage: React.FC<
       </Hero>
       <MainWrapper>
         <About description={data.description} />
-        <TVLChart />
+        <AsideWrapper>
+          <SecondaryHeading>Total Value Locked (TVL)</SecondaryHeading>
+          <ChartWrapper>
+            <ResponsiveLineChart data={tvlHistory} />
+          </ChartWrapper>
+        </AsideWrapper>
         <Information synth={data} />
-        <Links>
+        <AsideWrapper>
           <SecondaryHeading>Manage Position</SecondaryHeading>
           <ul>
             <Link href={data.mintmanage}>
               Mint / Manage <ExternalLink />
             </Link>
-
             <Link
               href={`https://matcha.xyz/markets/1/${data.tokenCurrency.toLowerCase()}`}
             >
               Trade
               <ExternalLink />
             </Link>
-
             <Link href={`https://etherscan.io/address/${data.address}`}>
               Etherscan <span>[Contract]</span> <ExternalLink />
             </Link>
-
             <Link href={`https://etherscan.io/address/${data.tokenCurrency}`}>
               Etherscan <span>[Token] </span>
               <ExternalLink />
             </Link>
-
             <Link href="https://docs.umaproject.org">
               UMA Docs <RightArrow />
             </Link>
           </ul>
-        </Links>
+        </AsideWrapper>
       </MainWrapper>
       <GettingStarted />
       {relatedSynths.length > 0 && (
         <TableWrapper>
-          <SecondaryHeading>You might also be interested in</SecondaryHeading>
+          <MaxWidthWrapper>
+            <SecondaryHeading>You might also be interested in</SecondaryHeading>
+          </MaxWidthWrapper>
           <Table data={relatedSynths} hasFilters={false} />
         </TableWrapper>
       )}
@@ -300,21 +322,9 @@ const MainWrapper = styled(MaxWidthWrapper)`
   display: grid;
   grid-template-columns: 1fr;
 
-  @media ${QUERIES.desktopAndUp} {
+  @media ${QUERIES.laptopAndUp} {
     grid-template-columns: 7fr 5fr;
     column-gap: 40px;
-  }
-`;
-
-const Links = styled.aside`
-  --offsetSpacing: 15px;
-  background-color: var(--gray-300);
-  margin: 0 calc(-1 * var(--offsetSpacing));
-  padding-block: var(--sectionsVerticalDistance);
-  padding-inline: var(--offsetSpacing);
-
-  @media ${QUERIES.desktopAndUp} {
-    margin: revert;
   }
 `;
 
@@ -358,14 +368,26 @@ const SecondaryHeading = styled.h3`
 
 const Information = styled(UnstyledInformation)`
   order: 1;
-  @media ${QUERIES.desktopAndUp} {
+  @media ${QUERIES.laptopAndUp} {
     order: revert;
   }
 `;
 
-const TVLChart = styled.div`
+const AsideWrapper = styled.aside`
+  --offsetSpacing: 15px;
   background-color: var(--gray-300);
-  height: 400px;
+  margin: 0 calc(-1 * var(--offsetSpacing));
+  padding-block: var(--sectionsVerticalDistance);
+  padding-inline: var(--offsetSpacing);
+
+  @media ${QUERIES.laptopAndUp} {
+    margin: revert;
+  } ;
+`;
+
+const ChartWrapper = styled.div`
+  height: 300px;
+  margin: 0 calc(-1 * var(--offsetSpacing));
 `;
 
 const RightArrow = styled(UnstyledRightArrow)`
