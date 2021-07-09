@@ -2,15 +2,17 @@ import React, { useMemo, useCallback } from "react";
 import styled from "@emotion/styled";
 
 import { AreaClosed, Bar, Line } from "@visx/shape";
+import { ParentSize } from "@visx/responsive";
 import { curveMonotoneX } from "@visx/curve";
 import { localPoint } from "@visx/event";
 import { useTooltip, TooltipWithBounds, defaultStyles } from "@visx/tooltip";
 import { scaleTime, scaleLinear } from "@visx/scale";
-import { max, extent, bisector } from "d3-array";
+import { max, min, extent, bisector } from "d3-array";
+import { DateTime } from "luxon";
 
-import { formatMillions } from "../utils/format";
+import { formatMillions, formatWeiString } from "../utils";
+import type { TimeSeries } from "../utils/umaApi";
 
-type TimeSeries = any[];
 type TimeSeriesEntry = TimeSeries[number];
 type ChartProps = {
   width: number;
@@ -20,17 +22,16 @@ type ChartProps = {
 };
 
 // some helper functions
-const getDate = (d: TimeSeriesEntry) => new Date(d.time);
-const getValue = (d: TimeSeriesEntry) =>
-  typeof d.value === "string" ? parseFloat(d.value) : d.value;
+
+const getDate = (d: TimeSeriesEntry) => new Date(d.timestamp * 1000);
+const getValue = (d: TimeSeriesEntry) => formatWeiString(d.value);
 
 const bisectDate = bisector<TimeSeriesEntry, Date>(
-  (d, x) => x.valueOf() - d.time
+  (d, x) => d.timestamp * 1000 - x.valueOf()
 ).left;
 
 // chart colors
 const primaryColor = "var(--primary)";
-const primaryTransparentColor = "var(--primary-transparent)";
 
 export const LineChart: React.FC<ChartProps> = ({
   width,
@@ -59,8 +60,12 @@ export const LineChart: React.FC<ChartProps> = ({
   const valueScale = useMemo(
     () =>
       scaleLinear({
-        range: [height, 0],
-        domain: [0, max(data, getValue) ?? 0],
+        range: [height + 10, 10],
+        domain: [
+          (min(data, getValue) || 0) - 10 ** 6,
+          max(data, getValue) || 0,
+        ],
+        nice: true,
       }),
     [data, height]
   );
@@ -69,9 +74,10 @@ export const LineChart: React.FC<ChartProps> = ({
     (event: React.TouchEvent<SVGElement> | React.MouseEvent<SVGElement>) => {
       const { x } = localPoint(event) || { x: 0 };
       const x0 = dateScale.invert(x);
-      const index = bisectDate(data, x0);
-      const dLow = data[index - 1];
-      const dHigh = data[index];
+      const foundIndex = bisectDate(data, x0);
+      const index = foundIndex > 1 ? foundIndex - 1 : foundIndex;
+      const dLow = data[index];
+      const dHigh = data[foundIndex];
 
       let d = dLow;
       // pick the closest point
@@ -98,15 +104,23 @@ export const LineChart: React.FC<ChartProps> = ({
   return (
     <Wrapper>
       <svg width={width} height={height}>
+        <rect
+          x={0}
+          y={0}
+          width={width}
+          height={height}
+          fill="var(--gray-300)"
+        />
         <AreaClosed
           data={data}
-          x={(d) => dateScale(getDate(d) ?? 0)}
-          y={(d) => valueScale(getValue(d))}
+          x={(d) => dateScale(getDate(d)) ?? 0}
+          y={(d) => valueScale(getValue(d)) ?? 0}
           yScale={valueScale}
-          curve={curveMonotoneX}
-          fill={primaryTransparentColor}
-          stroke={primaryColor}
           strokeWidth={3}
+          stroke={primaryColor}
+          fill={primaryColor}
+          fillOpacity={0.4}
+          curve={curveMonotoneX}
         />
         <Bar
           x={0}
@@ -122,30 +136,20 @@ export const LineChart: React.FC<ChartProps> = ({
         {tooltipData && (
           <g>
             <Line
-              from={{ x: 0, y: tooltipTop }}
-              to={{ x: width, y: tooltipTop }}
-              stroke={primaryColor}
-              strokeWidth={2}
+              from={{ x: tooltipLeft, y: height }}
+              to={{ x: tooltipLeft, y: 0 }}
+              stroke="var(--gray-700)"
+              strokeOpacity={0.5}
+              strokeWidth={1}
               pointerEvents="none"
               strokeDasharray="5,2"
             />
             <circle
               cx={tooltipLeft}
-              cy={(tooltipTop ?? 0) + 1}
-              r={4}
-              fill="black"
-              fillOpacity={0.1}
-              stroke="black"
-              strokeOpacity={0.1}
-              strokeWidth={2}
-              pointerEvents="none"
-            />
-            <circle
-              cx={tooltipLeft}
               cy={tooltipTop}
-              r={4}
-              fill={primaryColor}
-              stroke="white"
+              r={3}
+              fill="var(--gray-700)"
+              stroke="var(--gray-700)"
               strokeWidth={2}
               pointerEvents="none"
             />
@@ -153,19 +157,57 @@ export const LineChart: React.FC<ChartProps> = ({
         )}
       </svg>
       {tooltipData && (
-        <TooltipWithBounds
+        <StyledTooltipWithBounds
           key={Math.random()}
           top={tooltipTop ?? 0}
           left={tooltipLeft ?? 0}
           style={defaultStyles}
         >
-          {`$${formatMillions(getValue(tooltipData))}`}
-        </TooltipWithBounds>
+          <div>
+            ${formatMillions(getValue(tooltipData))}{" "}
+            {getValue(tooltipData) >= 10 ** 9
+              ? "B"
+              : getValue(tooltipData) >= 10 ** 6
+              ? "M"
+              : ""}
+          </div>
+          <div>
+            {DateTime.fromSeconds(tooltipData.timestamp)
+              .setLocale("en-US")
+              .toFormat("DD - t")}
+          </div>
+        </StyledTooltipWithBounds>
       )}
     </Wrapper>
   );
 };
 
+export const ResponsiveLineChart: React.FC<
+  Pick<ChartProps, "data" | "onDataHover">
+> = ({ data, onDataHover }) => {
+  return (
+    <ParentSize>
+      {({ width, height }) => (
+        <LineChart
+          width={width}
+          height={height}
+          data={data}
+          onDataHover={onDataHover}
+        />
+      )}
+    </ParentSize>
+  );
+};
+
 const Wrapper = styled.div`
   position: relative;
+`;
+
+const StyledTooltipWithBounds = styled(TooltipWithBounds)`
+  font-weight: 300;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.4);
+  & > div:first-of-type {
+    font-weight: 700;
+    color: var(--black);
+  }
 `;

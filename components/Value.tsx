@@ -18,5 +18,5 @@ export const Value: React.FC<Props> = ({
   defaultValue: _defaultValue,
 }) => {
   const defaultValue = _defaultValue ?? "-";
-  return <div>{value !== undefined ? format(value) : defaultValue}</div>;
+  return <div>{value != undefined ? format(value) : defaultValue}</div>;
 };

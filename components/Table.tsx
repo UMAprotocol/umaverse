@@ -23,7 +23,7 @@ import {
   formatContentfulUrl,
   formatWeiString,
 } from "../utils";
-import ChevronLeft from "../public/icons/chevron-left.svg";
+
 import { MaxWidthWrapper } from "./Wrapper";
 import { BaseButton } from "./Button";
 import { Emp } from "../utils/umaApi";
@@ -56,9 +56,7 @@ const Name: React.FC<
       </ImageWrapper>
 
       <div>
-        <NameHeading>
-          {tokenName} <ChevronLeft />
-        </NameHeading>
+        <NameHeading>{tokenName}</NameHeading>
         <span>{shortDescription}</span>
       </div>
     </NameWrapper>
@@ -93,11 +91,11 @@ const NameHeading = styled.h6`
   & ~ span {
     font-style: italic;
     font-weight: 300;
-    font-size: ${12 / 16}rem;
+    font-size: ${14 / 16}rem;
     display: none;
 
     @media ${QUERIES.tabletAndUp} {
-      max-width: 40ch;
+      max-width: 45ch;
       // give it one character of breathing room
       padding-right: 1ch;
       // Some CSS trick to get the span to add an ellipsis only after 2 lines
@@ -137,7 +135,7 @@ const columns = [
   {
     Header: "TVL",
     id: "tvl",
-    accessor: (row: Emp) => {
+    accessor: (row) => {
       const parsedTvl = formatWeiString(row.tvl);
       const postFix =
         parsedTvl >= 10 ** 9 ? "B" : parsedTvl >= 10 ** 6 ? "M" : "";
@@ -146,16 +144,21 @@ const columns = [
   },
   {
     Header: "24h Change",
-    //TODO: Change once we have the TVL timeseries
+
     // eslint-disable-next-line react/display-name
-    accessor: () => (
+    accessor: (row) => (
       <span
         style={{
-          color: "var(--green)",
+          color:
+            row.tvl24hChange > 0
+              ? "var(--green)"
+              : row.tvl24hChange < 0
+              ? "var(--primary)"
+              : "inherit",
           textAlign: "right",
         }}
       >
-        {3}%
+        {Number.isNaN(row.tvl24hChange) ? "-" : row.tvl24hChange}%
       </span>
     ),
   },
@@ -237,20 +240,20 @@ export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
                   </Button>
                 );
               })}
-              <ActiveFilterWrapper>
-                <input
-                  type="checkbox"
-                  onChange={() => {
-                    if ((state as any).globalFilter) {
-                      setGlobalFilter(undefined);
-                    } else {
-                      setGlobalFilter(true);
-                    }
-                  }}
-                />
-                <span>Only show Live projects</span>
-              </ActiveFilterWrapper>
             </ButtonsWrapper>
+            <ActiveFilterWrapper>
+              <input
+                type="checkbox"
+                onChange={() => {
+                  if ((state as any).globalFilter) {
+                    setGlobalFilter(undefined);
+                  } else {
+                    setGlobalFilter(true);
+                  }
+                }}
+              />
+              <span>Only Live projects</span>
+            </ActiveFilterWrapper>
           </ControlsWrapper>
         )}
         {headerGroups.map((headerGroup) => (
@@ -327,7 +330,12 @@ const ButtonsWrapper = styled.div`
   }
 `;
 
-const ControlsWrapper = styled.div``;
+const ControlsWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+`;
 
 const Body = styled.div`
   padding: 15px 0;
@@ -390,8 +398,7 @@ const ActiveFilterWrapper = styled.label`
   user-select: none;
   cursor: pointer;
   transition: all ease-in-out 0.2s;
-  margin-left: auto;
-  flex: 1;
+
   &:hover {
     background-color: var(--gray-500);
   }

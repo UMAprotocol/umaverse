@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
+import MailchimpSubscribe from "react-mailchimp-subscribe";
 
 import { QUERIES } from "../utils";
 
@@ -32,6 +33,8 @@ const LINKS: TLink[] = [
   { name: "Careers", href: "https://angel.co/company/uma-project/jobs" },
 ];
 
+const MAILCHIMP_URL =
+  "https://umaproject.us19.list-manage.com/subscribe/post?u=b2e789cb476a06f1261e79e05&id=85dfd6c316";
 export const Footer: React.FC = () => (
   <Wrapper>
     <MaxWidthWrapper>
@@ -66,12 +69,46 @@ export const Footer: React.FC = () => (
         <Text>
           Sign up for our newsletter to stay updated about the UMA project.
         </Text>
-        <Form>
-          <Input type="email" name="email" placeholder="satoshi@example.com" />
-          <BaseButton type="submit">
-            <Image src="/icons/arrow-right.svg" width="15" height="24" />
-          </BaseButton>
-        </Form>
+        <MailchimpSubscribe
+          url={MAILCHIMP_URL}
+          render={({ subscribe, status, message }) => {
+            return (
+              <>
+                <Form
+                  onSubmit={(evt: React.FormEvent) => {
+                    evt.preventDefault();
+                    // @ts-expect-error Doesn't like the input being taken like this
+                    subscribe({ EMAIL: evt.target[0].value });
+                  }}
+                >
+                  <Input
+                    type="email"
+                    name="email"
+                    placeholder="satoshi@example.com"
+                  />
+                  <BaseButton type="submit">
+                    <Image
+                      src="/icons/arrow-right.svg"
+                      width="15"
+                      height="24"
+                    />
+                  </BaseButton>
+                </Form>
+
+                {status === "sending" && <FormMessage>sending...</FormMessage>}
+                {status === "error" && (
+                  <FormMessage
+                    style={{ color: "var(--primary)" }}
+                    dangerouslySetInnerHTML={{ __html: message as string }}
+                  />
+                )}
+                {status === "success" && (
+                  <FormMessage>Subscribed !</FormMessage>
+                )}
+              </>
+            );
+          }}
+        />
       </div>
     </MaxWidthWrapper>
   </Wrapper>
@@ -148,6 +185,15 @@ const Input = styled.input`
   padding: 8px 24px 8px 0;
   background-color: transparent;
   border: none;
+`;
+
+const FormMessage = styled.div`
+  font-size: ${14 / 16}rem;
+  color: var(--gray-700);
+
+  & > a {
+    color: currentColor;
+  }
 `;
 
 const FooterHeading = styled.h6`
