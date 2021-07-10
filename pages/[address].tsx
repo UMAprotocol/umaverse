@@ -102,16 +102,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
     // get TVL history for this synth
     const tvlHistory = await client.getTvl(address);
-    // compute the 24h price change
-    // const [_ydayTimestamp, ydayPrice] = await client
-    //   .getYesterdayPrice(address)
-    //   .catch((err: Error) => {
-    //     console.log(`getYesterdayPrice failed for synth: ${address}`);
-    //     return err;
-    //   });
-
-    const change24h = 3;
-    console.log(change24h);
 
     return {
       props: {
@@ -120,7 +110,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
           .sort((a, b) => formatWeiString(b.tvl) - formatWeiString(a.tvl))
           .slice(0, 5),
         tvlHistory,
-        change24h,
+        change24h: 3,
       },
     };
   } catch (err) {
