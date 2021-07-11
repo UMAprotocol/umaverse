@@ -1,6 +1,7 @@
 import type { ContentfulSynth } from "./contentful";
 import { nDaysAgo } from "./time";
 import { formatWeiString } from "./format";
+import { SynthFetchingError } from "./errors";
 
 const baseOptions = {
   headers: {
@@ -162,6 +163,6 @@ export async function fetchCompleteSynth(
       ...synth,
     };
   } catch (err) {
-    return new Error(JSON.stringify(synth));
+    return new SynthFetchingError(err.message, synth);
   }
 }
