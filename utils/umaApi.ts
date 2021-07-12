@@ -86,7 +86,13 @@ type GetEmpsAddresses = () => Promise<string[]>;
 type GetEmpState = (address: string) => Promise<EmpState>;
 type GetEmpsState = (address: string) => Promise<EmpState[]>;
 type GetEmpStats = (address: string) => Promise<EmpStats>;
-type GetStat = (...address: string[]) => Promise<string>;
+type GetStat = (addresses?: string | string[]) => Promise<string>;
+type GetStatBetween = (
+  addresses: string | string[],
+  startTimestamp?: number
+) => Promise<EmpStats[]>;
+
+type GetPriceSlice = (address: string) => Promise<string[]>;
 
 const getEmpsAddresses: GetEmpsAddresses = () => request("listEmpAddresses");
 const getEmpState: GetEmpState = (address) => request("getEmpState", address);
@@ -108,13 +114,14 @@ const time90DaysAgo = nDaysAgo(90);
 const oneDayAgo = nDaysAgo(1);
 
 const getLatestTvl: GetStat = (address) => request("tvl", address);
-const getLatestTvm: any = (address: string[]) => request("tvm", address);
-const getTvl: any = (
-  address: string[],
+const getLatestTvm: GetStat = (address) => request("tvm", address);
+const getTvl: GetStatBetween = (
+  address,
   startTimestamp = Math.floor(time90DaysAgo().toSeconds())
 ) => request("tvlHistoryBetween", address, startTimestamp);
 
-const getYesterdayPrice: any = (address: string) =>
+// FIXME: This the bot price, not the last traded price. Needs to be handled API side.
+const getYesterdayPrice: GetPriceSlice = (address: string) =>
   request(
     "sliceHistoricalSynthPrices",
     address,

@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import Image from "next/image";
 
 import { Link as UnstyledLink, MaxWidthWrapper } from "../components";
-//import telescope from "../public/telescope.png";
+
 const Custom404: React.FC = () => {
   return (
     <Wrapper>

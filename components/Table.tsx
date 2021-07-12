@@ -78,6 +78,7 @@ const NameHeading = styled.h6`
   display: flex;
   align-items: baseline;
   margin: 0;
+  width: fit-content;
   & > svg {
     margin-left: 5px;
     display: none;
@@ -130,6 +131,7 @@ const columns = [
     // set the Id here so we can reference it safely when filtering™
     id: "category",
     accessor: (row: Emp) => capitalize(row.category),
+    filter: "category",
   },
 
   {
@@ -260,7 +262,10 @@ export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
           <HeadRow {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
             {headerGroup.headers.map((column) => {
               return (
-                <Cell {...column.getHeaderProps()} key={column.id}>
+                <Cell
+                  {...column.getHeaderProps()}
+                  key={`${headerGroup.id}-${column.id}`}
+                >
                   {column.render("Header")}
                 </Cell>
               );
@@ -285,7 +290,10 @@ export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
                   onClick={() => router.push(`/${row.original.address}`)}
                 >
                   {row.cells.map((cell) => (
-                    <Cell {...cell.getCellProps()} key={cell.value}>
+                    <Cell
+                      {...cell.getCellProps()}
+                      key={`${row.original.address}-${cell.column.id}`}
+                    >
                       {cell.render("Cell")}
                     </Cell>
                   ))}
@@ -356,7 +364,12 @@ const Row = styled(motion.div)`
   transition: all linear 0.2s;
 
   &:hover {
-    background-color: var(--gray-300);
+    background-color: var(--gray-100);
+
+    & ${NameHeading} {
+      color: var(--primary);
+      transition: all ease-in 0.3s;
+    }
   }
 
   @media ${QUERIES.tabletAndUp} {

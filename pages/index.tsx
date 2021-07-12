@@ -34,12 +34,11 @@ export const getServerSideProps: GetServerSideProps = async () => {
   ).filter(errorFilter) as Emp[];
 
   const totalTvl = await client.getLatestTvl();
-  // TODO: when bug in API fixed change back to all synths, for now only curated ones
+  // FIXME: when bug in API fixed change back to all synths, for now only curated ones
   const totalTvm = await client.getLatestTvm(
     data.map((synth) => synth.address)
   );
 
-  console.log(totalTvm);
   return {
     props: {
       data,
@@ -59,8 +58,8 @@ const IndexPage: React.FC<
           Explore the <span>UMA</span>verse
         </Heading>
         <Description>
-          A fast, flexible, and secure protocol for decentralized financial
-          products.
+          UMA — a fast, flexible, and secure protocol for decentralized
+          financial products
         </Description>
         <CardWrapper>
           <Card>

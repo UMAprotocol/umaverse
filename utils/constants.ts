@@ -12,6 +12,7 @@ export const QUERIES = {
 
 export const COLORS = {
   gray: {
+    100: "0deg 0% 99%",
     300: "0deg 0% 96%",
     500: "0deg 0% 90%",
     600: "0deg 0% 35%",

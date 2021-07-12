@@ -85,8 +85,12 @@ const Row = styled.div`
 
   @media ${QUERIES.tabletAndUp} {
     padding: 0 20px;
-    justify-content: space-between;
     align-items: baseline;
+  }
+  @media ${QUERIES.tabletAndUp} {
+    & > div {
+      flex: 1;
+    }
   }
   & > div:first-of-type {
     font-weight: bold;
@@ -117,4 +121,5 @@ const StyledDuplicateIcon = styled(DuplicateIcon)`
   width: 20px;
   height: 20px;
   cursor: pointer;
+  margin: auto;
 `;
