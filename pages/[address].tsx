@@ -1,7 +1,9 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { GetStaticProps, InferGetStaticPropsType, GetStaticPaths } from "next";
 import Image from "next/image";
+import { useQuery, QueryClient } from "react-query";
+import { dehydrate } from "react-query/hydration";
 
 import {
   Layout,
@@ -21,11 +23,11 @@ import {
 import {
   formatMillions,
   QUERIES,
-  getContenfulClient,
   ContentfulSynth,
   formatContentfulUrl,
   errorFilter,
   formatWeiString,
+  contentfulClient,
 } from "../utils";
 import LeftArrow from "../public/icons/arrow-left.svg";
 import UnstyledRightArrow from "../public/icons/arrow-right.svg";
@@ -57,73 +59,91 @@ const ActionWrapper = styled(UnstyledLink)`
 `;
 
 type Emp = ContentfulSynth & EmpStats & EmpState;
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getStaticProps: GetStaticProps = async (ctx) => {
   const { address } = ctx.params as { address: string };
-  try {
-    const contentfulClient = getContenfulClient();
-    const {
-      items: [{ fields: cmsData }],
-    } = await contentfulClient.getEntries<ContentfulSynth>({
-      content_type: "synth",
-      "fields.address": address,
-    });
 
-    const state = await client.getEmpState(address);
-    const stats = await client.getEmpStats(address);
-    const apiData = {
-      ...stats,
-      ...state,
-    };
+  const cmsSynth = await contentfulClient.getSynth(address);
+  const queryClient = new QueryClient();
+  await queryClient.prefetchQuery(
+    ["synth state", address],
+    async () => await client.getEmpState(address)
+  );
 
-    if (!apiData) {
-      return {
-        notFound: true,
-      };
-    }
-    const data: Emp = {
-      ...apiData,
-      ...cmsData,
-    };
+  const state = (await queryClient.getQueryData([
+    "synth state",
+    address,
+  ])) as EmpState;
+  const stats = await client.getEmpStats(address);
+  const apiData = {
+    ...stats,
+    ...state,
+  };
 
-    // fetch curated synths in the same category as this one
-    const { category } = data;
-    const {
-      items: rawRelatedItems,
-    } = await contentfulClient.getEntries<ContentfulSynth>({
-      content_type: "synth",
-      "fields.category": category,
-    });
-    const relatedCmsItems = rawRelatedItems
-      .map((item) => item.fields)
-      .filter((items) => items.address !== data.address);
-    const relatedSynths = (
-      await Promise.all(relatedCmsItems.map(fetchCompleteSynth))
-    ).filter(errorFilter) as Emp[];
-
-    // get TVL history for this synth
-    const tvlHistory = await client.getTvl(address);
-
+  if (!apiData) {
     return {
-      props: {
-        data: data as Emp,
-        relatedSynths: relatedSynths
-          .sort((a, b) => formatWeiString(b.tvl) - formatWeiString(a.tvl))
-          .slice(0, 5),
-        tvlHistory,
-        change24h: 3,
-      },
+      notFound: true,
     };
-  } catch (err) {
-    return { notFound: true };
   }
+  const data = {
+    ...apiData,
+    ...cmsSynth,
+  };
+
+  // fetch curated synths in the same category as this one
+  const cmsRelatedSynths = await contentfulClient.getRelatedSynths(data);
+  const relatedSynths = (
+    await Promise.all(cmsRelatedSynths.map(fetchCompleteSynth))
+  ).filter(errorFilter) as Emp[];
+
+  // get TVL history for this synth
+  await queryClient.prefetchQuery(
+    ["tvl history", address],
+    async () => await client.getTvl(address)
+  );
+
+  return {
+    props: {
+      data: data,
+      relatedSynths: relatedSynths
+        .sort((a, b) => formatWeiString(b.tvl) - formatWeiString(a.tvl))
+        .slice(0, 5),
+      change24h: 3,
+      dehydratedState: dehydrate(queryClient),
+    },
+    revalidate: 60 * 2,
+  };
 };
 
-const SynthPage: React.FC<
-  InferGetServerSidePropsType<typeof getServerSideProps>
-> = ({ data, relatedSynths, tvlHistory, change24h }) => {
+export const getStaticPaths: GetStaticPaths = async () => {
+  const allCmsSynths = await contentfulClient.getAllSynths();
+  const paths = allCmsSynths.map((synth) => ({
+    params: {
+      address: synth.address,
+    },
+  }));
+  return {
+    paths,
+    fallback: "blocking",
+  };
+};
+
+const SynthPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
+  data,
+  relatedSynths,
+  change24h,
+}) => {
   const formattedLogo = data?.logo?.fields.file.url
     ? formatContentfulUrl(data.logo.fields.file.url)
     : null;
+
+  const { data: synthState } = useQuery(
+    ["synth state", data.address],
+    async () => await client.getEmpState(data.address)
+  );
+  const { data: tvlHistory, isLoading: isLoadingTvl } = useQuery(
+    ["tvl history", data.address],
+    async () => await client.getTvl(data.address)
+  );
   return (
     <Layout title="Umaverse">
       <Hero topAction={<BackAction />}>
@@ -195,10 +215,11 @@ const SynthPage: React.FC<
         <AsideWrapper>
           <SecondaryHeading>Total Value Locked (TVL)</SecondaryHeading>
           <ChartWrapper>
-            <ResponsiveLineChart data={tvlHistory} />
+            {/* @ts-expect-error bla */}
+            <ResponsiveLineChart data={tvlHistory!} isLoading={isLoadingTvl} />
           </ChartWrapper>
         </AsideWrapper>
-        <Information synth={data} />
+        <Information synth={{ ...data, ...synthState }} />
         <AsideWrapper>
           <SecondaryHeading>Manage Position</SecondaryHeading>
           <ul>

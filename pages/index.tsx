@@ -1,6 +1,9 @@
 import React from "react";
 import styled from "@emotion/styled";
 
+import { useQuery, QueryClient } from "react-query";
+import { dehydrate } from "react-query/hydration";
+
 import {
   Layout,
   Hero,
@@ -10,47 +13,70 @@ import {
 } from "../components";
 
 import {
-  getContenfulClient,
-  ContentfulSynth,
+  contentfulClient,
   formatMillions,
   QUERIES,
   errorFilter,
   formatWeiString,
+  ContentfulSynth,
 } from "../utils";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { GetStaticProps, InferGetStaticPropsType } from "next";
 import { client, Emp, fetchCompleteSynth } from "../utils/umaApi";
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const contentfulClient = getContenfulClient();
-  const {
-    items: cmsItems,
-  } = await contentfulClient.getEntries<ContentfulSynth>({
-    content_type: "synth",
-  });
-  const cmsData = cmsItems.map((item) => item.fields);
+export const getStaticProps: GetStaticProps = async () => {
+  const queryClient = new QueryClient();
+  const cmsSynths = await contentfulClient.getAllSynths();
 
-  const data: Emp[] = (
-    await Promise.all(cmsData.map(fetchCompleteSynth))
-  ).filter(errorFilter) as Emp[];
-
-  const totalTvl = await client.getLatestTvl();
-  // FIXME: when bug in API fixed change back to all synths, for now only curated ones
-  const totalTvm = await client.getLatestTvm(
-    data.map((synth) => synth.address)
+  await queryClient.prefetchQuery(
+    "all synths",
+    async () =>
+      (await Promise.all(cmsSynths.map(fetchCompleteSynth))).filter(
+        errorFilter
+      ) as Emp[]
   );
-
+  await queryClient.prefetchQuery(
+    "total tvl",
+    async () => await client.getLatestTvl()
+  );
+  // FIXME: when bug in API fixed change back to all synths, for now only curated ones
+  await queryClient.prefetchQuery(
+    "total tvm",
+    async () =>
+      await client.getLatestTvm(
+        cmsSynths.map((synth: ContentfulSynth) => synth.address)
+      )
+  );
   return {
     props: {
-      data,
-      totalTvl,
-      totalTvm,
+      cmsSynths,
+      dehydratedState: dehydrate(queryClient),
     },
+    revalidate: 60,
   };
 };
 
-const IndexPage: React.FC<
-  InferGetServerSidePropsType<typeof getServerSideProps>
-> = ({ data, totalTvl, totalTvm }) => {
+const IndexPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
+  cmsSynths,
+}) => {
+  const { data: allSynths } = useQuery(
+    "all synths",
+    async () =>
+      (await Promise.all(cmsSynths.map(fetchCompleteSynth))).filter(
+        errorFilter
+      ) as Emp[]
+  );
+  const { data: totalTvl } = useQuery(
+    "total tvl",
+    async () => await client.getLatestTvl()
+  );
+  const { data: totalTvm } = useQuery(
+    "total tvm",
+    async () =>
+      await client.getLatestTvm(
+        cmsSynths.map((synth: ContentfulSynth) => synth.address)
+      )
+  );
+
   return (
     <Layout title="Umaverse">
       <Hero>
@@ -68,18 +94,13 @@ const IndexPage: React.FC<
                 Total Value Locked <span>(TVL)</span>
               </CardHeading>
               <Value
-                value={totalTvl}
+                value={formatWeiString(totalTvl!)}
                 format={(v) => {
-                  const formattedValue = formatWeiString(v);
                   return (
                     <>
-                      ${formatMillions(Math.floor(formattedValue))}{" "}
+                      ${formatMillions(Math.floor(v))}{" "}
                       <span style={{ fontWeight: 400 }}>
-                        {formattedValue >= 10 ** 9
-                          ? "B"
-                          : formattedValue >= 10 ** 6
-                          ? "M"
-                          : ""}
+                        {v >= 10 ** 9 ? "B" : v >= 10 ** 6 ? "M" : ""}
                       </span>
                     </>
                   );
@@ -93,19 +114,13 @@ const IndexPage: React.FC<
                 Total Value Minted <span>(TVM)</span>
               </CardHeading>
               <Value
-                value={totalTvm}
+                value={formatWeiString(totalTvm ?? 0)}
                 format={(v) => {
-                  const formattedValue = formatWeiString(v);
-
                   return (
                     <>
-                      ${formatMillions(Math.floor(formattedValue))}{" "}
+                      ${formatMillions(Math.floor(v))}{" "}
                       <span style={{ fontWeight: 400 }}>
-                        {formattedValue >= 10 ** 9
-                          ? "B"
-                          : formattedValue >= 10 ** 6
-                          ? "M"
-                          : ""}
+                        {v >= 10 ** 9 ? "B" : v >= 10 ** 6 ? "M" : ""}
                       </span>
                     </>
                   );
@@ -129,7 +144,7 @@ const IndexPage: React.FC<
         </CardWrapper>
       </Hero>
 
-      <Table data={data} />
+      <Table data={allSynths!} />
     </Layout>
   );
 };
