@@ -367,7 +367,7 @@ const Row = styled(motion.div)`
     background-color: var(--gray-100);
 
     & ${NameHeading} {
-      box-shadow: 0px 3px 0px 0px var(--primary);
+      color: var(--primary);
       transition: all ease-in 0.3s;
     }
   }
