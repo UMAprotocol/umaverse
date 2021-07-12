@@ -255,7 +255,7 @@ export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
                   }
                 }}
               />
-              <span>Filter Expired</span>
+              <span>Hide Expired</span>
             </ActiveFilterWrapper>
           </ControlsWrapper>
         )}
