@@ -97,13 +97,14 @@ const NameHeading = styled.h6`
 
     @media ${QUERIES.tabletAndUp} {
       max-width: 45ch;
+      display: block;
       // give it one character of breathing room
-      padding-right: 1ch;
-      // Some CSS trick to get the span to add an ellipsis only after 2 lines
+      //padding-right: 1ch;
+      /* // Some CSS trick to get the span to add an ellipsis only after 2 lines
       display: -webkit-box;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 2;
-      overflow: hidden;
+      overflow: hidden; */
     }
   }
 `;
@@ -254,12 +255,15 @@ export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
                   }
                 }}
               />
-              <span>Only Live projects</span>
+              <span>Hide Expired</span>
             </ActiveFilterWrapper>
           </ControlsWrapper>
         )}
-        {headerGroups.map((headerGroup) => (
-          <HeadRow {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
+        {headerGroups.map((headerGroup, idx) => (
+          <HeadRow
+            {...headerGroup.getHeaderGroupProps()}
+            key={`${headerGroup.id}-${idx}`}
+          >
             {headerGroup.headers.map((column) => {
               return (
                 <Cell

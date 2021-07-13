@@ -62,7 +62,7 @@ export const LineChart: React.FC<ChartProps> = ({
       scaleLinear({
         range: [height + 10, 10],
         domain: [
-          (min(data, getValue) || 0) - 10 ** 6,
+          (min(data, getValue) || 0) - (min(data, getValue) || 0) * 0.1,
           max(data, getValue) || 0,
         ],
         nice: true,
