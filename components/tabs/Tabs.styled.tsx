@@ -25,7 +25,7 @@ export const TabListItem = styled.li`
 
   &.tab-list-active {
     background-color: var(--white);
-    border: solid var(--primary);
+    border: solid var(--primary-700);
     border-width: 4px 0px 0 0px;
     background-color: #ffffff;
     font-weight: 600;

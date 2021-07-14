@@ -82,7 +82,7 @@ export const BalanceRow = styled.div`
     span {
       font-size: 0.75rem;
       &:nth-of-type(2) {
-        color: var(--primary);
+        color: var(--primary-700);
         text-decoration: underline;
         cursor: pointer;
         margin-right: 12px;
@@ -135,7 +135,7 @@ export const ButtonWrapper = styled.div`
 `;
 
 export const MintButton = styled(BaseButton)`
-  background-color: var(--primary);
+  background-color: var(--primary-700);
   color: var(--white);
   text-align: center;
   border-radius: 8px;
@@ -152,7 +152,7 @@ export const MintButton = styled(BaseButton)`
 export const SettleWrapper = styled.div`
   height: 100%;
   min-height: 400px;
-  border-top: 4px solid var(--primary);
+  border-top: 4px solid var(--primary-700);
   text-align: center;
   background: var(--gray-300);
 `;
@@ -160,7 +160,7 @@ export const SettleWrapper = styled.div`
 export const SettleButton = styled(BaseButton)`
   width: 90%;
   margin: 0 auto;
-  background-color: var(--primary);
+  background-color: var(--primary-700);
   color: var(--white);
   text-align: center;
   border-radius: 8px;
