@@ -1,4 +1,4 @@
-import { createClient, Entry } from "contentful";
+import { createClient, Entry, EntryCollection } from "contentful";
 import type { Category } from "./constants";
 
 const contentfulSpaceId = process.env.CONTENTFUL_SPACE_ID;
@@ -47,3 +47,48 @@ export type ContentfulSynth = {
 export function formatContentfulUrl(url: string): string {
   return `https:${url}`;
 }
+
+function flattenCollection<T = ContentfulSynth>(
+  collection: EntryCollection<T>
+): T[] {
+  return collection.items.map((item) => item.fields);
+}
+
+function getSynthsByField(): () => Promise<ContentfulSynth[]>;
+function getSynthsByField<T>(
+  field: string
+): (value: T) => Promise<ContentfulSynth[]>;
+function getSynthsByField<T>(field?: string) {
+  return async function (value?: T) {
+    const client = getContenfulClient();
+    const collection = await client.getEntries<ContentfulSynth>({
+      content_type: "synth",
+      [`${field}`]: value,
+    });
+    return flattenCollection(collection);
+  };
+}
+
+const getSynthsByCategory = getSynthsByField<Category>("fields.category");
+const getAllSynths = getSynthsByField();
+
+async function getSynth(address: string): Promise<ContentfulSynth> {
+  const [synth] = await getSynthsByField<string>("fields.address")(address);
+  return synth;
+}
+
+async function getRelatedSynths(
+  synth: ContentfulSynth
+): Promise<ContentfulSynth[]> {
+  const relatedSynths = await getSynthsByCategory(synth.category);
+  return relatedSynths.filter(
+    (relatedSynth) => synth.address !== relatedSynth.address
+  );
+}
+
+export const contentfulClient = {
+  getAllSynths,
+  getSynth,
+  getRelatedSynths,
+  getSynthsByField,
+};

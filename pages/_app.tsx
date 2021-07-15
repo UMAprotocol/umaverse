@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import type { AppProps } from "next/app";
 import { Global, css } from "@emotion/react";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { Hydrate } from "react-query/hydration";
+import { ReactQueryDevtools } from "react-query/devtools";
 
 import { COLORS } from "../utils";
 
@@ -214,11 +217,17 @@ const globalStyles = css`
   ${variables}
 `;
 
-const App: React.FC<AppProps> = ({ Component, pageProps }) => (
-  <>
-    <Global styles={globalStyles} />
-    <Component {...pageProps} />
-  </>
-);
+const App: React.FC<AppProps> = ({ Component, pageProps }) => {
+  const [queryClient] = useState(() => new QueryClient());
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Hydrate state={pageProps.dehydratedState}>
+        <Global styles={globalStyles} />
+        <Component {...pageProps} />
+      </Hydrate>
+      <ReactQueryDevtools />
+    </QueryClientProvider>
+  );
+};
 
 export default App;
