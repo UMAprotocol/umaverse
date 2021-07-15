@@ -44,14 +44,14 @@ export const DropdownList = styled.ul<IDropdownStyledProps>`
   border-width: ${(props) => (props.isOpen ? "1px" : "0")};
   border-style: solid;
   border-color: #e5e4e4;
-  background-color: #fff;
+  background-color: var(--white);
   list-style: none;
   position: absolute;
   width: ${(props) =>
     props.variant === ("coin" as DropdownVariant) ? "125px" : "250px"};
 
   border-radius: 8px;
-  color: #ff4b4b;
+  color: var(--primary-500);
   z-index: 1000;
   @media ${QUERIES.tabletAndUp} {
     width: ${(props) =>
@@ -67,12 +67,12 @@ export const CoinDropdownList = styled.ul<IDropdownStyledProps>`
   border-width: ${(props) => (props.isOpen ? "1px" : "0")};
   border-style: solid;
   border-color: #e5e4e4;
-  background-color: #fff;
+  background-color: var(--white);
   list-style: none;
   position: absolute;
   width: 125px;
   border-radius: 8px;
-  color: #ff4b4b;
+  color: var(--primary-500);
   z-index: 1000;
 `;
 
@@ -89,7 +89,7 @@ export const DropdownListItem = styled.li<IDropdownStyledProps>`
   }
   &:hover {
     color: #fff;
-    background-color: #ff4b4b;
+    background-color: var(--primary-500);
   }
 `;
 
@@ -112,7 +112,7 @@ export const Arrow = styled.span<IArrow>`
 
 export const UpArrow = styled(Arrow)`
   opacity: 0.8;
-  color: #ff4b4b;
+  color: var(--primary-500);
 `;
 
 export const DownArrow = styled(Arrow)`
