@@ -98,7 +98,10 @@ export const Hero: React.FC<HeroProps> = ({ children, topAction = null }) => {
         <SearchWrapper {...getComboboxProps()}>
           <SearchBar>
             <Icon />
-            <Input {...getInputProps()} placeholder="Search by token name" />
+            <Input
+              {...getInputProps()}
+              placeholder="Search by token name or address"
+            />
           </SearchBar>
 
           <Select {...getMenuProps()}>
