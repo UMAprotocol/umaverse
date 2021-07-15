@@ -13,3 +13,4 @@ export * from "./SynthPlaceholderIcon";
 export * from "./LineChart";
 export * from "./About";
 export * from "./Information";
+export * from "./Placeholder";
