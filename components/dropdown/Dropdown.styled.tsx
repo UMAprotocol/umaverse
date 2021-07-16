@@ -24,10 +24,11 @@ export const DropdownHeader = styled.button<IDropdownStyledProps>`
   border-radius: 6px;
   border-width: 1px;
   border-style: solid;
-  border-color: ${(props) => (props.isOpen ? "#ff4b4b" : "transparent")};
+  border-color: ${(props) =>
+    props.isOpen ? "var(--primary, 500)" : "transparent"};
   min-width: 100%;
   background-color: ${(props) => (props.isOpen ? "#fff" : "#F1F0F0")};
-  color: ${(props) => (props.isOpen ? "#ff4b4b" : "#919191")};
+  color: ${(props) => (props.isOpen ? "var(--primary, 500)" : "#919191")};
   div {
     &:first-of-type {
       text-indent: ${(props) =>
@@ -51,7 +52,7 @@ export const DropdownList = styled.ul<IDropdownStyledProps>`
     props.variant === ("coin" as DropdownVariant) ? "125px" : "250px"};
 
   border-radius: 8px;
-  color: var(--primary-500);
+  color: var(--primary, 500);
   z-index: 1000;
   @media ${QUERIES.tabletAndUp} {
     width: ${(props) =>

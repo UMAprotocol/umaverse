@@ -135,7 +135,7 @@ export const ButtonWrapper = styled.div`
 `;
 
 export const MintButton = styled(BaseButton)`
-  background-color: var(--primary-700);
+  background-color: var(--primary, 500);
   color: var(--white);
   text-align: center;
   border-radius: 8px;

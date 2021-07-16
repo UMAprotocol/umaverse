@@ -39,3 +39,5 @@ export const CATEGORIES_PLACEHOLDERS: Record<Category, string> = {
   "Synthetic Asset": "/placeholders/synthetic-asset.svg",
   Option: "/placeholders/option.svg",
 };
+
+export const KNOWN_LSP_ADDRESS = "0x372802d8A2D69bB43872a1AABe2bd403a0FafA1F";
