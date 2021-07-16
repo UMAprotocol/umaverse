@@ -13,6 +13,7 @@ import MintForm from "./MintForm";
 import RedeemForm from "./RedeemForm";
 import { calculateTimeRemaining } from "./helpers";
 import createLSPContractInstance from "./createLSPContractInstance";
+import createERC20ContractInstance from "./createERC20ContractInstance";
 
 interface Props {
   web3Provider: ethers.providers.Web3Provider | null;
@@ -21,13 +22,20 @@ interface Props {
 
 const LSPForm: FC<Props> = ({ web3Provider, contractAddress }) => {
   const [lspContract, setLSPContract] = useState<ethers.Contract | null>(null);
+  const [erc20Contract, setERC20Contract] = useState<ethers.Contract | null>(
+    null
+  );
   const [showSettle, setShowSettle] = useState(false);
 
   useEffect(() => {
     if (web3Provider && !lspContract) {
       const signer = web3Provider.getSigner();
       const contract = createLSPContractInstance(signer, contractAddress);
-      console.log("contract", contract);
+      contract.collateralToken().then((address: any) => {
+        const erc20 = createERC20ContractInstance(signer, address);
+        console.log("erc20", erc20);
+        setERC20Contract(erc20);
+      });
 
       setLSPContract(contract);
     }
@@ -50,7 +58,11 @@ const LSPForm: FC<Props> = ({ web3Provider, contractAddress }) => {
       {!showSettle && (
         <Tabs>
           <div data-label="Mint">
-            <MintForm setShowSettle={setShowSettle} />
+            <MintForm
+              lspContract={lspContract}
+              web3Provider={web3Provider}
+              setShowSettle={setShowSettle}
+            />
           </div>
           <div data-label="Redeem">
             <RedeemForm />

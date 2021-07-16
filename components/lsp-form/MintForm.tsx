@@ -9,14 +9,18 @@ import {
 } from "./LSPForm.styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDown } from "@fortawesome/free-solid-svg-icons";
+import { ethers } from "ethers";
+import toWeiSafe from "../../utils/convertToWeiSafely";
 
 import LongShort from "./LongShort";
 import Collateral from "./Collateral";
 
 interface Props {
   setShowSettle: React.Dispatch<React.SetStateAction<boolean>>;
+  lspContract: ethers.Contract | null;
+  web3Provider: ethers.providers.Web3Provider | null;
 }
-const MintForm: FC<Props> = ({ setShowSettle }) => {
+const MintForm: FC<Props> = ({ setShowSettle, lspContract }) => {
   const [collateral, setCollateral] = useState("");
   const [amount, setAmount] = useState("");
   const [longTokenAmount, setLongTokenAmount] = useState("");
@@ -47,7 +51,16 @@ const MintForm: FC<Props> = ({ setShowSettle }) => {
         />
       </BottomFormWrapper>
       <ButtonWrapper>
-        <MintButton onClick={() => setShowSettle(true)}>Mint</MintButton>
+        <MintButton
+          onClick={() => {
+            if (lspContract && amount) {
+              console.log("showWei", toWeiSafe(amount).toString());
+              lspContract.create(toWeiSafe(amount).toString());
+            }
+          }}
+        >
+          Mint
+        </MintButton>
       </ButtonWrapper>
     </div>
   );
