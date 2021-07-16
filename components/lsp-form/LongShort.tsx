@@ -4,6 +4,8 @@ import { FormRow, BalanceRowToken } from "./LSPForm.styled";
 import TextInput from "../text-input";
 import { LabelPlacement } from "../text-input/TextInput";
 
+import createLSPContractInstance from "./createLSPContractInstance";
+
 interface Props {
   longTokenAmount: string;
   setLongTokenAmount: React.Dispatch<React.SetStateAction<string>>;
