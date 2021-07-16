@@ -7,7 +7,9 @@
 const { withSentryConfig } = require("@sentry/nextjs");
 
 const config = {
-  future: { webpack5: true }, // Use webpack 5
+  // future: { webpack5: true }, // Use webpack 5
+  // Note: no `future` key here
+  webpack5: false,
   webpack: (config) => {
     config.module.rules.push({
       test: /\.svg?$/,
