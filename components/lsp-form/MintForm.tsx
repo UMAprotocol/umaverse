@@ -16,11 +16,21 @@ import LongShort from "./LongShort";
 import Collateral from "./Collateral";
 
 interface Props {
+  address: string;
+  contractAddress: string;
   setShowSettle: React.Dispatch<React.SetStateAction<boolean>>;
   lspContract: ethers.Contract | null;
+  erc20Contract: ethers.Contract | null;
   web3Provider: ethers.providers.Web3Provider | null;
 }
-const MintForm: FC<Props> = ({ setShowSettle, lspContract }) => {
+
+const MintForm: FC<Props> = ({
+  setShowSettle,
+  lspContract,
+  erc20Contract,
+  address,
+  contractAddress,
+}) => {
   const [collateral, setCollateral] = useState("");
   const [amount, setAmount] = useState("");
   const [longTokenAmount, setLongTokenAmount] = useState("");
@@ -52,10 +62,16 @@ const MintForm: FC<Props> = ({ setShowSettle, lspContract }) => {
       </BottomFormWrapper>
       <ButtonWrapper>
         <MintButton
-          onClick={() => {
-            if (lspContract && amount) {
+          onClick={async () => {
+            if (lspContract && erc20Contract && amount) {
               console.log("showWei", toWeiSafe(amount).toString());
-              lspContract.create(toWeiSafe(amount).toString());
+              const weiAmount = toWeiSafe(amount).toString();
+              try {
+                await erc20Contract.approve(contractAddress, weiAmount);
+                await lspContract.create(weiAmount);
+              } catch (err) {
+                console.log("err", err);
+              }
             }
           }}
         >

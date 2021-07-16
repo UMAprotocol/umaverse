@@ -16,11 +16,12 @@ import createLSPContractInstance from "./createLSPContractInstance";
 import createERC20ContractInstance from "./createERC20ContractInstance";
 
 interface Props {
+  address: string;
   web3Provider: ethers.providers.Web3Provider | null;
   contractAddress: string;
 }
 
-const LSPForm: FC<Props> = ({ web3Provider, contractAddress }) => {
+const LSPForm: FC<Props> = ({ address, web3Provider, contractAddress }) => {
   const [lspContract, setLSPContract] = useState<ethers.Contract | null>(null);
   const [erc20Contract, setERC20Contract] = useState<ethers.Contract | null>(
     null
@@ -36,6 +37,8 @@ const LSPForm: FC<Props> = ({ web3Provider, contractAddress }) => {
         console.log("erc20", erc20);
         setERC20Contract(erc20);
       });
+
+      console.log(contract.contractState());
 
       setLSPContract(contract);
     }
@@ -59,7 +62,10 @@ const LSPForm: FC<Props> = ({ web3Provider, contractAddress }) => {
         <Tabs>
           <div data-label="Mint">
             <MintForm
+              address={address}
+              contractAddress={contractAddress}
               lspContract={lspContract}
+              erc20Contract={erc20Contract}
               web3Provider={web3Provider}
               setShowSettle={setShowSettle}
             />
