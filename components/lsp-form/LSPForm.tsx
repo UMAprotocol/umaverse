@@ -14,6 +14,7 @@ import RedeemForm from "./RedeemForm";
 import { calculateTimeRemaining } from "./helpers";
 import createLSPContractInstance from "./createLSPContractInstance";
 import createERC20ContractInstance from "./createERC20ContractInstance";
+import useTokensCreatedEvents from "./useTokensCreatedEvents";
 
 interface Props {
   address: string;
@@ -27,7 +28,12 @@ const LSPForm: FC<Props> = ({ address, web3Provider, contractAddress }) => {
     null
   );
   const [showSettle, setShowSettle] = useState(false);
+  const { data: tokensCreatedEvents } = useTokensCreatedEvents(
+    lspContract,
+    address
+  );
 
+  console.log("tokensCreatedEvents", tokensCreatedEvents);
   useEffect(() => {
     if (web3Provider && !lspContract) {
       const signer = web3Provider.getSigner();
@@ -46,15 +52,15 @@ const LSPForm: FC<Props> = ({ address, web3Provider, contractAddress }) => {
 
   // Stub time remaining.
   const [timeRemaining, setTimeRemaining] = useState("00:00");
-  useEffect(() => {
-    setTimeRemaining(calculateTimeRemaining());
+  // useEffect(() => {
+  //   setTimeRemaining(calculateTimeRemaining());
 
-    const timer = setInterval(() => {
-      setTimeRemaining(calculateTimeRemaining());
-    }, 1000);
+  //   const timer = setInterval(() => {
+  //     setTimeRemaining(calculateTimeRemaining());
+  //   }, 1000);
 
-    return () => clearInterval(timer);
-  }, []);
+  //   return () => clearInterval(timer);
+  // }, []);
 
   return (
     <Wrapper>
