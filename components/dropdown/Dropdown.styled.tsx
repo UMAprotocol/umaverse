@@ -88,7 +88,7 @@ export const DropdownListItem = styled.li<IDropdownStyledProps>`
     border-bottom-right-radius: 8px;
   }
   &:hover {
-    color: #fff;
+    color: #ff4a4a;
     background-color: var(--primary-500);
   }
 `;
