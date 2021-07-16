@@ -16,6 +16,7 @@ interface Props {
   // Adjust CSS slightly if its the redeem form or the mint form.
   redeemForm?: boolean;
   collateralOnTop?: boolean;
+  collateralBalance: string;
 }
 
 const Collateral: FC<Props> = ({
@@ -25,6 +26,7 @@ const Collateral: FC<Props> = ({
   setAmount,
   collateralOnTop,
   redeemForm,
+  collateralBalance,
 }) => {
   const size = useWindowSize();
   const width = size.width && size.width > 728 ? "230px" : "100%";
@@ -56,7 +58,7 @@ const Collateral: FC<Props> = ({
       </FormRow>
       <BalanceRow>
         <div>
-          <span>Your Balance 0.7431</span>{" "}
+          <span>Your Balance {collateralBalance}</span>{" "}
           {(collateralOnTop || !redeemForm) && <span>Max</span>}
         </div>
       </BalanceRow>

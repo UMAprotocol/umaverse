@@ -11,11 +11,11 @@ import {
 import { ethers } from "ethers";
 import MintForm from "./MintForm";
 import RedeemForm from "./RedeemForm";
-import { calculateTimeRemaining } from "./helpers";
+// import { calculateTimeRemaining } from "./helpers";
 import createLSPContractInstance from "./createLSPContractInstance";
 import createERC20ContractInstance from "./createERC20ContractInstance";
 import useTokensCreatedEvents from "./useTokensCreatedEvents";
-
+import convertFromWeiSafely from "../../utils/convertFromWeiSafely";
 interface Props {
   address: string;
   web3Provider: ethers.providers.Web3Provider | null;
@@ -27,6 +27,7 @@ const LSPForm: FC<Props> = ({ address, web3Provider, contractAddress }) => {
   const [erc20Contract, setERC20Contract] = useState<ethers.Contract | null>(
     null
   );
+  const [collateralBalance, setCollateralBalance] = useState("0");
   const [showSettle, setShowSettle] = useState(false);
   const { data: tokensCreatedEvents } = useTokensCreatedEvents(
     lspContract,
@@ -38,8 +39,10 @@ const LSPForm: FC<Props> = ({ address, web3Provider, contractAddress }) => {
     if (web3Provider && !lspContract) {
       const signer = web3Provider.getSigner();
       const contract = createLSPContractInstance(signer, contractAddress);
-      contract.collateralToken().then((address: any) => {
-        const erc20 = createERC20ContractInstance(signer, address);
+      contract.collateralToken().then(async (res: any) => {
+        const erc20 = createERC20ContractInstance(signer, res);
+        const balance = (await erc20.balanceOf(address)) as ethers.BigNumber;
+        setCollateralBalance(convertFromWeiSafely(balance.toString()));
         console.log("erc20", erc20);
         setERC20Contract(erc20);
       });
@@ -69,6 +72,7 @@ const LSPForm: FC<Props> = ({ address, web3Provider, contractAddress }) => {
           <div data-label="Mint">
             <MintForm
               address={address}
+              collateralBalance={collateralBalance}
               contractAddress={contractAddress}
               lspContract={lspContract}
               erc20Contract={erc20Contract}

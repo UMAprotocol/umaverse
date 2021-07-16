@@ -22,6 +22,7 @@ interface Props {
   lspContract: ethers.Contract | null;
   erc20Contract: ethers.Contract | null;
   web3Provider: ethers.providers.Web3Provider | null;
+  collateralBalance: string;
 }
 
 const MintForm: FC<Props> = ({
@@ -30,6 +31,7 @@ const MintForm: FC<Props> = ({
   erc20Contract,
   address,
   contractAddress,
+  collateralBalance,
 }) => {
   const [collateral, setCollateral] = useState("");
   const [amount, setAmount] = useState("");
@@ -45,6 +47,7 @@ const MintForm: FC<Props> = ({
           setCollateral={setCollateral}
           amount={amount}
           setAmount={setAmount}
+          collateralBalance={collateralBalance}
         />
       </TopFormWrapper>
       <DownArrowWrapper>
