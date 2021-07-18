@@ -11,7 +11,8 @@ const baseOptions = {
   method: "POST",
 };
 
-const baseUrl = process.env.UMA_API_URL || "https://prod.api.umaproject.org";
+const baseUrl =
+  process.env.NEXT_PUBLIC_UMA_API_URL || "https://dev.api.umaproject.org/";
 
 function constructRequest(...params: unknown[]) {
   try {
