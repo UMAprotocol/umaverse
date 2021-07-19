@@ -8,6 +8,7 @@ interface Props {
   placeholder?: string;
   labelPlacement?: LabelPlacement;
   width?: string;
+  additionalEffects?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export type LabelPlacement = "default | overlap";
@@ -18,6 +19,7 @@ const TextInput: FC<Props> = ({
   label,
   labelPlacement = "default" as LabelPlacement,
   width,
+  additionalEffects,
 }) => {
   return (
     <StyledInput inputWidth={width}>
@@ -26,7 +28,12 @@ const TextInput: FC<Props> = ({
         <input
           type="text"
           value={value}
-          onChange={(e) => setValue(e.target.value)}
+          onChange={(e) => {
+            setValue(e.target.value);
+            if (additionalEffects) {
+              additionalEffects(e);
+            }
+          }}
         />
       </div>
     </StyledInput>

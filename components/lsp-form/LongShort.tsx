@@ -5,6 +5,7 @@ import TextInput from "../text-input";
 import { LabelPlacement } from "../text-input/TextInput";
 
 interface Props {
+  setAmount: React.Dispatch<React.SetStateAction<string>>;
   longTokenAmount: string;
   setLongTokenAmount: React.Dispatch<React.SetStateAction<string>>;
   shortTokenAmount: string;
@@ -24,6 +25,8 @@ const LongShort: FC<Props> = ({
   redeemForm,
   collateralOnTop,
   tokensMinted,
+  setAmount,
+  collateralPerPair,
 }) => {
   return (
     <>
@@ -34,6 +37,12 @@ const LongShort: FC<Props> = ({
           placeholder="0.0"
           value={longTokenAmount}
           setValue={setLongTokenAmount}
+          additionalEffects={(e) => {
+            setShortTokenAmount(e.target.value);
+            const newAmount =
+              Number(e.target.value) * Number(collateralPerPair);
+            setAmount(newAmount.toString());
+          }}
         />
         <TextInput
           label="short token"
@@ -41,6 +50,12 @@ const LongShort: FC<Props> = ({
           placeholder="0.0"
           value={shortTokenAmount}
           setValue={setShortTokenAmount}
+          additionalEffects={(e) => {
+            setLongTokenAmount(e.target.value);
+            const newAmount =
+              Number(e.target.value) * Number(collateralPerPair);
+            setAmount(newAmount.toString());
+          }}
         />
       </FormRow>
       <BalanceRowToken>

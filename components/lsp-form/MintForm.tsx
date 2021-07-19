@@ -17,6 +17,7 @@ import LongShort from "./LongShort";
 import Collateral from "./Collateral";
 import { RefetchOptions, QueryObserverResult } from "react-query";
 import { TokensCreated } from "./useTokensCreatedEvents";
+import usePrevious from "../../hooks/usePrevious";
 
 interface Props {
   address: string;
@@ -84,28 +85,6 @@ const MintForm: FC<Props> = ({
     }
   }, [amount]);
 
-  useEffect(() => {
-    if (longTokenAmount !== "") {
-      const collateralAmounts =
-        Number(longTokenAmount) ** Number(collateralPerPair);
-      setAmount(collateralAmounts.toString());
-      setShortTokenAmount(longTokenAmount);
-    } else {
-      setAmount("");
-    }
-  }, [longTokenAmount]);
-
-  useEffect(() => {
-    if (shortTokenAmount !== "") {
-      const collateralAmounts =
-        Number(shortTokenAmount) ** Number(collateralPerPair);
-      setAmount(collateralAmounts.toString());
-      setLongTokenAmount(shortTokenAmount);
-    } else {
-      setAmount("");
-    }
-  }, [shortTokenAmount]);
-
   return (
     <div>
       <TopFormWrapper>
@@ -126,6 +105,7 @@ const MintForm: FC<Props> = ({
       <BottomFormWrapper>
         <SmallTitle>Output</SmallTitle>
         <LongShort
+          setAmount={setAmount}
           longTokenAmount={longTokenAmount}
           setLongTokenAmount={setLongTokenAmount}
           shortTokenAmount={shortTokenAmount}
