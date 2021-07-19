@@ -11,7 +11,7 @@ import {
 import { ethers } from "ethers";
 import MintForm from "./MintForm";
 import RedeemForm from "./RedeemForm";
-// import { calculateTimeRemaining } from "./helpers";
+import { calculateTimeRemaining } from "./helpers";
 import createLSPContractInstance from "./createLSPContractInstance";
 import createERC20ContractInstance from "./createERC20ContractInstance";
 import useTokensCreatedEvents from "./useTokensCreatedEvents";
@@ -36,7 +36,6 @@ const LSPForm: FC<Props> = ({ address, web3Provider, contractAddress }) => {
   const { data: tokensCreatedEvents, refetch: refetchTokensCreatedEvents } =
     useTokensCreatedEvents(lspContract, address);
 
-  // console.log("tokensCreatedEvents", tokensCreatedEvents);
   // Determine balance.
   // TODO: Once redeem is available, you must diff token creation events vs redeem for net balance.
   useEffect(() => {
@@ -73,15 +72,15 @@ const LSPForm: FC<Props> = ({ address, web3Provider, contractAddress }) => {
 
   // Stub time remaining.
   const [timeRemaining, setTimeRemaining] = useState("00:00");
-  // useEffect(() => {
-  //   setTimeRemaining(calculateTimeRemaining());
+  useEffect(() => {
+    setTimeRemaining(calculateTimeRemaining());
 
-  //   const timer = setInterval(() => {
-  //     setTimeRemaining(calculateTimeRemaining());
-  //   }, 1000);
+    const timer = setInterval(() => {
+      setTimeRemaining(calculateTimeRemaining());
+    }, 1000);
 
-  //   return () => clearInterval(timer);
-  // }, []);
+    return () => clearInterval(timer);
+  }, []);
 
   return (
     <Wrapper>
