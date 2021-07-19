@@ -4,8 +4,6 @@ import { FormRow, BalanceRowToken } from "./LSPForm.styled";
 import TextInput from "../text-input";
 import { LabelPlacement } from "../text-input/TextInput";
 
-import createLSPContractInstance from "./createLSPContractInstance";
-
 interface Props {
   longTokenAmount: string;
   setLongTokenAmount: React.Dispatch<React.SetStateAction<string>>;
@@ -15,6 +13,7 @@ interface Props {
   redeemForm?: boolean;
   collateralOnTop?: boolean;
   tokensMinted: string;
+  collateralPerPair: string;
 }
 
 const LongShort: FC<Props> = ({

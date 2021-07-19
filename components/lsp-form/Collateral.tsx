@@ -17,6 +17,7 @@ interface Props {
   redeemForm?: boolean;
   collateralOnTop?: boolean;
   collateralBalance: string;
+  collateralPerPair: string;
 }
 
 const Collateral: FC<Props> = ({

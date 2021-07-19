@@ -1,4 +1,4 @@
-import React, { FC, useState, useCallback } from "react";
+import React, { FC, useState, useCallback, useEffect } from "react";
 import {
   SmallTitle,
   TopFormWrapper,
@@ -11,9 +11,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { ethers } from "ethers";
 import toWeiSafe from "../../utils/convertToWeiSafely";
+import convertFromWeiSafely from "../../utils/convertFromWeiSafely";
 
 import LongShort from "./LongShort";
 import Collateral from "./Collateral";
+import { RefetchOptions, QueryObserverResult } from "react-query";
+import { TokensCreated } from "./useTokensCreatedEvents";
 
 interface Props {
   address: string;
@@ -24,6 +27,13 @@ interface Props {
   web3Provider: ethers.providers.Web3Provider | null;
   collateralBalance: string;
   tokensMinted: string;
+  collateralPerPair: string;
+  refetchTokensCreatedEvents: (
+    options?: RefetchOptions | undefined
+  ) => Promise<
+    QueryObserverResult<void | TokensCreated[] | undefined, unknown>
+  >;
+  setCollateralBalance: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const MintForm: FC<Props> = ({
@@ -33,6 +43,10 @@ const MintForm: FC<Props> = ({
   contractAddress,
   collateralBalance,
   tokensMinted,
+  collateralPerPair,
+  refetchTokensCreatedEvents,
+  address,
+  setCollateralBalance,
 }) => {
   const [collateral, setCollateral] = useState("");
   const [amount, setAmount] = useState("");
@@ -41,15 +55,34 @@ const MintForm: FC<Props> = ({
 
   const mint = useCallback(async () => {
     if (lspContract && erc20Contract && amount) {
-      const weiAmount = toWeiSafe(amount).toString();
+      const weiAmount = toWeiSafe(amount);
       try {
-        await erc20Contract.approve(contractAddress, weiAmount);
-        await lspContract.create(weiAmount);
+        await erc20Contract.approve(contractAddress, weiAmount.toString());
+        // Need to send the correct amount based on the collateral pair ** the amount
+        // User has specified in the input.
+        const ratio = 1 / Number(collateralPerPair);
+        await lspContract.create(weiAmount.mul(ethers.BigNumber.from(ratio)));
+        setAmount("");
+        setLongTokenAmount("");
+        setShortTokenAmount("");
+        refetchTokensCreatedEvents();
+        const balance = (await erc20Contract.balanceOf(
+          address
+        )) as ethers.BigNumber;
+        setCollateralBalance(convertFromWeiSafely(balance.toString()));
       } catch (err) {
         console.log("err", err);
       }
     }
   }, [lspContract, erc20Contract, amount]);
+
+  useEffect(() => {
+    if (amount !== "") {
+      const tokenAmounts = Number(amount) / Number(collateralPerPair);
+      setLongTokenAmount(tokenAmounts.toString());
+      setShortTokenAmount(tokenAmounts.toString());
+    }
+  }, [amount]);
 
   return (
     <div>
@@ -61,6 +94,7 @@ const MintForm: FC<Props> = ({
           amount={amount}
           setAmount={setAmount}
           collateralBalance={collateralBalance}
+          collateralPerPair={collateralPerPair}
         />
       </TopFormWrapper>
       <DownArrowWrapper>
@@ -75,6 +109,7 @@ const MintForm: FC<Props> = ({
           shortTokenAmount={shortTokenAmount}
           setShortTokenAmount={setShortTokenAmount}
           tokensMinted={tokensMinted}
+          collateralPerPair={collateralPerPair}
         />
       </BottomFormWrapper>
       <ButtonWrapper>

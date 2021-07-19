@@ -6,9 +6,7 @@ export default function useTokensCreatedEvents(
   contract: ethers.Contract | null,
   address: string | null
 ) {
-  const { data, error, isFetching } = useQuery<
-    TokensCreated[] | undefined | void
-  >(
+  const { data, error, refetch } = useQuery<TokensCreated[] | undefined | void>(
     "rewardsRetrievedEvents",
     () => {
       return queryTokensCreatedEvents(contract, address)
@@ -18,7 +16,7 @@ export default function useTokensCreatedEvents(
     { enabled: contract !== null && address !== null }
   );
 
-  return { data, error, isFetching };
+  return { data, error, refetch };
 }
 
 /*
@@ -29,7 +27,7 @@ export default function useTokensCreatedEvents(
   );
 */
 
-interface TokensCreated {
+export interface TokensCreated {
   address: string;
   collateralUsed: string;
   tokensMinted: string;
