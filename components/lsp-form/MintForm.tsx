@@ -17,7 +17,6 @@ import LongShort from "./LongShort";
 import Collateral from "./Collateral";
 import { RefetchOptions, QueryObserverResult } from "react-query";
 import { TokensCreated } from "./useTokensCreatedEvents";
-import usePrevious from "../../hooks/usePrevious";
 
 interface Props {
   address: string;
@@ -38,7 +37,7 @@ interface Props {
 }
 
 const MintForm: FC<Props> = ({
-  setShowSettle,
+  // setShowSettle,
   lspContract,
   erc20Contract,
   contractAddress,
