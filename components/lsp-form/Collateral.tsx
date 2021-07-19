@@ -1,10 +1,13 @@
 import React, { FC } from "react";
-import { FormRow, BalanceRow, iconStyles } from "./LSPForm.styled";
+import {
+  FormRow,
+  BalanceRow,
+  iconStyles,
+  CollateralWrapper,
+} from "./LSPForm.styled";
 import EthIcon from "../../public/icons/eth-icon.svg";
 import UniswapIcon from "../../public/icons/uniswap-logo.svg";
-import Dropdown from "../dropdown";
 import TextInput from "../text-input";
-import { DropdownVariant } from "../dropdown/Dropdown";
 import { LabelPlacement } from "../text-input/TextInput";
 import useWindowSize from "../../hooks/useWindowSize";
 
@@ -22,7 +25,7 @@ interface Props {
 
 const Collateral: FC<Props> = ({
   collateral,
-  setCollateral,
+  // setCollateral,
   amount,
   setAmount,
   collateralOnTop,
@@ -36,18 +39,9 @@ const Collateral: FC<Props> = ({
       <FormRow>
         {collateral === "eth" && <EthIcon style={iconStyles} />}
         {collateral === "uniswap" && <UniswapIcon style={iconStyles} />}
-        <Dropdown
-          setValue={setCollateral}
-          variant={"coin" as DropdownVariant}
-          defaultValue={{ label: "ETH", value: "eth" }}
-          items={[
-            {
-              label: "ETH",
-              value: "eth",
-            },
-            { label: "UNI", value: "uniswap" },
-          ]}
-        />
+        <CollateralWrapper>
+          <div>{collateral.toUpperCase()}</div>
+        </CollateralWrapper>
         <TextInput
           label="collateral"
           labelPlacement={"overlap" as LabelPlacement}

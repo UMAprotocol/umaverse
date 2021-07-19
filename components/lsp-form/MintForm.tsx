@@ -48,7 +48,7 @@ const MintForm: FC<Props> = ({
   address,
   setCollateralBalance,
 }) => {
-  const [collateral, setCollateral] = useState("");
+  const [collateral, setCollateral] = useState("uma");
   const [amount, setAmount] = useState("");
   const [longTokenAmount, setLongTokenAmount] = useState("");
   const [shortTokenAmount, setShortTokenAmount] = useState("");

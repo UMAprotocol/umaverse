@@ -192,3 +192,19 @@ export const SettleText = styled.div`
 export const TimeRemaining = styled.div`
   font-size: 0.875rem;
 `;
+
+export const CollateralWrapper = styled.div`
+  width: 125px;
+  & > div {
+    padding: 15px;
+    display: flex;
+    border-radius: 6px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: transparent;
+    min-width: 100%;
+    background-color: #f1f0f0;
+    color: #919191;
+    padding-left: 1.25rem;
+  }
+`;
