@@ -8,6 +8,8 @@ interface Props {
   placeholder?: string;
   labelPlacement?: LabelPlacement;
   width?: string;
+  // Optional arg: If there is some side effect of the change to the input
+  // Pass in this function and it will run when the value changes
   additionalEffects?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
