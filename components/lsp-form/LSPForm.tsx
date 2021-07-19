@@ -16,6 +16,9 @@ import createLSPContractInstance from "./createLSPContractInstance";
 import createERC20ContractInstance from "./createERC20ContractInstance";
 import useTokensCreatedEvents from "./useTokensCreatedEvents";
 import convertFromWeiSafely from "../../utils/convertFromWeiSafely";
+import convertToWeiSafely from "../../utils/convertToWeiSafely";
+import web3 from "web3";
+
 interface Props {
   address: string;
   web3Provider: ethers.providers.Web3Provider | null;
@@ -28,6 +31,7 @@ const LSPForm: FC<Props> = ({ address, web3Provider, contractAddress }) => {
     null
   );
   const [collateralBalance, setCollateralBalance] = useState("0");
+  const [tokensMinted, setTokensMinted] = useState("0");
   const [showSettle, setShowSettle] = useState(false);
   const { data: tokensCreatedEvents } = useTokensCreatedEvents(
     lspContract,
@@ -35,6 +39,20 @@ const LSPForm: FC<Props> = ({ address, web3Provider, contractAddress }) => {
   );
 
   console.log("tokensCreatedEvents", tokensCreatedEvents);
+  // Determine balance.
+  // TODO: Once redeem is available, you must diff token creation events vs redeem for net balance.
+  useEffect(() => {
+    if (tokensCreatedEvents && tokensCreatedEvents.length) {
+      let tm = convertToWeiSafely("0");
+      tokensCreatedEvents.forEach((el) => {
+        const tokensMinted = el.tokensMinted;
+        console.log("tokens Minted", tokensMinted);
+        tm = tm.add(tokensMinted);
+      });
+
+      setTokensMinted(ethers.utils.formatEther(tm.toString()).toString());
+    }
+  }, [tokensCreatedEvents]);
   useEffect(() => {
     if (web3Provider && !lspContract) {
       const signer = web3Provider.getSigner();
@@ -78,6 +96,7 @@ const LSPForm: FC<Props> = ({ address, web3Provider, contractAddress }) => {
               erc20Contract={erc20Contract}
               web3Provider={web3Provider}
               setShowSettle={setShowSettle}
+              tokensMinted={tokensMinted}
             />
           </div>
           <div data-label="Redeem">

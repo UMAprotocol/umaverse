@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useState, useCallback } from "react";
 import {
   SmallTitle,
   TopFormWrapper,
@@ -23,20 +23,33 @@ interface Props {
   erc20Contract: ethers.Contract | null;
   web3Provider: ethers.providers.Web3Provider | null;
   collateralBalance: string;
+  tokensMinted: string;
 }
 
 const MintForm: FC<Props> = ({
   setShowSettle,
   lspContract,
   erc20Contract,
-  address,
   contractAddress,
   collateralBalance,
+  tokensMinted,
 }) => {
   const [collateral, setCollateral] = useState("");
   const [amount, setAmount] = useState("");
   const [longTokenAmount, setLongTokenAmount] = useState("");
   const [shortTokenAmount, setShortTokenAmount] = useState("");
+
+  const mint = useCallback(async () => {
+    if (lspContract && erc20Contract && amount) {
+      const weiAmount = toWeiSafe(amount).toString();
+      try {
+        await erc20Contract.approve(contractAddress, weiAmount);
+        await lspContract.create(weiAmount);
+      } catch (err) {
+        console.log("err", err);
+      }
+    }
+  }, [lspContract, erc20Contract, amount]);
 
   return (
     <div>
@@ -61,21 +74,13 @@ const MintForm: FC<Props> = ({
           setLongTokenAmount={setLongTokenAmount}
           shortTokenAmount={shortTokenAmount}
           setShortTokenAmount={setShortTokenAmount}
+          tokensMinted={tokensMinted}
         />
       </BottomFormWrapper>
       <ButtonWrapper>
         <MintButton
-          onClick={async () => {
-            if (lspContract && erc20Contract && amount) {
-              console.log("showWei", toWeiSafe(amount).toString());
-              const weiAmount = toWeiSafe(amount).toString();
-              try {
-                await erc20Contract.approve(contractAddress, weiAmount);
-                await lspContract.create(weiAmount);
-              } catch (err) {
-                console.log("err", err);
-              }
-            }
+          onClick={() => {
+            return mint();
           }}
         >
           Mint

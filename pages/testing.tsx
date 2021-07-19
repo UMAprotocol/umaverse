@@ -13,14 +13,11 @@ const Testing = () => {
     if ((window as any).ethereum && web3Provider === null) {
       const mm = (window as any).ethereum;
       const provider = new ethers.providers.Web3Provider(mm);
-      console.log("mm", mm);
       setAddress(mm.selectedAddress);
       setWeb3Provider(provider);
-      console.log("provider", provider);
     }
   }, []);
 
-  console.log("address up top", address);
   return (
     <LSPForm
       address={address}

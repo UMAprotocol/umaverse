@@ -14,6 +14,7 @@ interface Props {
   // Adjust CSS slightly if its the redeem form or the mint form.
   redeemForm?: boolean;
   collateralOnTop?: boolean;
+  tokensMinted: string;
 }
 
 const LongShort: FC<Props> = ({
@@ -23,6 +24,7 @@ const LongShort: FC<Props> = ({
   setShortTokenAmount,
   redeemForm,
   collateralOnTop,
+  tokensMinted,
 }) => {
   return (
     <>
@@ -44,11 +46,11 @@ const LongShort: FC<Props> = ({
       </FormRow>
       <BalanceRowToken>
         <div>
-          <span>Your Balance 123.45 </span>
+          <span>Your Balance {tokensMinted} </span>
           {!collateralOnTop && redeemForm && <span>Max</span>}
         </div>
         <div>
-          <span>Your Balance 567.89</span>
+          <span>Your Balance {tokensMinted}</span>
           {!collateralOnTop && redeemForm && <span>Max</span>}
         </div>
       </BalanceRowToken>
