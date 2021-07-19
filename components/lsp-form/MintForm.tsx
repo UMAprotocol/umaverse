@@ -84,6 +84,28 @@ const MintForm: FC<Props> = ({
     }
   }, [amount]);
 
+  useEffect(() => {
+    if (longTokenAmount !== "") {
+      const collateralAmounts =
+        Number(longTokenAmount) ** Number(collateralPerPair);
+      setAmount(collateralAmounts.toString());
+      setShortTokenAmount(longTokenAmount);
+    } else {
+      setAmount("");
+    }
+  }, [longTokenAmount]);
+
+  useEffect(() => {
+    if (shortTokenAmount !== "") {
+      const collateralAmounts =
+        Number(shortTokenAmount) ** Number(collateralPerPair);
+      setAmount(collateralAmounts.toString());
+      setLongTokenAmount(shortTokenAmount);
+    } else {
+      setAmount("");
+    }
+  }, [shortTokenAmount]);
+
   return (
     <div>
       <TopFormWrapper>
