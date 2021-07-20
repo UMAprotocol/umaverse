@@ -61,15 +61,20 @@ const MintForm: FC<Props> = ({
         // Need to send the correct amount based on the collateral pair ** the amount
         // User has specified in the input.
         const ratio = 1 / Number(collateralPerPair);
-        await lspContract.create(weiAmount.mul(ethers.BigNumber.from(ratio)));
-        setAmount("");
-        setLongTokenAmount("");
-        setShortTokenAmount("");
-        refetchTokensCreatedEvents();
-        const balance = (await erc20Contract.balanceOf(
-          address
-        )) as ethers.BigNumber;
-        setCollateralBalance(convertFromWeiSafely(balance.toString()));
+        lspContract
+          .create(weiAmount.mul(ethers.BigNumber.from(ratio)))
+          .then((tx: any) => {
+            tx.wait(1).then(async () => {
+              setAmount("");
+              setLongTokenAmount("");
+              setShortTokenAmount("");
+              refetchTokensCreatedEvents();
+              const balance = (await erc20Contract.balanceOf(
+                address
+              )) as ethers.BigNumber;
+              setCollateralBalance(convertFromWeiSafely(balance.toString()));
+            });
+          });
       } catch (err) {
         console.log("err", err);
       }
