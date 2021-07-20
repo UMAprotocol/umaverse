@@ -3,6 +3,7 @@ import { FormRow, BalanceRowToken } from "./LSPForm.styled";
 
 import TextInput from "../text-input";
 import { LabelPlacement } from "../text-input/TextInput";
+import { ethers } from "ethers";
 
 interface Props {
   setAmount: React.Dispatch<React.SetStateAction<string>>;
@@ -13,7 +14,7 @@ interface Props {
   // Adjust CSS slightly if its the redeem form or the mint form.
   redeemForm?: boolean;
   collateralOnTop?: boolean;
-  tokensMinted: string;
+  tokensMinted: ethers.BigNumber;
   collateralPerPair: string;
 }
 
@@ -60,11 +61,11 @@ const LongShort: FC<Props> = ({
       </FormRow>
       <BalanceRowToken>
         <div>
-          <span>Your Balance {tokensMinted} </span>
+          <span>Your Balance {tokensMinted.toString()} </span>
           {!collateralOnTop && redeemForm && <span>Max</span>}
         </div>
         <div>
-          <span>Your Balance {tokensMinted}</span>
+          <span>Your Balance {tokensMinted.toString()}</span>
           {!collateralOnTop && redeemForm && <span>Max</span>}
         </div>
       </BalanceRowToken>

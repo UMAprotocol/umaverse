@@ -19,7 +19,9 @@ const Testing = () => {
     null
   );
   const [collateralBalance, setCollateralBalance] = useState("0");
-  const [tokensMinted, setTokensMinted] = useState("0");
+  const [tokensMinted, setTokensMinted] = useState<ethers.BigNumber>(
+    ethers.BigNumber.from("0")
+  );
   const [collateralPerPair, setCollateralPerPair] = useState("1");
   const { data: tokensCreatedEvents, refetch: refetchTokensCreatedEvents } =
     useTokensCreatedEvents(lspContract, address);
@@ -28,13 +30,12 @@ const Testing = () => {
   // TODO: Once redeem is available, you must diff token creation events vs redeem for net balance.
   useEffect(() => {
     if (tokensCreatedEvents && tokensCreatedEvents.length) {
-      let tm = convertToWeiSafely("0");
-      tokensCreatedEvents.forEach((el) => {
-        const tokensMinted = el.tokensMinted;
-        tm = tm.add(tokensMinted);
-      });
+      const tm = tokensCreatedEvents.reduce(
+        (sum, el) => sum.add(el.tokensMinted),
+        convertToWeiSafely("0")
+      );
 
-      setTokensMinted(ethers.utils.formatEther(tm.toString()).toString());
+      setTokensMinted(tm);
     }
   }, [tokensCreatedEvents]);
 

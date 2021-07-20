@@ -22,7 +22,7 @@ interface Props {
   lspContract: ethers.Contract | null;
   erc20Contract: ethers.Contract | null;
   collateralBalance: string;
-  tokensMinted: string;
+  tokensMinted: ethers.BigNumber;
   collateralPerPair: string;
   refetchTokensCreatedEvents: (
     options?: RefetchOptions | undefined

@@ -26,7 +26,7 @@ interface Props {
   erc20Contract: ethers.Contract | null;
   web3Provider: ethers.providers.Web3Provider | null;
   collateralBalance: string;
-  tokensMinted: string;
+  tokensMinted: ethers.BigNumber;
   collateralPerPair: string;
   refetchTokensCreatedEvents: (
     options?: RefetchOptions | undefined

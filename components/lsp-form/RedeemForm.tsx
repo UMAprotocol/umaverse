@@ -7,7 +7,7 @@ import {
   ButtonWrapper,
   MintButton,
 } from "./LSPForm.styled";
-
+import { ethers } from "ethers";
 import LongShort from "./LongShort";
 import Collateral from "./Collateral";
 import DoubleArrow from "../../public/icons/arrows-switch.svg";
@@ -15,7 +15,7 @@ import DoubleArrow from "../../public/icons/arrows-switch.svg";
 interface Props {
   collateralBalance: string;
   collateralPerPair: string;
-  tokensMinted: string;
+  tokensMinted: ethers.BigNumber;
 }
 const RedeemForm: FC<Props> = ({
   collateralBalance,
