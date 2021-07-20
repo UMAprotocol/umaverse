@@ -102,7 +102,11 @@ const LSPForm: FC<Props> = ({ address, web3Provider, contractAddress }) => {
             />
           </div>
           <div data-label="Redeem">
-            <RedeemForm />
+            <RedeemForm
+              collateralBalance={collateralBalance}
+              tokensMinted={tokensMinted}
+              collateralPerPair={collateralPerPair}
+            />
           </div>
         </Tabs>
       )}

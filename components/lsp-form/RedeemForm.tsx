@@ -12,7 +12,16 @@ import LongShort from "./LongShort";
 import Collateral from "./Collateral";
 import DoubleArrow from "../../public/icons/arrows-switch.svg";
 
-const RedeemForm: FC = () => {
+interface Props {
+  collateralBalance: string;
+  collateralPerPair: string;
+  tokensMinted: string;
+}
+const RedeemForm: FC<Props> = ({
+  collateralBalance,
+  collateralPerPair,
+  tokensMinted,
+}) => {
   const [collateral, setCollateral] = useState("");
   const [amount, setAmount] = useState("");
   const [longTokenAmount, setLongTokenAmount] = useState("");
@@ -25,6 +34,8 @@ const RedeemForm: FC = () => {
         <SmallTitle>Input</SmallTitle>
         {collateralOnTop ? (
           <Collateral
+            collateralBalance={collateralBalance}
+            collateralPerPair={collateralPerPair}
             collateral={collateral}
             setCollateral={setCollateral}
             amount={amount}
@@ -34,12 +45,14 @@ const RedeemForm: FC = () => {
           />
         ) : (
           <LongShort
+            redeemForm
+            setAmount={setAmount}
             longTokenAmount={longTokenAmount}
             setLongTokenAmount={setLongTokenAmount}
             shortTokenAmount={shortTokenAmount}
             setShortTokenAmount={setShortTokenAmount}
-            redeemForm
-            collateralOnTop={collateralOnTop}
+            tokensMinted={tokensMinted}
+            collateralPerPair={collateralPerPair}
           />
         )}
       </TopFormWrapper>
@@ -53,12 +66,14 @@ const RedeemForm: FC = () => {
         <SmallTitle>Output</SmallTitle>
         {collateralOnTop ? (
           <LongShort
+            redeemForm
+            setAmount={setAmount}
             longTokenAmount={longTokenAmount}
             setLongTokenAmount={setLongTokenAmount}
             shortTokenAmount={shortTokenAmount}
             setShortTokenAmount={setShortTokenAmount}
-            redeemForm
-            collateralOnTop={collateralOnTop}
+            tokensMinted={tokensMinted}
+            collateralPerPair={collateralPerPair}
           />
         ) : (
           <Collateral
@@ -66,8 +81,9 @@ const RedeemForm: FC = () => {
             setCollateral={setCollateral}
             amount={amount}
             setAmount={setAmount}
+            collateralBalance={collateralBalance}
+            collateralPerPair={collateralPerPair}
             redeemForm
-            collateralOnTop={collateralOnTop}
           />
         )}
       </BottomFormWrapper>
