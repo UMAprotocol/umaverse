@@ -27,15 +27,15 @@ export const FormRow = styled.div`
   div {
     margin: 0 5px;
     > div {
-      &:nth-child(1) {
+      &:nth-of-type(1) {
         button {
           span {
             margin-left: 50px;
           }
         }
-        @media ${QUERIES.tabletAndUp} {
+        /* @media ${QUERIES.tabletAndUp} {
           margin-left: 92px;
-        }
+        } */
       }
       &:nth-of-type(2) {
         flex-grow: 16;

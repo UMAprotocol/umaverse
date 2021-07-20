@@ -12,63 +12,39 @@ import { ethers } from "ethers";
 import MintForm from "./MintForm";
 import RedeemForm from "./RedeemForm";
 import { calculateTimeRemaining } from "./helpers";
-import createLSPContractInstance from "./createLSPContractInstance";
-import createERC20ContractInstance from "./createERC20ContractInstance";
-import useTokensCreatedEvents from "./useTokensCreatedEvents";
-import convertFromWeiSafely from "../../utils/convertFromWeiSafely";
-import convertToWeiSafely from "../../utils/convertToWeiSafely";
+import { RefetchOptions, QueryObserverResult } from "react-query";
+import { TokensCreated } from "./useTokensCreatedEvents";
 
 interface Props {
   address: string;
   web3Provider: ethers.providers.Web3Provider | null;
   contractAddress: string;
+  lspContract: ethers.Contract | null;
+  erc20Contract: ethers.Contract | null;
+  collateralBalance: string;
+  tokensMinted: string;
+  collateralPerPair: string;
+  refetchTokensCreatedEvents: (
+    options?: RefetchOptions | undefined
+  ) => Promise<
+    QueryObserverResult<void | TokensCreated[] | undefined, unknown>
+  >;
+  setCollateralBalance: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const LSPForm: FC<Props> = ({ address, web3Provider, contractAddress }) => {
-  const [lspContract, setLSPContract] = useState<ethers.Contract | null>(null);
-  const [erc20Contract, setERC20Contract] = useState<ethers.Contract | null>(
-    null
-  );
-  const [collateralBalance, setCollateralBalance] = useState("0");
-  const [tokensMinted, setTokensMinted] = useState("0");
-  const [collateralPerPair, setCollateralPerPair] = useState("1");
+const LSPForm: FC<Props> = ({
+  address,
+  web3Provider,
+  contractAddress,
+  lspContract,
+  erc20Contract,
+  collateralBalance,
+  tokensMinted,
+  collateralPerPair,
+  refetchTokensCreatedEvents,
+  setCollateralBalance,
+}) => {
   const [showSettle, setShowSettle] = useState(false);
-  const { data: tokensCreatedEvents, refetch: refetchTokensCreatedEvents } =
-    useTokensCreatedEvents(lspContract, address);
-
-  // Determine balance.
-  // TODO: Once redeem is available, you must diff token creation events vs redeem for net balance.
-  useEffect(() => {
-    if (tokensCreatedEvents && tokensCreatedEvents.length) {
-      let tm = convertToWeiSafely("0");
-      tokensCreatedEvents.forEach((el) => {
-        const tokensMinted = el.tokensMinted;
-        tm = tm.add(tokensMinted);
-      });
-
-      setTokensMinted(ethers.utils.formatEther(tm.toString()).toString());
-    }
-  }, [tokensCreatedEvents]);
-
-  // Get contract data and set values.
-  useEffect(() => {
-    if (web3Provider && !lspContract) {
-      const signer = web3Provider.getSigner();
-      const contract = createLSPContractInstance(signer, contractAddress);
-      contract.collateralToken().then(async (res: any) => {
-        const erc20 = createERC20ContractInstance(signer, res);
-        const balance = (await erc20.balanceOf(address)) as ethers.BigNumber;
-        setCollateralBalance(convertFromWeiSafely(balance.toString()));
-        setERC20Contract(erc20);
-      });
-      contract.collateralPerPair().then((res: ethers.BigNumber) => {
-        const pairRatio = ethers.utils.formatEther(res.toString()).toString();
-        setCollateralPerPair(pairRatio);
-      });
-
-      setLSPContract(contract);
-    }
-  }, [web3Provider, lspContract]);
 
   // Stub time remaining.
   const [timeRemaining, setTimeRemaining] = useState("00:00");
