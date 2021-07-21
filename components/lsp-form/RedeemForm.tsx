@@ -52,6 +52,8 @@ const RedeemForm: FC<Props> = ({
             redeemForm
             collateralOnTop={collateralOnTop}
             collateralDecimals={collateralDecimals}
+            setLongTokenAmount={setLongTokenAmount}
+            setShortTokenAmount={setShortTokenAmount}
           />
         ) : (
           <LongShort
@@ -100,6 +102,8 @@ const RedeemForm: FC<Props> = ({
             collateralBalance={collateralBalance}
             collateralPerPair={collateralPerPair}
             collateralDecimals={collateralDecimals}
+            setLongTokenAmount={setLongTokenAmount}
+            setShortTokenAmount={setShortTokenAmount}
             redeemForm
           />
         )}
