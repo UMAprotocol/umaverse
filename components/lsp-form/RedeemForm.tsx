@@ -16,10 +16,8 @@ interface Props {
   collateralBalance: ethers.BigNumber;
   collateralPerPair: string;
   collateralDecimals: string;
-  longTokenContract: ethers.Contract | null;
   longTokenBalance: ethers.BigNumber;
   longTokenDecimals: string;
-  shortTokenContract: ethers.Contract | null;
   shortTokenBalance: ethers.BigNumber;
   shortTokenDecimals: string;
 }
@@ -28,11 +26,8 @@ const RedeemForm: FC<Props> = ({
   collateralBalance,
   collateralPerPair,
   collateralDecimals,
-  // Temp commented out -- will need later.
-  // longTokenContract,
   longTokenBalance,
   longTokenDecimals,
-  // shortTokenContract,
   shortTokenBalance,
   shortTokenDecimals,
 }) => {

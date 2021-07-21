@@ -12,8 +12,6 @@ import { ethers } from "ethers";
 import MintForm from "./MintForm";
 import RedeemForm from "./RedeemForm";
 import { calculateTimeRemaining } from "./helpers";
-import { RefetchOptions, QueryObserverResult } from "react-query";
-import { TokensCreated } from "./useTokensCreatedEvents";
 
 interface Props {
   address: string;
@@ -25,12 +23,12 @@ interface Props {
   collateralPerPair: string;
   setCollateralBalance: React.Dispatch<React.SetStateAction<ethers.BigNumber>>;
   collateralDecimals: string;
-  longTokenContract: ethers.Contract | null;
   longTokenBalance: ethers.BigNumber;
   longTokenDecimals: string;
-  shortTokenContract: ethers.Contract | null;
   shortTokenBalance: ethers.BigNumber;
   shortTokenDecimals: string;
+  refetchLongTokenBalance: () => void;
+  refetchShortTokenBalance: () => void;
 }
 
 const LSPForm: FC<Props> = ({
@@ -43,12 +41,12 @@ const LSPForm: FC<Props> = ({
   collateralPerPair,
   setCollateralBalance,
   collateralDecimals,
-  longTokenContract,
   longTokenBalance,
   longTokenDecimals,
-  shortTokenContract,
   shortTokenBalance,
   shortTokenDecimals,
+  refetchLongTokenBalance,
+  refetchShortTokenBalance,
 }) => {
   const [showSettle, setShowSettle] = useState(false);
 
@@ -80,12 +78,12 @@ const LSPForm: FC<Props> = ({
               collateralPerPair={collateralPerPair}
               setCollateralBalance={setCollateralBalance}
               collateralDecimals={collateralDecimals}
-              longTokenContract={longTokenContract}
               longTokenBalance={longTokenBalance}
               longTokenDecimals={longTokenDecimals}
-              shortTokenContract={shortTokenContract}
               shortTokenBalance={shortTokenBalance}
               shortTokenDecimals={shortTokenDecimals}
+              refetchLongTokenBalance={refetchLongTokenBalance}
+              refetchShortTokenBalance={refetchShortTokenBalance}
             />
           </div>
           <div data-label="Redeem">
@@ -93,10 +91,8 @@ const LSPForm: FC<Props> = ({
               collateralBalance={collateralBalance}
               collateralPerPair={collateralPerPair}
               collateralDecimals={collateralDecimals}
-              longTokenContract={longTokenContract}
               longTokenBalance={longTokenBalance}
               longTokenDecimals={longTokenDecimals}
-              shortTokenContract={shortTokenContract}
               shortTokenBalance={shortTokenBalance}
               shortTokenDecimals={shortTokenDecimals}
             />

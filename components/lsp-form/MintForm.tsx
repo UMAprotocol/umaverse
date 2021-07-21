@@ -31,12 +31,12 @@ interface Props {
   collateralPerPair: string;
   setCollateralBalance: React.Dispatch<React.SetStateAction<ethers.BigNumber>>;
   collateralDecimals: string;
-  longTokenContract: ethers.Contract | null;
   longTokenBalance: ethers.BigNumber;
   longTokenDecimals: string;
-  shortTokenContract: ethers.Contract | null;
   shortTokenBalance: ethers.BigNumber;
   shortTokenDecimals: string;
+  refetchLongTokenBalance: () => void;
+  refetchShortTokenBalance: () => void;
 }
 
 const MintForm: FC<Props> = ({
@@ -49,12 +49,12 @@ const MintForm: FC<Props> = ({
   address,
   setCollateralBalance,
   collateralDecimals,
-  longTokenContract,
   longTokenBalance,
   longTokenDecimals,
-  shortTokenContract,
   shortTokenBalance,
   shortTokenDecimals,
+  refetchLongTokenBalance,
+  refetchShortTokenBalance,
 }) => {
   const [collateral, setCollateral] = useState("uma");
   const [amount, setAmount] = useState("");
@@ -89,15 +89,18 @@ const MintForm: FC<Props> = ({
         lspContract
           .create(weiAmount.mul(ratio).div(ethers.BigNumber.from(10).pow(18)))
           .then((tx: any) => {
-            tx.wait(1).then(async () => {
-              setAmount("");
-              setLongTokenAmount("");
-              setShortTokenAmount("");
-              const balance = (await erc20Contract.balanceOf(
-                address
-              )) as ethers.BigNumber;
-              setCollateralBalance(balance);
-            });
+            return tx.wait(1);
+          })
+          .then(async () => {
+            setAmount("");
+            setLongTokenAmount("");
+            setShortTokenAmount("");
+            const balance = (await erc20Contract.balanceOf(
+              address
+            )) as ethers.BigNumber;
+            setCollateralBalance(balance);
+            refetchLongTokenBalance();
+            refetchShortTokenBalance();
           });
       } catch (err) {
         console.log("err", err);

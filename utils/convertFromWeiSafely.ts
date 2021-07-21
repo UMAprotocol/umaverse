@@ -8,15 +8,10 @@ const { BigNumber } = ethers;
 const DEFAULT_PRECISION = 18;
 
 export default function convertFromWei(
-  amount: string | ethers.BigNumber,
+  amount: ethers.BigNumber,
   precision: number = DEFAULT_PRECISION
 ): string {
   const divisor = BigNumber.from(10).pow(precision);
 
-  if (typeof amount === "string") {
-    const bn = BigNumber.from(amount);
-    return bn.div(divisor).toString();
-  } else {
-    return amount.div(divisor).toString();
-  }
+  return amount.div(divisor).toString();
 }

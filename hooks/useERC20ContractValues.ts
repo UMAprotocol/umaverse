@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import createERC20ContractInstance from "../components/lsp-form/createERC20ContractInstance";
 
 export default function useERC20ContractValues(
@@ -13,6 +13,13 @@ export default function useERC20ContractValues(
   );
   const [decimals, setDecimals] = useState("18");
 
+  const refetchBalance = useCallback(() => {
+    if (contract && userAddress) {
+      contract.balanceOf(userAddress).then((bal: ethers.BigNumber) => {
+        setBalance(bal);
+      });
+    }
+  }, [contract, userAddress]);
   useEffect(() => {
     if (contractAddress && signer && userAddress) {
       const erc20 = createERC20ContractInstance(signer, contractAddress);
@@ -31,5 +38,6 @@ export default function useERC20ContractValues(
     contract,
     balance,
     decimals,
+    refetchBalance,
   };
 }

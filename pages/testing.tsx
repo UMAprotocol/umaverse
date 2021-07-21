@@ -3,8 +3,6 @@ import { ethers } from "ethers";
 
 import LSPForm from "../components/lsp-form/LSPForm";
 import { KNOWN_LSP_ADDRESS } from "../utils/constants";
-import useTokensCreatedEvents from "../components/lsp-form/useTokensCreatedEvents";
-import convertToWeiSafely from "../utils/convertToWeiSafely";
 
 import createLSPContractInstance from "../components/lsp-form/createLSPContractInstance";
 import createERC20ContractInstance from "../components/lsp-form/createERC20ContractInstance";
@@ -31,9 +29,9 @@ const Testing = () => {
   const [shortTokenAddress, setShortTokenAddress] = useState("");
 
   const {
-    contract: longTokenContract,
     balance: longTokenBalance,
     decimals: longTokenDecimals,
+    refetchBalance: refetchLongTokenBalance,
   } = useERC20ContractValues(
     longTokenAddress,
     address,
@@ -41,9 +39,9 @@ const Testing = () => {
   );
 
   const {
-    contract: shortTokenContract,
     balance: shortTokenBalance,
     decimals: shortTokenDecimals,
+    refetchBalance: refetchShortTokenBalance,
   } = useERC20ContractValues(
     shortTokenAddress,
     address,
@@ -102,12 +100,12 @@ const Testing = () => {
       collateralPerPair={collateralPerPair}
       setCollateralBalance={setCollateralBalance}
       collateralDecimals={collateralDecimals}
-      longTokenContract={longTokenContract}
       longTokenBalance={longTokenBalance}
       longTokenDecimals={longTokenDecimals}
-      shortTokenContract={shortTokenContract}
       shortTokenBalance={shortTokenBalance}
       shortTokenDecimals={shortTokenDecimals}
+      refetchLongTokenBalance={refetchLongTokenBalance}
+      refetchShortTokenBalance={refetchShortTokenBalance}
     />
   );
 };
