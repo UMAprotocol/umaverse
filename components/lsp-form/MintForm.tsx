@@ -68,16 +68,14 @@ const MintForm: FC<Props> = ({
           contractAddress
         );
         const balance = await erc20Contract.balanceOf(address);
-        console.log("allowance", allowance, "balance", balance);
         const hasToApprove = allowance.lt(balance);
-        console.log("Has to approve?", hasToApprove);
         if (hasToApprove) {
           const approveTx = await erc20Contract.approve(
             contractAddress,
             INFINITE_APPROVAL_AMOUNT
           );
 
-          await approveTx.wait(1);
+          await approveTx.wait();
         }
         // Need to send the correct amount based on the collateral pair ** the amount
         // User has specified in the input.
