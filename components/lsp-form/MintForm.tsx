@@ -1,4 +1,4 @@
-import React, { FC, useState, useCallback, useEffect } from "react";
+import React, { FC, useState, useCallback } from "react";
 import {
   SmallTitle,
   TopFormWrapper,
