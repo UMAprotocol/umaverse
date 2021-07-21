@@ -23,6 +23,7 @@ const RedeemForm: FC<Props> = ({
   collateralBalance,
   collateralPerPair,
   tokensMinted,
+  erc20Decimals,
 }) => {
   const [collateral, setCollateral] = useState("");
   const [amount, setAmount] = useState("");
@@ -55,6 +56,7 @@ const RedeemForm: FC<Props> = ({
             setShortTokenAmount={setShortTokenAmount}
             tokensMinted={tokensMinted}
             collateralPerPair={collateralPerPair}
+            erc20Decimals={erc20Decimals}
           />
         )}
       </TopFormWrapper>
