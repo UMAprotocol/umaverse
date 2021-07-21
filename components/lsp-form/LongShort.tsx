@@ -41,7 +41,7 @@ const LongShort: FC<Props> = ({
           value={longTokenAmount}
           setValue={setLongTokenAmount}
           additionalEffects={(e) => {
-            setShortTokenAmount(e.target.value);
+            // Note: There is an effect that will cause the other input to update.
             const newAmount =
               Number(e.target.value) * Number(collateralPerPair);
             setAmount(newAmount.toString());
@@ -54,7 +54,7 @@ const LongShort: FC<Props> = ({
           value={shortTokenAmount}
           setValue={setShortTokenAmount}
           additionalEffects={(e) => {
-            setLongTokenAmount(e.target.value);
+            // Note: There is an effect that will cause the other input to update.
             const newAmount =
               Number(e.target.value) * Number(collateralPerPair);
             setAmount(newAmount.toString());
