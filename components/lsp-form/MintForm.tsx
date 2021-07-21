@@ -16,6 +16,9 @@ import LongShort from "./LongShort";
 import Collateral from "./Collateral";
 import { RefetchOptions, QueryObserverResult } from "react-query";
 import { TokensCreated } from "./useTokensCreatedEvents";
+// max uint value is 2^256 - 1
+const MAX_UINT_VAL = ethers.constants.MaxUint256;
+const INFINITE_APPROVAL_AMOUNT = MAX_UINT_VAL;
 
 interface Props {
   address: string;
@@ -60,7 +63,22 @@ const MintForm: FC<Props> = ({
     if (lspContract && erc20Contract && amount) {
       const weiAmount = toWeiSafe(amount);
       try {
-        await erc20Contract.approve(contractAddress, weiAmount.toString());
+        const allowance = await erc20Contract.allowance(
+          address,
+          contractAddress
+        );
+        const balance = await erc20Contract.balanceOf(address);
+        console.log("allowance", allowance, "balance", balance);
+        const hasToApprove = allowance.lt(balance);
+        console.log("Has to approve?", hasToApprove);
+        if (hasToApprove) {
+          const approveTx = await erc20Contract.approve(
+            contractAddress,
+            INFINITE_APPROVAL_AMOUNT
+          );
+
+          await approveTx.wait(1);
+        }
         // Need to send the correct amount based on the collateral pair ** the amount
         // User has specified in the input.
         // Get rid of float, then divide it out later.

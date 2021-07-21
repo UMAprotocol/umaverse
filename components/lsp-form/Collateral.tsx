@@ -26,7 +26,6 @@ interface Props {
 
 const Collateral: FC<Props> = ({
   collateral,
-  // setCollateral,
   amount,
   setAmount,
   collateralOnTop,
