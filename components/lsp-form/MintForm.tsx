@@ -29,11 +29,6 @@ interface Props {
   web3Provider: ethers.providers.Web3Provider | null;
   collateralBalance: ethers.BigNumber;
   collateralPerPair: string;
-  refetchTokensCreatedEvents: (
-    options?: RefetchOptions | undefined
-  ) => Promise<
-    QueryObserverResult<void | TokensCreated[] | undefined, unknown>
-  >;
   setCollateralBalance: React.Dispatch<React.SetStateAction<ethers.BigNumber>>;
   collateralDecimals: string;
   longTokenContract: ethers.Contract | null;
@@ -51,7 +46,6 @@ const MintForm: FC<Props> = ({
   contractAddress,
   collateralBalance,
   collateralPerPair,
-  refetchTokensCreatedEvents,
   address,
   setCollateralBalance,
   collateralDecimals,
@@ -99,7 +93,6 @@ const MintForm: FC<Props> = ({
               setAmount("");
               setLongTokenAmount("");
               setShortTokenAmount("");
-              refetchTokensCreatedEvents();
               const balance = (await erc20Contract.balanceOf(
                 address
               )) as ethers.BigNumber;

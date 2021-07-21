@@ -23,11 +23,6 @@ interface Props {
   erc20Contract: ethers.Contract | null;
   collateralBalance: ethers.BigNumber;
   collateralPerPair: string;
-  refetchTokensCreatedEvents: (
-    options?: RefetchOptions | undefined
-  ) => Promise<
-    QueryObserverResult<void | TokensCreated[] | undefined, unknown>
-  >;
   setCollateralBalance: React.Dispatch<React.SetStateAction<ethers.BigNumber>>;
   collateralDecimals: string;
   longTokenContract: ethers.Contract | null;
@@ -46,7 +41,6 @@ const LSPForm: FC<Props> = ({
   erc20Contract,
   collateralBalance,
   collateralPerPair,
-  refetchTokensCreatedEvents,
   setCollateralBalance,
   collateralDecimals,
   longTokenContract,
@@ -84,7 +78,6 @@ const LSPForm: FC<Props> = ({
               web3Provider={web3Provider}
               setShowSettle={setShowSettle}
               collateralPerPair={collateralPerPair}
-              refetchTokensCreatedEvents={refetchTokensCreatedEvents}
               setCollateralBalance={setCollateralBalance}
               collateralDecimals={collateralDecimals}
               longTokenContract={longTokenContract}
