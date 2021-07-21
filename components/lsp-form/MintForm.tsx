@@ -14,8 +14,7 @@ import toWeiSafe from "../../utils/convertToWeiSafely";
 
 import LongShort from "./LongShort";
 import Collateral from "./Collateral";
-import { RefetchOptions, QueryObserverResult } from "react-query";
-import { TokensCreated } from "./useTokensCreatedEvents";
+
 // max uint value is 2^256 - 1
 const MAX_UINT_VAL = ethers.constants.MaxUint256;
 const INFINITE_APPROVAL_AMOUNT = MAX_UINT_VAL;
