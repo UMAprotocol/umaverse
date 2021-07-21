@@ -35,7 +35,8 @@ export interface TokensCreated {
 
 const queryTokensCreatedEvents = async (
   contract: ethers.Contract | null,
-  address: string | null
+  address: string | null,
+  fromBlock?: string
 ) => {
   assert(
     contract,
@@ -48,7 +49,11 @@ const queryTokensCreatedEvents = async (
   const filter = contract.filters.TokensCreated(address, null, null);
 
   try {
-    const events = await contract.queryFilter(filter, 0);
+    const events = await contract.queryFilter(
+      filter,
+      0,
+      fromBlock ? fromBlock : undefined
+    );
     const rewards = events.map((el) => {
       const { args } = el;
       const datum = {} as TokensCreated;

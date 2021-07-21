@@ -25,6 +25,7 @@ const Testing = () => {
   const [collateralPerPair, setCollateralPerPair] = useState("1");
   const { data: tokensCreatedEvents, refetch: refetchTokensCreatedEvents } =
     useTokensCreatedEvents(lspContract, address);
+  const [erc20Decimals, setERC20Decimals] = useState("18");
 
   // Determine balance.
   // TODO: Once redeem is available, you must diff token creation events vs redeem for net balance.
@@ -58,6 +59,14 @@ const Testing = () => {
       setLSPContract(contract);
     }
   }, [web3Provider, lspContract]);
+
+  useEffect(() => {
+    if (erc20Contract) {
+      erc20Contract.decimals().then((decimals: ethers.BigNumber) => {
+        setERC20Decimals(decimals.toString());
+      });
+    }
+  }, [erc20Contract]);
   useEffect(() => {
     if ((window as any).ethereum && web3Provider === null) {
       const mm = (window as any).ethereum;
@@ -79,6 +88,7 @@ const Testing = () => {
       collateralPerPair={collateralPerPair}
       refetchTokensCreatedEvents={refetchTokensCreatedEvents}
       setCollateralBalance={setCollateralBalance}
+      erc20Decimals={erc20Decimals}
     />
   );
 };

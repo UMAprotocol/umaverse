@@ -16,7 +16,9 @@ interface Props {
   collateralBalance: string;
   collateralPerPair: string;
   tokensMinted: ethers.BigNumber;
+  erc20Decimals: string;
 }
+
 const RedeemForm: FC<Props> = ({
   collateralBalance,
   collateralPerPair,

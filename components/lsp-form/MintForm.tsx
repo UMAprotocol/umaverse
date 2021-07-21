@@ -34,6 +34,7 @@ interface Props {
     QueryObserverResult<void | TokensCreated[] | undefined, unknown>
   >;
   setCollateralBalance: React.Dispatch<React.SetStateAction<string>>;
+  erc20Decimals: string;
 }
 
 const MintForm: FC<Props> = ({
@@ -47,6 +48,7 @@ const MintForm: FC<Props> = ({
   refetchTokensCreatedEvents,
   address,
   setCollateralBalance,
+  erc20Decimals,
 }) => {
   const [collateral, setCollateral] = useState("uma");
   const [amount, setAmount] = useState("");
@@ -116,6 +118,7 @@ const MintForm: FC<Props> = ({
           setShortTokenAmount={setShortTokenAmount}
           tokensMinted={tokensMinted}
           collateralPerPair={collateralPerPair}
+          erc20Decimals={erc20Decimals}
         />
       </BottomFormWrapper>
       <ButtonWrapper>

@@ -30,6 +30,7 @@ interface Props {
     QueryObserverResult<void | TokensCreated[] | undefined, unknown>
   >;
   setCollateralBalance: React.Dispatch<React.SetStateAction<string>>;
+  erc20Decimals: string;
 }
 
 const LSPForm: FC<Props> = ({
@@ -43,6 +44,7 @@ const LSPForm: FC<Props> = ({
   collateralPerPair,
   refetchTokensCreatedEvents,
   setCollateralBalance,
+  erc20Decimals,
 }) => {
   const [showSettle, setShowSettle] = useState(false);
 
@@ -75,6 +77,7 @@ const LSPForm: FC<Props> = ({
               collateralPerPair={collateralPerPair}
               refetchTokensCreatedEvents={refetchTokensCreatedEvents}
               setCollateralBalance={setCollateralBalance}
+              erc20Decimals={erc20Decimals}
             />
           </div>
           <div data-label="Redeem">
@@ -82,6 +85,7 @@ const LSPForm: FC<Props> = ({
               collateralBalance={collateralBalance}
               tokensMinted={tokensMinted}
               collateralPerPair={collateralPerPair}
+              erc20Decimals={erc20Decimals}
             />
           </div>
         </Tabs>

@@ -16,6 +16,7 @@ interface Props {
   collateralOnTop?: boolean;
   tokensMinted: ethers.BigNumber;
   collateralPerPair: string;
+  erc20Decimals: string;
 }
 
 const LongShort: FC<Props> = ({
@@ -28,6 +29,7 @@ const LongShort: FC<Props> = ({
   tokensMinted,
   setAmount,
   collateralPerPair,
+  erc20Decimals,
 }) => {
   return (
     <>
@@ -61,11 +63,17 @@ const LongShort: FC<Props> = ({
       </FormRow>
       <BalanceRowToken>
         <div>
-          <span>Your Balance {tokensMinted.toString()} </span>
+          <span>
+            Your Balance{" "}
+            {ethers.utils.formatUnits(tokensMinted.toString(), erc20Decimals)}{" "}
+          </span>
           {!collateralOnTop && redeemForm && <span>Max</span>}
         </div>
         <div>
-          <span>Your Balance {tokensMinted.toString()}</span>
+          <span>
+            Your Balance{" "}
+            {ethers.utils.formatUnits(tokensMinted.toString(), erc20Decimals)}
+          </span>
           {!collateralOnTop && redeemForm && <span>Max</span>}
         </div>
       </BalanceRowToken>
