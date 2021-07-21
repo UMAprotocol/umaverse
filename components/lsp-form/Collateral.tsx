@@ -22,6 +22,8 @@ interface Props {
   collateralBalance: ethers.BigNumber;
   collateralPerPair: string;
   collateralDecimals: string;
+  setLongTokenAmount: React.Dispatch<React.SetStateAction<string>>;
+  setShortTokenAmount: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const Collateral: FC<Props> = ({
@@ -32,6 +34,9 @@ const Collateral: FC<Props> = ({
   redeemForm,
   collateralBalance,
   collateralDecimals,
+  collateralPerPair,
+  setLongTokenAmount,
+  setShortTokenAmount,
 }) => {
   const size = useWindowSize();
   const width = size.width && size.width > 728 ? "230px" : "100%";
@@ -50,6 +55,17 @@ const Collateral: FC<Props> = ({
           value={amount}
           setValue={setAmount}
           width={width}
+          additionalEffects={(e) => {
+            if (e.target.value) {
+              const newTokenPairAmounts =
+                Number(e.target.value) / Number(collateralPerPair);
+              setLongTokenAmount(newTokenPairAmounts.toString());
+              setShortTokenAmount(newTokenPairAmounts.toString());
+            } else {
+              setLongTokenAmount("0");
+              setShortTokenAmount("0");
+            }
+          }}
         />
       </FormRow>
       <BalanceRow>

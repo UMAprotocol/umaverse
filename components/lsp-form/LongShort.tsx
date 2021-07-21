@@ -45,10 +45,15 @@ const LongShort: FC<Props> = ({
           value={longTokenAmount}
           setValue={setLongTokenAmount}
           additionalEffects={(e) => {
-            // Note: There is an effect that will cause the other input to update.
-            const newAmount =
-              Number(e.target.value) * Number(collateralPerPair);
-            setAmount(newAmount.toString());
+            if (e.target.value) {
+              const newAmount =
+                Number(e.target.value) * Number(collateralPerPair);
+              setAmount(newAmount.toString());
+              setShortTokenAmount(e.target.value);
+            } else {
+              setShortTokenAmount("0");
+              setAmount("0");
+            }
           }}
         />
         <TextInput
@@ -58,10 +63,15 @@ const LongShort: FC<Props> = ({
           value={shortTokenAmount}
           setValue={setShortTokenAmount}
           additionalEffects={(e) => {
-            // Note: There is an effect that will cause the other input to update.
-            const newAmount =
-              Number(e.target.value) * Number(collateralPerPair);
-            setAmount(newAmount.toString());
+            if (e.target.value) {
+              const newAmount =
+                Number(e.target.value) * Number(collateralPerPair);
+              setAmount(newAmount.toString());
+              setLongTokenAmount(e.target.value);
+            } else {
+              setAmount("0");
+              setLongTokenAmount("0");
+            }
           }}
         />
       </FormRow>

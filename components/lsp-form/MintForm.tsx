@@ -107,14 +107,6 @@ const MintForm: FC<Props> = ({
     }
   }, [lspContract, erc20Contract, amount]);
 
-  useEffect(() => {
-    if (amount !== "") {
-      const tokenAmounts = Number(amount) / Number(collateralPerPair);
-      setLongTokenAmount(tokenAmounts.toString());
-      setShortTokenAmount(tokenAmounts.toString());
-    }
-  }, [amount]);
-
   return (
     <div>
       <TopFormWrapper>
@@ -127,6 +119,8 @@ const MintForm: FC<Props> = ({
           collateralBalance={collateralBalance}
           collateralPerPair={collateralPerPair}
           collateralDecimals={collateralDecimals}
+          setLongTokenAmount={setLongTokenAmount}
+          setShortTokenAmount={setShortTokenAmount}
         />
       </TopFormWrapper>
       <DownArrowWrapper>
