@@ -14,9 +14,11 @@ interface Props {
   // Adjust CSS slightly if its the redeem form or the mint form.
   redeemForm?: boolean;
   collateralOnTop?: boolean;
-  tokensMinted: ethers.BigNumber;
   collateralPerPair: string;
-  erc20Decimals: string;
+  longTokenBalance: ethers.BigNumber;
+  longTokenDecimals: string;
+  shortTokenBalance: ethers.BigNumber;
+  shortTokenDecimals: string;
 }
 
 const LongShort: FC<Props> = ({
@@ -26,10 +28,12 @@ const LongShort: FC<Props> = ({
   setShortTokenAmount,
   redeemForm,
   collateralOnTop,
-  tokensMinted,
   setAmount,
   collateralPerPair,
-  erc20Decimals,
+  longTokenBalance,
+  longTokenDecimals,
+  shortTokenBalance,
+  shortTokenDecimals,
 }) => {
   return (
     <>
@@ -65,14 +69,20 @@ const LongShort: FC<Props> = ({
         <div>
           <span>
             Your Balance{" "}
-            {ethers.utils.formatUnits(tokensMinted.toString(), erc20Decimals)}{" "}
+            {ethers.utils.formatUnits(
+              longTokenBalance.toString(),
+              longTokenDecimals
+            )}{" "}
           </span>
           {!collateralOnTop && redeemForm && <span>Max</span>}
         </div>
         <div>
           <span>
             Your Balance{" "}
-            {ethers.utils.formatUnits(tokensMinted.toString(), erc20Decimals)}
+            {ethers.utils.formatUnits(
+              shortTokenBalance.toString(),
+              shortTokenDecimals
+            )}
           </span>
           {!collateralOnTop && redeemForm && <span>Max</span>}
         </div>

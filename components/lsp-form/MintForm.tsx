@@ -28,7 +28,6 @@ interface Props {
   erc20Contract: ethers.Contract | null;
   web3Provider: ethers.providers.Web3Provider | null;
   collateralBalance: ethers.BigNumber;
-  tokensMinted: ethers.BigNumber;
   collateralPerPair: string;
   refetchTokensCreatedEvents: (
     options?: RefetchOptions | undefined
@@ -36,8 +35,13 @@ interface Props {
     QueryObserverResult<void | TokensCreated[] | undefined, unknown>
   >;
   setCollateralBalance: React.Dispatch<React.SetStateAction<ethers.BigNumber>>;
-  erc20Decimals: string;
   collateralDecimals: string;
+  longTokenContract: ethers.Contract | null;
+  longTokenBalance: ethers.BigNumber;
+  longTokenDecimals: string;
+  shortTokenContract: ethers.Contract | null;
+  shortTokenBalance: ethers.BigNumber;
+  shortTokenDecimals: string;
 }
 
 const MintForm: FC<Props> = ({
@@ -46,13 +50,17 @@ const MintForm: FC<Props> = ({
   erc20Contract,
   contractAddress,
   collateralBalance,
-  tokensMinted,
   collateralPerPair,
   refetchTokensCreatedEvents,
   address,
   setCollateralBalance,
-  erc20Decimals,
   collateralDecimals,
+  longTokenContract,
+  longTokenBalance,
+  longTokenDecimals,
+  shortTokenContract,
+  shortTokenBalance,
+  shortTokenDecimals,
 }) => {
   const [collateral, setCollateral] = useState("uma");
   const [amount, setAmount] = useState("");
@@ -138,9 +146,11 @@ const MintForm: FC<Props> = ({
           setLongTokenAmount={setLongTokenAmount}
           shortTokenAmount={shortTokenAmount}
           setShortTokenAmount={setShortTokenAmount}
-          tokensMinted={tokensMinted}
           collateralPerPair={collateralPerPair}
-          erc20Decimals={erc20Decimals}
+          longTokenBalance={longTokenBalance}
+          longTokenDecimals={longTokenDecimals}
+          shortTokenBalance={shortTokenBalance}
+          shortTokenDecimals={shortTokenDecimals}
         />
       </BottomFormWrapper>
       <ButtonWrapper>

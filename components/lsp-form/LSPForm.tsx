@@ -22,7 +22,6 @@ interface Props {
   lspContract: ethers.Contract | null;
   erc20Contract: ethers.Contract | null;
   collateralBalance: ethers.BigNumber;
-  tokensMinted: ethers.BigNumber;
   collateralPerPair: string;
   refetchTokensCreatedEvents: (
     options?: RefetchOptions | undefined
@@ -30,8 +29,13 @@ interface Props {
     QueryObserverResult<void | TokensCreated[] | undefined, unknown>
   >;
   setCollateralBalance: React.Dispatch<React.SetStateAction<ethers.BigNumber>>;
-  erc20Decimals: string;
   collateralDecimals: string;
+  longTokenContract: ethers.Contract | null;
+  longTokenBalance: ethers.BigNumber;
+  longTokenDecimals: string;
+  shortTokenContract: ethers.Contract | null;
+  shortTokenBalance: ethers.BigNumber;
+  shortTokenDecimals: string;
 }
 
 const LSPForm: FC<Props> = ({
@@ -41,12 +45,16 @@ const LSPForm: FC<Props> = ({
   lspContract,
   erc20Contract,
   collateralBalance,
-  tokensMinted,
   collateralPerPair,
   refetchTokensCreatedEvents,
   setCollateralBalance,
-  erc20Decimals,
   collateralDecimals,
+  longTokenContract,
+  longTokenBalance,
+  longTokenDecimals,
+  shortTokenContract,
+  shortTokenBalance,
+  shortTokenDecimals,
 }) => {
   const [showSettle, setShowSettle] = useState(false);
 
@@ -75,21 +83,29 @@ const LSPForm: FC<Props> = ({
               erc20Contract={erc20Contract}
               web3Provider={web3Provider}
               setShowSettle={setShowSettle}
-              tokensMinted={tokensMinted}
               collateralPerPair={collateralPerPair}
               refetchTokensCreatedEvents={refetchTokensCreatedEvents}
               setCollateralBalance={setCollateralBalance}
-              erc20Decimals={erc20Decimals}
               collateralDecimals={collateralDecimals}
+              longTokenContract={longTokenContract}
+              longTokenBalance={longTokenBalance}
+              longTokenDecimals={longTokenDecimals}
+              shortTokenContract={shortTokenContract}
+              shortTokenBalance={shortTokenBalance}
+              shortTokenDecimals={shortTokenDecimals}
             />
           </div>
           <div data-label="Redeem">
             <RedeemForm
               collateralBalance={collateralBalance}
-              tokensMinted={tokensMinted}
               collateralPerPair={collateralPerPair}
-              erc20Decimals={erc20Decimals}
               collateralDecimals={collateralDecimals}
+              longTokenContract={longTokenContract}
+              longTokenBalance={longTokenBalance}
+              longTokenDecimals={longTokenDecimals}
+              shortTokenContract={shortTokenContract}
+              shortTokenBalance={shortTokenBalance}
+              shortTokenDecimals={shortTokenDecimals}
             />
           </div>
         </Tabs>

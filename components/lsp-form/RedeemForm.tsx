@@ -15,17 +15,26 @@ import DoubleArrow from "../../public/icons/arrows-switch.svg";
 interface Props {
   collateralBalance: ethers.BigNumber;
   collateralPerPair: string;
-  tokensMinted: ethers.BigNumber;
-  erc20Decimals: string;
   collateralDecimals: string;
+  longTokenContract: ethers.Contract | null;
+  longTokenBalance: ethers.BigNumber;
+  longTokenDecimals: string;
+  shortTokenContract: ethers.Contract | null;
+  shortTokenBalance: ethers.BigNumber;
+  shortTokenDecimals: string;
 }
 
 const RedeemForm: FC<Props> = ({
   collateralBalance,
   collateralPerPair,
-  tokensMinted,
-  erc20Decimals,
   collateralDecimals,
+  // Temp commented out -- will need later.
+  // longTokenContract,
+  longTokenBalance,
+  longTokenDecimals,
+  // shortTokenContract,
+  shortTokenBalance,
+  shortTokenDecimals,
 }) => {
   const [collateral, setCollateral] = useState("");
   const [amount, setAmount] = useState("");
@@ -57,9 +66,11 @@ const RedeemForm: FC<Props> = ({
             setLongTokenAmount={setLongTokenAmount}
             shortTokenAmount={shortTokenAmount}
             setShortTokenAmount={setShortTokenAmount}
-            tokensMinted={tokensMinted}
             collateralPerPair={collateralPerPair}
-            erc20Decimals={erc20Decimals}
+            longTokenBalance={longTokenBalance}
+            longTokenDecimals={longTokenDecimals}
+            shortTokenBalance={shortTokenBalance}
+            shortTokenDecimals={shortTokenDecimals}
           />
         )}
       </TopFormWrapper>
@@ -79,9 +90,11 @@ const RedeemForm: FC<Props> = ({
             setLongTokenAmount={setLongTokenAmount}
             shortTokenAmount={shortTokenAmount}
             setShortTokenAmount={setShortTokenAmount}
-            tokensMinted={tokensMinted}
             collateralPerPair={collateralPerPair}
-            erc20Decimals={erc20Decimals}
+            longTokenBalance={longTokenBalance}
+            longTokenDecimals={longTokenDecimals}
+            shortTokenBalance={shortTokenBalance}
+            shortTokenDecimals={shortTokenDecimals}
           />
         ) : (
           <Collateral

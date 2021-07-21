@@ -8,6 +8,7 @@ import convertToWeiSafely from "../utils/convertToWeiSafely";
 
 import createLSPContractInstance from "../components/lsp-form/createLSPContractInstance";
 import createERC20ContractInstance from "../components/lsp-form/createERC20ContractInstance";
+import useERC20ContractValues from "../hooks/useERC20ContractValues";
 
 const Testing = () => {
   const [web3Provider, setWeb3Provider] =
@@ -22,14 +23,33 @@ const Testing = () => {
     ethers.BigNumber.from("0")
   );
 
-  const [tokensMinted, setTokensMinted] = useState<ethers.BigNumber>(
-    ethers.BigNumber.from("0")
-  );
   const [collateralPerPair, setCollateralPerPair] = useState("1");
   const { data: tokensCreatedEvents, refetch: refetchTokensCreatedEvents } =
     useTokensCreatedEvents(lspContract, address);
-  const [erc20Decimals, setERC20Decimals] = useState("18");
   const [collateralDecimals, setCollateralDecimals] = useState("18");
+
+  const [longTokenAddress, setLongTokenAddress] = useState("");
+  const [shortTokenAddress, setShortTokenAddress] = useState("");
+
+  const {
+    contract: longTokenContract,
+    balance: longTokenBalance,
+    decimals: longTokenDecimals,
+  } = useERC20ContractValues(
+    longTokenAddress,
+    address,
+    web3Provider ? web3Provider.getSigner() : null
+  );
+
+  const {
+    contract: shortTokenContract,
+    balance: shortTokenBalance,
+    decimals: shortTokenDecimals,
+  } = useERC20ContractValues(
+    shortTokenAddress,
+    address,
+    web3Provider ? web3Provider.getSigner() : null
+  );
 
   // Determine balance.
   // TODO: Once redeem is available, you must diff token creation events vs redeem for net balance.
@@ -64,17 +84,18 @@ const Testing = () => {
         setCollateralPerPair(pairRatio);
       });
 
+      contract.longToken().then((addr: string) => {
+        setLongTokenAddress(addr);
+      });
+
+      contract.shortToken().then((addr: string) => {
+        setShortTokenAddress(addr);
+      });
+
       setLSPContract(contract);
     }
   }, [web3Provider, lspContract]);
 
-  useEffect(() => {
-    if (erc20Contract) {
-      erc20Contract.decimals().then((decimals: ethers.BigNumber) => {
-        setERC20Decimals(decimals.toString());
-      });
-    }
-  }, [erc20Contract]);
   useEffect(() => {
     if ((window as any).ethereum && web3Provider === null) {
       const mm = (window as any).ethereum;
@@ -92,12 +113,16 @@ const Testing = () => {
       lspContract={lspContract}
       erc20Contract={erc20Contract}
       collateralBalance={collateralBalance}
-      tokensMinted={tokensMinted}
       collateralPerPair={collateralPerPair}
       refetchTokensCreatedEvents={refetchTokensCreatedEvents}
       setCollateralBalance={setCollateralBalance}
-      erc20Decimals={erc20Decimals}
       collateralDecimals={collateralDecimals}
+      longTokenContract={longTokenContract}
+      longTokenBalance={longTokenBalance}
+      longTokenDecimals={longTokenDecimals}
+      shortTokenContract={shortTokenContract}
+      shortTokenBalance={shortTokenBalance}
+      shortTokenDecimals={shortTokenDecimals}
     />
   );
 };
