@@ -17,8 +17,6 @@ import Collateral from "./Collateral";
 import { RefetchOptions, QueryObserverResult } from "react-query";
 import { TokensCreated } from "./useTokensCreatedEvents";
 
-const TEN_POWER_18 = "1000000000000000000";
-
 interface Props {
   address: string;
   contractAddress: string;
@@ -67,11 +65,11 @@ const MintForm: FC<Props> = ({
         // User has specified in the input.
         // Get rid of float, then divide it out later.
         const ratio = ethers.BigNumber.from(1 / Number(collateralPerPair)).mul(
-          ethers.BigNumber.from(TEN_POWER_18)
+          ethers.BigNumber.from(10).pow(18)
         );
 
         lspContract
-          .create(weiAmount.mul(ratio).div(ethers.BigNumber.from(TEN_POWER_18)))
+          .create(weiAmount.mul(ratio).div(ethers.BigNumber.from(10).pow(18)))
           .then((tx: any) => {
             tx.wait(1).then(async () => {
               setAmount("");

@@ -17,6 +17,7 @@ interface Props {
   collateralPerPair: string;
   tokensMinted: ethers.BigNumber;
   erc20Decimals: string;
+  collateralDecimals: string;
 }
 
 const RedeemForm: FC<Props> = ({
@@ -24,6 +25,7 @@ const RedeemForm: FC<Props> = ({
   collateralPerPair,
   tokensMinted,
   erc20Decimals,
+  collateralDecimals,
 }) => {
   const [collateral, setCollateral] = useState("");
   const [amount, setAmount] = useState("");
@@ -89,6 +91,7 @@ const RedeemForm: FC<Props> = ({
             setAmount={setAmount}
             collateralBalance={collateralBalance}
             collateralPerPair={collateralPerPair}
+            collateralDecimals={collateralDecimals}
             redeemForm
           />
         )}
