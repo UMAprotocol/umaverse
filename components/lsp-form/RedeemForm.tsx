@@ -13,7 +13,7 @@ import Collateral from "./Collateral";
 import DoubleArrow from "../../public/icons/arrows-switch.svg";
 
 interface Props {
-  collateralBalance: string;
+  collateralBalance: ethers.BigNumber;
   collateralPerPair: string;
   tokensMinted: ethers.BigNumber;
   erc20Decimals: string;
@@ -45,6 +45,7 @@ const RedeemForm: FC<Props> = ({
             setAmount={setAmount}
             redeemForm
             collateralOnTop={collateralOnTop}
+            collateralDecimals={collateralDecimals}
           />
         ) : (
           <LongShort
@@ -78,6 +79,7 @@ const RedeemForm: FC<Props> = ({
             setShortTokenAmount={setShortTokenAmount}
             tokensMinted={tokensMinted}
             collateralPerPair={collateralPerPair}
+            erc20Decimals={erc20Decimals}
           />
         ) : (
           <Collateral

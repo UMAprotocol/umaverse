@@ -21,7 +21,7 @@ interface Props {
   contractAddress: string;
   lspContract: ethers.Contract | null;
   erc20Contract: ethers.Contract | null;
-  collateralBalance: string;
+  collateralBalance: ethers.BigNumber;
   tokensMinted: ethers.BigNumber;
   collateralPerPair: string;
   refetchTokensCreatedEvents: (
@@ -29,8 +29,9 @@ interface Props {
   ) => Promise<
     QueryObserverResult<void | TokensCreated[] | undefined, unknown>
   >;
-  setCollateralBalance: React.Dispatch<React.SetStateAction<string>>;
+  setCollateralBalance: React.Dispatch<React.SetStateAction<ethers.BigNumber>>;
   erc20Decimals: string;
+  collateralDecimals: string;
 }
 
 const LSPForm: FC<Props> = ({
@@ -45,6 +46,7 @@ const LSPForm: FC<Props> = ({
   refetchTokensCreatedEvents,
   setCollateralBalance,
   erc20Decimals,
+  collateralDecimals,
 }) => {
   const [showSettle, setShowSettle] = useState(false);
 
@@ -78,6 +80,7 @@ const LSPForm: FC<Props> = ({
               refetchTokensCreatedEvents={refetchTokensCreatedEvents}
               setCollateralBalance={setCollateralBalance}
               erc20Decimals={erc20Decimals}
+              collateralDecimals={collateralDecimals}
             />
           </div>
           <div data-label="Redeem">
@@ -86,6 +89,7 @@ const LSPForm: FC<Props> = ({
               tokensMinted={tokensMinted}
               collateralPerPair={collateralPerPair}
               erc20Decimals={erc20Decimals}
+              collateralDecimals={collateralDecimals}
             />
           </div>
         </Tabs>

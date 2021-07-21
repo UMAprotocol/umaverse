@@ -5,7 +5,7 @@ import LSPForm from "../components/lsp-form/LSPForm";
 import { KNOWN_LSP_ADDRESS } from "../utils/constants";
 import useTokensCreatedEvents from "../components/lsp-form/useTokensCreatedEvents";
 import convertToWeiSafely from "../utils/convertToWeiSafely";
-import convertFromWeiSafely from "../utils/convertFromWeiSafely";
+
 import createLSPContractInstance from "../components/lsp-form/createLSPContractInstance";
 import createERC20ContractInstance from "../components/lsp-form/createERC20ContractInstance";
 
@@ -18,7 +18,10 @@ const Testing = () => {
   const [erc20Contract, setERC20Contract] = useState<ethers.Contract | null>(
     null
   );
-  const [collateralBalance, setCollateralBalance] = useState("0");
+  const [collateralBalance, setCollateralBalance] = useState<ethers.BigNumber>(
+    ethers.BigNumber.from("0")
+  );
+
   const [tokensMinted, setTokensMinted] = useState<ethers.BigNumber>(
     ethers.BigNumber.from("0")
   );
@@ -26,6 +29,7 @@ const Testing = () => {
   const { data: tokensCreatedEvents, refetch: refetchTokensCreatedEvents } =
     useTokensCreatedEvents(lspContract, address);
   const [erc20Decimals, setERC20Decimals] = useState("18");
+  const [collateralDecimals, setCollateralDecimals] = useState("18");
 
   // Determine balance.
   // TODO: Once redeem is available, you must diff token creation events vs redeem for net balance.
@@ -47,8 +51,12 @@ const Testing = () => {
       const contract = createLSPContractInstance(signer, KNOWN_LSP_ADDRESS);
       contract.collateralToken().then(async (res: any) => {
         const erc20 = createERC20ContractInstance(signer, res);
+        erc20.decimals().then((decimals: ethers.BigNumber) => {
+          setCollateralDecimals(decimals.toString());
+        });
+
         const balance = (await erc20.balanceOf(address)) as ethers.BigNumber;
-        setCollateralBalance(convertFromWeiSafely(balance.toString()));
+        setCollateralBalance(balance);
         setERC20Contract(erc20);
       });
       contract.collateralPerPair().then((res: ethers.BigNumber) => {
@@ -89,6 +97,7 @@ const Testing = () => {
       refetchTokensCreatedEvents={refetchTokensCreatedEvents}
       setCollateralBalance={setCollateralBalance}
       erc20Decimals={erc20Decimals}
+      collateralDecimals={collateralDecimals}
     />
   );
 };

@@ -10,7 +10,7 @@ import UniswapIcon from "../../public/icons/uniswap-logo.svg";
 import TextInput from "../text-input";
 import { LabelPlacement } from "../text-input/TextInput";
 import useWindowSize from "../../hooks/useWindowSize";
-
+import { ethers } from "ethers";
 interface Props {
   collateral: string;
   setCollateral: React.Dispatch<React.SetStateAction<string>>;
@@ -19,8 +19,9 @@ interface Props {
   // Adjust CSS slightly if its the redeem form or the mint form.
   redeemForm?: boolean;
   collateralOnTop?: boolean;
-  collateralBalance: string;
+  collateralBalance: ethers.BigNumber;
   collateralPerPair: string;
+  collateralDecimals: string;
 }
 
 const Collateral: FC<Props> = ({
@@ -31,6 +32,7 @@ const Collateral: FC<Props> = ({
   collateralOnTop,
   redeemForm,
   collateralBalance,
+  collateralDecimals,
 }) => {
   const size = useWindowSize();
   const width = size.width && size.width > 728 ? "230px" : "100%";
@@ -53,7 +55,13 @@ const Collateral: FC<Props> = ({
       </FormRow>
       <BalanceRow>
         <div>
-          <span>Your Balance {collateralBalance}</span>{" "}
+          <span>
+            Your Balance{" "}
+            {ethers.utils.formatUnits(
+              collateralBalance.toString(),
+              collateralDecimals
+            )}
+          </span>{" "}
           {(collateralOnTop || !redeemForm) && <span>Max</span>}
         </div>
       </BalanceRow>

@@ -11,7 +11,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { ethers } from "ethers";
 import toWeiSafe from "../../utils/convertToWeiSafely";
-import convertFromWeiSafely from "../../utils/convertFromWeiSafely";
 
 import LongShort from "./LongShort";
 import Collateral from "./Collateral";
@@ -27,7 +26,7 @@ interface Props {
   lspContract: ethers.Contract | null;
   erc20Contract: ethers.Contract | null;
   web3Provider: ethers.providers.Web3Provider | null;
-  collateralBalance: string;
+  collateralBalance: ethers.BigNumber;
   tokensMinted: ethers.BigNumber;
   collateralPerPair: string;
   refetchTokensCreatedEvents: (
@@ -35,8 +34,9 @@ interface Props {
   ) => Promise<
     QueryObserverResult<void | TokensCreated[] | undefined, unknown>
   >;
-  setCollateralBalance: React.Dispatch<React.SetStateAction<string>>;
+  setCollateralBalance: React.Dispatch<React.SetStateAction<ethers.BigNumber>>;
   erc20Decimals: string;
+  collateralDecimals: string;
 }
 
 const MintForm: FC<Props> = ({
@@ -51,6 +51,7 @@ const MintForm: FC<Props> = ({
   address,
   setCollateralBalance,
   erc20Decimals,
+  collateralDecimals,
 }) => {
   const [collateral, setCollateral] = useState("uma");
   const [amount, setAmount] = useState("");
@@ -80,7 +81,7 @@ const MintForm: FC<Props> = ({
               const balance = (await erc20Contract.balanceOf(
                 address
               )) as ethers.BigNumber;
-              setCollateralBalance(convertFromWeiSafely(balance.toString()));
+              setCollateralBalance(balance);
             });
           });
       } catch (err) {
@@ -108,6 +109,7 @@ const MintForm: FC<Props> = ({
           setAmount={setAmount}
           collateralBalance={collateralBalance}
           collateralPerPair={collateralPerPair}
+          collateralDecimals={collateralDecimals}
         />
       </TopFormWrapper>
       <DownArrowWrapper>
