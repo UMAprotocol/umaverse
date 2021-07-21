@@ -39,7 +39,6 @@ interface Props {
 }
 
 const MintForm: FC<Props> = ({
-  // setShowSettle,
   lspContract,
   erc20Contract,
   contractAddress,
