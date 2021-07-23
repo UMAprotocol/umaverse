@@ -27,15 +27,15 @@ export const FormRow = styled.div`
   div {
     margin: 0 5px;
     > div {
-      &:nth-child(1) {
+      &:nth-of-type(1) {
         button {
           span {
             margin-left: 50px;
           }
         }
-        @media ${QUERIES.tabletAndUp} {
+        /* @media ${QUERIES.tabletAndUp} {
           margin-left: 92px;
-        }
+        } */
       }
       &:nth-of-type(2) {
         flex-grow: 16;
@@ -135,7 +135,7 @@ export const ButtonWrapper = styled.div`
 `;
 
 export const MintButton = styled(BaseButton)`
-  background-color: var(--primary-700);
+  background-color: var(--primary, 500);
   color: var(--white);
   text-align: center;
   border-radius: 8px;
@@ -191,4 +191,20 @@ export const SettleText = styled.div`
 
 export const TimeRemaining = styled.div`
   font-size: 0.875rem;
+`;
+
+export const CollateralWrapper = styled.div`
+  width: 125px;
+  & > div {
+    padding: 15px;
+    display: flex;
+    border-radius: 6px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: transparent;
+    min-width: 100%;
+    background-color: #f1f0f0;
+    color: #919191;
+    padding-left: 1.25rem;
+  }
 `;

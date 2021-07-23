@@ -7,12 +7,30 @@ import {
   ButtonWrapper,
   MintButton,
 } from "./LSPForm.styled";
-
+import { ethers } from "ethers";
 import LongShort from "./LongShort";
 import Collateral from "./Collateral";
 import DoubleArrow from "../../public/icons/arrows-switch.svg";
 
-const RedeemForm: FC = () => {
+interface Props {
+  collateralBalance: ethers.BigNumber;
+  collateralPerPair: ethers.BigNumber;
+  collateralDecimals: string;
+  longTokenBalance: ethers.BigNumber;
+  longTokenDecimals: string;
+  shortTokenBalance: ethers.BigNumber;
+  shortTokenDecimals: string;
+}
+
+const RedeemForm: FC<Props> = ({
+  collateralBalance,
+  collateralPerPair,
+  collateralDecimals,
+  longTokenBalance,
+  longTokenDecimals,
+  shortTokenBalance,
+  shortTokenDecimals,
+}) => {
   const [collateral, setCollateral] = useState("");
   const [amount, setAmount] = useState("");
   const [longTokenAmount, setLongTokenAmount] = useState("");
@@ -25,21 +43,31 @@ const RedeemForm: FC = () => {
         <SmallTitle>Input</SmallTitle>
         {collateralOnTop ? (
           <Collateral
+            collateralBalance={collateralBalance}
+            collateralPerPair={collateralPerPair}
             collateral={collateral}
             setCollateral={setCollateral}
             amount={amount}
             setAmount={setAmount}
             redeemForm
             collateralOnTop={collateralOnTop}
+            collateralDecimals={collateralDecimals}
+            setLongTokenAmount={setLongTokenAmount}
+            setShortTokenAmount={setShortTokenAmount}
           />
         ) : (
           <LongShort
+            redeemForm
+            setAmount={setAmount}
             longTokenAmount={longTokenAmount}
             setLongTokenAmount={setLongTokenAmount}
             shortTokenAmount={shortTokenAmount}
             setShortTokenAmount={setShortTokenAmount}
-            redeemForm
-            collateralOnTop={collateralOnTop}
+            collateralPerPair={collateralPerPair}
+            longTokenBalance={longTokenBalance}
+            longTokenDecimals={longTokenDecimals}
+            shortTokenBalance={shortTokenBalance}
+            shortTokenDecimals={shortTokenDecimals}
           />
         )}
       </TopFormWrapper>
@@ -53,12 +81,17 @@ const RedeemForm: FC = () => {
         <SmallTitle>Output</SmallTitle>
         {collateralOnTop ? (
           <LongShort
+            redeemForm
+            setAmount={setAmount}
             longTokenAmount={longTokenAmount}
             setLongTokenAmount={setLongTokenAmount}
             shortTokenAmount={shortTokenAmount}
             setShortTokenAmount={setShortTokenAmount}
-            redeemForm
-            collateralOnTop={collateralOnTop}
+            collateralPerPair={collateralPerPair}
+            longTokenBalance={longTokenBalance}
+            longTokenDecimals={longTokenDecimals}
+            shortTokenBalance={shortTokenBalance}
+            shortTokenDecimals={shortTokenDecimals}
           />
         ) : (
           <Collateral
@@ -66,8 +99,12 @@ const RedeemForm: FC = () => {
             setCollateral={setCollateral}
             amount={amount}
             setAmount={setAmount}
+            collateralBalance={collateralBalance}
+            collateralPerPair={collateralPerPair}
+            collateralDecimals={collateralDecimals}
+            setLongTokenAmount={setLongTokenAmount}
+            setShortTokenAmount={setShortTokenAmount}
             redeemForm
-            collateralOnTop={collateralOnTop}
           />
         )}
       </BottomFormWrapper>

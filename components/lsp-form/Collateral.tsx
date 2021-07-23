@@ -1,12 +1,16 @@
 import React, { FC } from "react";
-import { FormRow, BalanceRow, iconStyles } from "./LSPForm.styled";
+import {
+  FormRow,
+  BalanceRow,
+  iconStyles,
+  CollateralWrapper,
+} from "./LSPForm.styled";
 import EthIcon from "../../public/icons/eth-icon.svg";
 import UniswapIcon from "../../public/icons/uniswap-logo.svg";
-import Dropdown from "../dropdown";
 import TextInput from "../text-input";
-import { DropdownVariant } from "../dropdown/Dropdown";
 import { LabelPlacement } from "../text-input/TextInput";
 import useWindowSize from "../../hooks/useWindowSize";
+import { ethers } from "ethers";
 
 interface Props {
   collateral: string;
@@ -16,15 +20,24 @@ interface Props {
   // Adjust CSS slightly if its the redeem form or the mint form.
   redeemForm?: boolean;
   collateralOnTop?: boolean;
+  collateralBalance: ethers.BigNumber;
+  collateralPerPair: ethers.BigNumber;
+  collateralDecimals: string;
+  setLongTokenAmount: React.Dispatch<React.SetStateAction<string>>;
+  setShortTokenAmount: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const Collateral: FC<Props> = ({
   collateral,
-  setCollateral,
   amount,
   setAmount,
   collateralOnTop,
   redeemForm,
+  collateralBalance,
+  collateralDecimals,
+  collateralPerPair,
+  setLongTokenAmount,
+  setShortTokenAmount,
 }) => {
   const size = useWindowSize();
   const width = size.width && size.width > 728 ? "230px" : "100%";
@@ -33,18 +46,9 @@ const Collateral: FC<Props> = ({
       <FormRow>
         {collateral === "eth" && <EthIcon style={iconStyles} />}
         {collateral === "uniswap" && <UniswapIcon style={iconStyles} />}
-        <Dropdown
-          setValue={setCollateral}
-          variant={"coin" as DropdownVariant}
-          defaultValue={{ label: "ETH", value: "eth" }}
-          items={[
-            {
-              label: "ETH",
-              value: "eth",
-            },
-            { label: "UNI", value: "uniswap" },
-          ]}
-        />
+        <CollateralWrapper>
+          <div>{collateral.toUpperCase()}</div>
+        </CollateralWrapper>
         <TextInput
           label="collateral"
           labelPlacement={"overlap" as LabelPlacement}
@@ -52,11 +56,30 @@ const Collateral: FC<Props> = ({
           value={amount}
           setValue={setAmount}
           width={width}
+          additionalEffects={(e) => {
+            if (e.target.value) {
+              const normalizedCPP = ethers.utils.formatEther(collateralPerPair);
+              const newTokenPairAmounts =
+                Number(e.target.value) / Number(normalizedCPP);
+
+              setLongTokenAmount(newTokenPairAmounts.toString());
+              setShortTokenAmount(newTokenPairAmounts.toString());
+            } else {
+              setLongTokenAmount("0");
+              setShortTokenAmount("0");
+            }
+          }}
         />
       </FormRow>
       <BalanceRow>
         <div>
-          <span>Your Balance 0.7431</span>{" "}
+          <span>
+            Your Balance{" "}
+            {ethers.utils.formatUnits(
+              collateralBalance.toString(),
+              collateralDecimals
+            )}
+          </span>{" "}
           {(collateralOnTop || !redeemForm) && <span>Max</span>}
         </div>
       </BalanceRow>
