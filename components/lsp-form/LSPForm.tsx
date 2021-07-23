@@ -1,17 +1,15 @@
-import React, { FC, useState, useEffect } from "react";
+import React, { FC, useState } from "react";
 import Tabs from "../tabs";
 import {
   Wrapper,
   SettleButton,
   SettleWrapper,
   SettleTitle,
-  TimeRemaining,
   SettleText,
 } from "./LSPForm.styled";
 import { ethers } from "ethers";
 import MintForm from "./MintForm";
 import RedeemForm from "./RedeemForm";
-import { calculateTimeRemaining } from "./helpers";
 
 interface Props {
   address: string;
@@ -49,18 +47,6 @@ const LSPForm: FC<Props> = ({
   refetchShortTokenBalance,
 }) => {
   const [showSettle, setShowSettle] = useState(false);
-
-  // Stub time remaining.
-  const [timeRemaining, setTimeRemaining] = useState("00:00");
-  useEffect(() => {
-    setTimeRemaining(calculateTimeRemaining());
-
-    const timer = setInterval(() => {
-      setTimeRemaining(calculateTimeRemaining());
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
 
   return (
     <Wrapper>
@@ -102,10 +88,9 @@ const LSPForm: FC<Props> = ({
       {showSettle && (
         <SettleWrapper>
           <SettleTitle>Settle Position</SettleTitle>
-          <TimeRemaining>Time Remaining: {timeRemaining}</TimeRemaining>
           <SettleText>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer
-            placerat malesuada sapien ut dapibus. Aliquam.
+            The LSP contract has expired. You can now settle your position at
+            the oracle returned price.
           </SettleText>
           <SettleButton onClick={() => setShowSettle(false)}>
             Settle
