@@ -68,6 +68,7 @@ const RedeemForm: FC<Props> = ({
             longTokenDecimals={longTokenDecimals}
             shortTokenBalance={shortTokenBalance}
             shortTokenDecimals={shortTokenDecimals}
+            collateralOnTop={collateralOnTop}
           />
         )}
       </TopFormWrapper>
@@ -92,6 +93,7 @@ const RedeemForm: FC<Props> = ({
             longTokenDecimals={longTokenDecimals}
             shortTokenBalance={shortTokenBalance}
             shortTokenDecimals={shortTokenDecimals}
+            collateralOnTop={collateralOnTop}
           />
         ) : (
           <Collateral
@@ -105,6 +107,7 @@ const RedeemForm: FC<Props> = ({
             setLongTokenAmount={setLongTokenAmount}
             setShortTokenAmount={setShortTokenAmount}
             redeemForm
+            collateralOnTop={collateralOnTop}
           />
         )}
       </BottomFormWrapper>

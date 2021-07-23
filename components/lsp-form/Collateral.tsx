@@ -42,8 +42,8 @@ const Collateral: FC<Props> = ({
   const size = useWindowSize();
   const width = size.width && size.width > 728 ? "230px" : "100%";
 
-  const setLongShortPair = useCallback(
-    (collateral) => {
+  const setLongShortPairInputs = useCallback(
+    (collateral: string) => {
       const normalizedCPP = ethers.utils.formatEther(collateralPerPair);
 
       const newTokenPairAmounts = Number(collateral) / Number(normalizedCPP);
@@ -71,7 +71,7 @@ const Collateral: FC<Props> = ({
           width={width}
           additionalEffects={(e) => {
             if (e.target.value) {
-              setLongShortPair(e.target.value);
+              setLongShortPairInputs(e.target.value);
             } else {
               setLongTokenAmount("0");
               setShortTokenAmount("0");
@@ -95,7 +95,7 @@ const Collateral: FC<Props> = ({
                   ethers.utils.formatEther(collateralBalance);
                 setAmount(normalizedBalance);
 
-                setLongShortPair(normalizedBalance);
+                setLongShortPairInputs(normalizedBalance);
               }}
             >
               Max
