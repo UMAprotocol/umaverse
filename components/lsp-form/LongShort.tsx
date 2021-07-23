@@ -5,8 +5,6 @@ import TextInput from "../text-input";
 import { LabelPlacement } from "../text-input/TextInput";
 import { ethers } from "ethers";
 
-const toBN = ethers.BigNumber.from;
-
 interface Props {
   setAmount: React.Dispatch<React.SetStateAction<string>>;
   longTokenAmount: string;

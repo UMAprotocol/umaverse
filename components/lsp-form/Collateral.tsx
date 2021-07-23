@@ -12,9 +12,6 @@ import { LabelPlacement } from "../text-input/TextInput";
 import useWindowSize from "../../hooks/useWindowSize";
 import { ethers } from "ethers";
 
-const toBN = ethers.BigNumber.from;
-const scaledToWei = toBN("10").pow("18");
-
 interface Props {
   collateral: string;
   setCollateral: React.Dispatch<React.SetStateAction<string>>;
