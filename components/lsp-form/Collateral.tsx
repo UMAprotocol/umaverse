@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useCallback } from "react";
 import {
   FormRow,
   BalanceRow,
@@ -41,6 +41,19 @@ const Collateral: FC<Props> = ({
 }) => {
   const size = useWindowSize();
   const width = size.width && size.width > 728 ? "230px" : "100%";
+
+  const setLongShortPair = useCallback(
+    (collateral) => {
+      const normalizedCPP = ethers.utils.formatEther(collateralPerPair);
+
+      const newTokenPairAmounts = Number(collateral) / Number(normalizedCPP);
+
+      setLongTokenAmount(newTokenPairAmounts.toString());
+      setShortTokenAmount(newTokenPairAmounts.toString());
+    },
+    [collateralPerPair]
+  );
+
   return (
     <>
       <FormRow>
@@ -58,12 +71,7 @@ const Collateral: FC<Props> = ({
           width={width}
           additionalEffects={(e) => {
             if (e.target.value) {
-              const normalizedCPP = ethers.utils.formatEther(collateralPerPair);
-              const newTokenPairAmounts =
-                Number(e.target.value) / Number(normalizedCPP);
-
-              setLongTokenAmount(newTokenPairAmounts.toString());
-              setShortTokenAmount(newTokenPairAmounts.toString());
+              setLongShortPair(e.target.value);
             } else {
               setLongTokenAmount("0");
               setShortTokenAmount("0");
@@ -80,7 +88,19 @@ const Collateral: FC<Props> = ({
               collateralDecimals
             )}
           </span>{" "}
-          {(collateralOnTop || !redeemForm) && <span>Max</span>}
+          {(collateralOnTop || !redeemForm) && (
+            <span
+              onClick={() => {
+                const normalizedBalance =
+                  ethers.utils.formatEther(collateralBalance);
+                setAmount(normalizedBalance);
+
+                setLongShortPair(normalizedBalance);
+              }}
+            >
+              Max
+            </span>
+          )}
         </div>
       </BalanceRow>
     </>
