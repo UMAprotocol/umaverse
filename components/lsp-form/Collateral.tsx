@@ -61,11 +61,10 @@ const Collateral: FC<Props> = ({
           width={width}
           additionalEffects={(e) => {
             if (e.target.value) {
-              const newTokenPairAmounts = toBN(e.target.value)
-                .mul(scaledToWei)
-                .div(collateralPerPair);
+              const normalizedCPP = ethers.utils.formatEther(collateralPerPair);
+              const newTokenPairAmounts =
+                Number(e.target.value) / Number(normalizedCPP);
 
-              console.log(newTokenPairAmounts.toString());
               setLongTokenAmount(newTokenPairAmounts.toString());
               setShortTokenAmount(newTokenPairAmounts.toString());
             } else {

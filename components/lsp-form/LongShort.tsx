@@ -49,9 +49,9 @@ const LongShort: FC<Props> = ({
           setValue={setLongTokenAmount}
           additionalEffects={(e) => {
             if (e.target.value) {
-              const newAmount = toBN(e.target.value)
-                .mul(collateralPerPair)
-                .div(scaledToWei);
+              const normalizedCPP = ethers.utils.formatEther(collateralPerPair);
+
+              const newAmount = Number(e.target.value) * Number(normalizedCPP);
 
               setAmount(newAmount.toString());
               setShortTokenAmount(e.target.value);
@@ -69,9 +69,9 @@ const LongShort: FC<Props> = ({
           setValue={setShortTokenAmount}
           additionalEffects={(e) => {
             if (e.target.value) {
-              const newAmount = toBN(e.target.value)
-                .mul(collateralPerPair)
-                .div(scaledToWei);
+              const normalizedCPP = ethers.utils.formatEther(collateralPerPair);
+
+              const newAmount = Number(e.target.value) * Number(normalizedCPP);
 
               setAmount(newAmount.toString());
               setLongTokenAmount(e.target.value);
