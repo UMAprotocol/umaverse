@@ -82,10 +82,10 @@ const MintForm: FC<Props> = ({
         }
         // Need to send the correct amount based on the collateral pair ** the amount
         // User has specified in the input.
-        const ratio = scaledToWei.div(collateralPerPair);
-
+        // All operations that make the number larger come first. All the operations that make the number smaller come last.
+        const mintAmount = weiAmount.mul(scaledToWei).div(collateralPerPair);
         lspContract
-          .create(weiAmount.mul(ratio))
+          .create(mintAmount)
           .then((tx: any) => {
             return tx.wait(1);
           })

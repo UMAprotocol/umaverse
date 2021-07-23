@@ -6,7 +6,6 @@ import { LabelPlacement } from "../text-input/TextInput";
 import { ethers } from "ethers";
 
 const toBN = ethers.BigNumber.from;
-const scaledToWei = toBN("10").pow("18");
 
 interface Props {
   setAmount: React.Dispatch<React.SetStateAction<string>>;
