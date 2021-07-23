@@ -15,6 +15,9 @@ import toWeiSafe from "../../utils/convertToWeiSafely";
 import LongShort from "./LongShort";
 import Collateral from "./Collateral";
 
+const toBN = ethers.BigNumber.from;
+const scaledToWei = toBN("10").pow("18");
+
 // max uint value is 2^256 - 1
 const MAX_UINT_VAL = ethers.constants.MaxUint256;
 const INFINITE_APPROVAL_AMOUNT = MAX_UINT_VAL;
@@ -27,7 +30,7 @@ interface Props {
   erc20Contract: ethers.Contract | null;
   web3Provider: ethers.providers.Web3Provider | null;
   collateralBalance: ethers.BigNumber;
-  collateralPerPair: string;
+  collateralPerPair: ethers.BigNumber;
   setCollateralBalance: React.Dispatch<React.SetStateAction<ethers.BigNumber>>;
   collateralDecimals: string;
   longTokenBalance: ethers.BigNumber;
@@ -79,13 +82,10 @@ const MintForm: FC<Props> = ({
         }
         // Need to send the correct amount based on the collateral pair ** the amount
         // User has specified in the input.
-        // Get rid of float, then divide it out later.
-        const ratio = ethers.BigNumber.from(1 / Number(collateralPerPair)).mul(
-          ethers.BigNumber.from(10).pow(18)
-        );
+        const ratio = scaledToWei.div(collateralPerPair);
 
         lspContract
-          .create(weiAmount.mul(ratio).div(ethers.BigNumber.from(10).pow(18)))
+          .create(weiAmount.mul(ratio))
           .then((tx: any) => {
             return tx.wait(1);
           })

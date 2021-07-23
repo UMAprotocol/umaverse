@@ -14,7 +14,7 @@ import DoubleArrow from "../../public/icons/arrows-switch.svg";
 
 interface Props {
   collateralBalance: ethers.BigNumber;
-  collateralPerPair: string;
+  collateralPerPair: ethers.BigNumber;
   collateralDecimals: string;
   longTokenBalance: ethers.BigNumber;
   longTokenDecimals: string;

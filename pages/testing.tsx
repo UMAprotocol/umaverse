@@ -8,6 +8,7 @@ import createLSPContractInstance from "../components/lsp-form/createLSPContractI
 import createERC20ContractInstance from "../components/lsp-form/createERC20ContractInstance";
 import useERC20ContractValues from "../hooks/useERC20ContractValues";
 
+const toBN = ethers.BigNumber.from;
 const Testing = () => {
   const [web3Provider, setWeb3Provider] =
     useState<ethers.providers.Web3Provider | null>(null);
@@ -18,10 +19,12 @@ const Testing = () => {
     null
   );
   const [collateralBalance, setCollateralBalance] = useState<ethers.BigNumber>(
-    ethers.BigNumber.from("0")
+    toBN("0")
   );
 
-  const [collateralPerPair, setCollateralPerPair] = useState("1");
+  const [collateralPerPair, setCollateralPerPair] = useState<ethers.BigNumber>(
+    toBN("1")
+  );
 
   const [collateralDecimals, setCollateralDecimals] = useState("18");
 
@@ -63,9 +66,9 @@ const Testing = () => {
         setCollateralBalance(balance);
         setERC20Contract(erc20);
       });
-      contract.collateralPerPair().then((res: ethers.BigNumber) => {
-        const pairRatio = ethers.utils.formatEther(res.toString()).toString();
-        setCollateralPerPair(pairRatio);
+
+      contract.collateralPerPair().then((cpp: ethers.BigNumber) => {
+        setCollateralPerPair(cpp);
       });
 
       contract.longToken().then((addr: string) => {

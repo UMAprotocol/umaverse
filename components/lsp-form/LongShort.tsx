@@ -5,6 +5,9 @@ import TextInput from "../text-input";
 import { LabelPlacement } from "../text-input/TextInput";
 import { ethers } from "ethers";
 
+const toBN = ethers.BigNumber.from;
+const scaledToWei = toBN("10").pow("18");
+
 interface Props {
   setAmount: React.Dispatch<React.SetStateAction<string>>;
   longTokenAmount: string;
@@ -14,7 +17,7 @@ interface Props {
   // Adjust CSS slightly if its the redeem form or the mint form.
   redeemForm?: boolean;
   collateralOnTop?: boolean;
-  collateralPerPair: string;
+  collateralPerPair: ethers.BigNumber;
   longTokenBalance: ethers.BigNumber;
   longTokenDecimals: string;
   shortTokenBalance: ethers.BigNumber;
@@ -46,8 +49,10 @@ const LongShort: FC<Props> = ({
           setValue={setLongTokenAmount}
           additionalEffects={(e) => {
             if (e.target.value) {
-              const newAmount =
-                Number(e.target.value) * Number(collateralPerPair);
+              const newAmount = toBN(e.target.value)
+                .mul(collateralPerPair)
+                .div(scaledToWei);
+
               setAmount(newAmount.toString());
               setShortTokenAmount(e.target.value);
             } else {
@@ -64,8 +69,10 @@ const LongShort: FC<Props> = ({
           setValue={setShortTokenAmount}
           additionalEffects={(e) => {
             if (e.target.value) {
-              const newAmount =
-                Number(e.target.value) * Number(collateralPerPair);
+              const newAmount = toBN(e.target.value)
+                .mul(collateralPerPair)
+                .div(scaledToWei);
+
               setAmount(newAmount.toString());
               setLongTokenAmount(e.target.value);
             } else {

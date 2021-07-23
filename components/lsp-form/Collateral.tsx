@@ -11,6 +11,10 @@ import TextInput from "../text-input";
 import { LabelPlacement } from "../text-input/TextInput";
 import useWindowSize from "../../hooks/useWindowSize";
 import { ethers } from "ethers";
+
+const toBN = ethers.BigNumber.from;
+const scaledToWei = toBN("10").pow("18");
+
 interface Props {
   collateral: string;
   setCollateral: React.Dispatch<React.SetStateAction<string>>;
@@ -20,7 +24,7 @@ interface Props {
   redeemForm?: boolean;
   collateralOnTop?: boolean;
   collateralBalance: ethers.BigNumber;
-  collateralPerPair: string;
+  collateralPerPair: ethers.BigNumber;
   collateralDecimals: string;
   setLongTokenAmount: React.Dispatch<React.SetStateAction<string>>;
   setShortTokenAmount: React.Dispatch<React.SetStateAction<string>>;
@@ -57,8 +61,11 @@ const Collateral: FC<Props> = ({
           width={width}
           additionalEffects={(e) => {
             if (e.target.value) {
-              const newTokenPairAmounts =
-                Number(e.target.value) / Number(collateralPerPair);
+              const newTokenPairAmounts = toBN(e.target.value)
+                .mul(scaledToWei)
+                .div(collateralPerPair);
+
+              console.log(newTokenPairAmounts.toString());
               setLongTokenAmount(newTokenPairAmounts.toString());
               setShortTokenAmount(newTokenPairAmounts.toString());
             } else {

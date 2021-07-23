@@ -20,7 +20,7 @@ interface Props {
   lspContract: ethers.Contract | null;
   erc20Contract: ethers.Contract | null;
   collateralBalance: ethers.BigNumber;
-  collateralPerPair: string;
+  collateralPerPair: ethers.BigNumber;
   setCollateralBalance: React.Dispatch<React.SetStateAction<ethers.BigNumber>>;
   collateralDecimals: string;
   longTokenBalance: ethers.BigNumber;
