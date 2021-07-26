@@ -11,6 +11,7 @@ import TextInput from "../text-input";
 import { LabelPlacement } from "../text-input/TextInput";
 import useWindowSize from "../../hooks/useWindowSize";
 import { ethers } from "ethers";
+import { onlyAllowNumbersAndDecimals } from "./helpers";
 
 interface Props {
   collateral: string;
@@ -71,12 +72,20 @@ const Collateral: FC<Props> = ({
           width={width}
           additionalEffects={(e) => {
             if (e.target.value) {
-              setLongShortPairInputs(e.target.value);
+              const value = e.target.value;
+
+              // // test if the regexp is a float.
+              // const floatRegExp = /^[0-9]\d*(\.\d+)?$/;
+              // if (!floatRegExp.test(value)) {
+              //   return false;
+              // }
+              setLongShortPairInputs(value);
             } else {
               setLongTokenAmount("0");
               setShortTokenAmount("0");
             }
           }}
+          onKeyDown={onlyAllowNumbersAndDecimals}
         />
       </FormRow>
       <BalanceRow>

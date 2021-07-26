@@ -4,6 +4,7 @@ import { FormRow, BalanceRowToken } from "./LSPForm.styled";
 import TextInput from "../text-input";
 import { LabelPlacement } from "../text-input/TextInput";
 import { ethers } from "ethers";
+import { onlyAllowNumbersAndDecimals } from "./helpers";
 
 interface Props {
   setAmount: React.Dispatch<React.SetStateAction<string>>;
@@ -105,6 +106,7 @@ const LongShort: FC<Props> = ({
               setAmount("0");
             }
           }}
+          onKeyDown={onlyAllowNumbersAndDecimals}
         />
         <TextInput
           label="short token"
@@ -120,6 +122,7 @@ const LongShort: FC<Props> = ({
               setLongTokenAmount("0");
             }
           }}
+          onKeyDown={onlyAllowNumbersAndDecimals}
         />
       </FormRow>
       <BalanceRowToken>

@@ -64,7 +64,6 @@ const RedeemForm: FC<Props> = ({
         // User has specified in the input.
         // All operations that make the number larger come first. All the operations that make the number smaller come last.
         const redeemAmount = weiAmount.mul(scaledToWei);
-        // console.log("redeemAmount", redeemAmount);
         lspContract
           .redeem(redeemAmount.div(scaledToWei))
           .then((tx: any) => {

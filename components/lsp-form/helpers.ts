@@ -11,3 +11,25 @@ export const calculateTimeRemaining = () => {
 
   return text;
 };
+
+// Only permits numbers and decimals
+// This is intended for a keydown or keyup event handler.
+// Tab, Backspace, and copy+paste also goes through.
+export const onlyAllowNumbersAndDecimals = (
+  event: React.KeyboardEvent<HTMLInputElement>
+) => {
+  if (
+    Number(event.key) >= 0 ||
+    event.key === "." ||
+    event.key === "Backspace" ||
+    event.key === "Tab"
+  ) {
+    return true;
+  } else {
+    if (event.metaKey && event.key === "v") return true;
+
+    event.preventDefault();
+
+    return false;
+  }
+};
