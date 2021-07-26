@@ -51,10 +51,11 @@ const LongShort: FC<Props> = ({
   );
 
   const maxTokensRedeemable = useCallback(() => {
+    const normalizedCPP = ethers.utils.formatEther(collateralPerPair);
+
     let ltb = "0",
       stb = "0",
       am = "0";
-    const normalizedCPP = ethers.utils.formatEther(collateralPerPair);
 
     if (
       longTokenBalance.gt(shortTokenBalance) ||
@@ -70,10 +71,15 @@ const LongShort: FC<Props> = ({
     }
 
     if (longTokenBalance.lt(shortTokenBalance)) {
-      ltb = longTokenBalance.toString();
-      stb = longTokenBalance.toString();
+      ltb = ethers.utils.formatUnits(longTokenBalance, longTokenDecimals);
+      stb = ethers.utils.formatUnits(longTokenBalance, longTokenDecimals);
       am = (
-        Number(longTokenBalance.toString()) * Number(normalizedCPP)
+        Number(
+          ethers.utils.formatUnits(
+            Number(longTokenBalance.toString()) * Number(normalizedCPP),
+            longTokenDecimals
+          )
+        ) * Number(normalizedCPP)
       ).toString();
     }
 
@@ -81,8 +87,6 @@ const LongShort: FC<Props> = ({
     setLongTokenAmount(ltb);
     setAmount(am);
   }, []);
-
-  console.log("coll", collateralOnTop);
 
   return (
     <>

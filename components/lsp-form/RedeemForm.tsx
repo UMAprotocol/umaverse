@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useState, useCallback } from "react";
 import {
   SmallTitle,
   TopFormWrapper,
@@ -11,6 +11,10 @@ import { ethers } from "ethers";
 import LongShort from "./LongShort";
 import Collateral from "./Collateral";
 import DoubleArrow from "../../public/icons/arrows-switch.svg";
+import toWeiSafe from "../../utils/convertToWeiSafely";
+
+const toBN = ethers.BigNumber.from;
+const scaledToWei = toBN("10").pow("18");
 
 interface Props {
   collateralBalance: ethers.BigNumber;
@@ -20,6 +24,8 @@ interface Props {
   longTokenDecimals: string;
   shortTokenBalance: ethers.BigNumber;
   shortTokenDecimals: string;
+  lspContract: ethers.Contract | null;
+  erc20Contract: ethers.Contract | null;
 }
 
 const RedeemForm: FC<Props> = ({
@@ -30,12 +36,47 @@ const RedeemForm: FC<Props> = ({
   longTokenDecimals,
   shortTokenBalance,
   shortTokenDecimals,
+  lspContract,
+  erc20Contract,
 }) => {
   const [collateral, setCollateral] = useState("uma");
   const [amount, setAmount] = useState("");
   const [longTokenAmount, setLongTokenAmount] = useState("");
   const [shortTokenAmount, setShortTokenAmount] = useState("");
   const [collateralOnTop, setCollateralOnTop] = useState(false);
+
+  const redeem = useCallback(async () => {
+    if (lspContract && erc20Contract && amount) {
+      // Note: You need to have an equal amount of long and short tokens in order to redeem.
+      // So what value you use of long token or short token should be arbitrary, as long as both are equal.
+      // It should be noted too, as you can have more of one than the other, we need to make sure the user is not trying to redeem more tokens than they have of the matching pair.
+      const weiAmount = toWeiSafe(longTokenAmount);
+      try {
+        // Need to send the correct amount based on the collateral pair ** the amount
+        // User has specified in the input.
+        // All operations that make the number larger come first. All the operations that make the number smaller come last.
+        const redeemAmount = weiAmount.mul(scaledToWei).mul(collateralPerPair);
+        // lspContract
+        //   .create(mintAmount)
+        //   .then((tx: any) => {
+        //     return tx.wait(1);
+        //   })
+        //   .then(async () => {
+        //     setAmount("");
+        //     setLongTokenAmount("");
+        //     setShortTokenAmount("");
+        //     const balance = (await erc20Contract.balanceOf(
+        //       address
+        //     )) as ethers.BigNumber;
+        //     setCollateralBalance(balance);
+        //     refetchLongTokenBalance();
+        //     refetchShortTokenBalance();
+        //   });
+      } catch (err) {
+        console.log("err", err);
+      }
+    }
+  }, []);
 
   return (
     <div>
@@ -112,7 +153,13 @@ const RedeemForm: FC<Props> = ({
         )}
       </BottomFormWrapper>
       <ButtonWrapper>
-        <MintButton>Redeem</MintButton>
+        <MintButton
+          onClick={() => {
+            return redeem();
+          }}
+        >
+          Redeem
+        </MintButton>
       </ButtonWrapper>
     </div>
   );
