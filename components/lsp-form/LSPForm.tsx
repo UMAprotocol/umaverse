@@ -83,6 +83,10 @@ const LSPForm: FC<Props> = ({
               shortTokenDecimals={shortTokenDecimals}
               lspContract={lspContract}
               erc20Contract={erc20Contract}
+              address={address}
+              setCollateralBalance={setCollateralBalance}
+              refetchLongTokenBalance={refetchLongTokenBalance}
+              refetchShortTokenBalance={refetchShortTokenBalance}
             />
           </div>
         </Tabs>

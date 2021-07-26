@@ -26,6 +26,10 @@ interface Props {
   shortTokenDecimals: string;
   lspContract: ethers.Contract | null;
   erc20Contract: ethers.Contract | null;
+  address: string;
+  setCollateralBalance: React.Dispatch<React.SetStateAction<ethers.BigNumber>>;
+  refetchLongTokenBalance: () => void;
+  refetchShortTokenBalance: () => void;
 }
 
 const RedeemForm: FC<Props> = ({
@@ -38,6 +42,10 @@ const RedeemForm: FC<Props> = ({
   shortTokenDecimals,
   lspContract,
   erc20Contract,
+  address,
+  setCollateralBalance,
+  refetchLongTokenBalance,
+  refetchShortTokenBalance,
 }) => {
   const [collateral, setCollateral] = useState("uma");
   const [amount, setAmount] = useState("");
@@ -46,7 +54,7 @@ const RedeemForm: FC<Props> = ({
   const [collateralOnTop, setCollateralOnTop] = useState(false);
 
   const redeem = useCallback(async () => {
-    if (lspContract && erc20Contract && amount) {
+    if (lspContract && erc20Contract && longTokenAmount && shortTokenAmount) {
       // Note: You need to have an equal amount of long and short tokens in order to redeem.
       // So what value you use of long token or short token should be arbitrary, as long as both are equal.
       // It should be noted too, as you can have more of one than the other, we need to make sure the user is not trying to redeem more tokens than they have of the matching pair.
@@ -55,28 +63,29 @@ const RedeemForm: FC<Props> = ({
         // Need to send the correct amount based on the collateral pair ** the amount
         // User has specified in the input.
         // All operations that make the number larger come first. All the operations that make the number smaller come last.
-        const redeemAmount = weiAmount.mul(scaledToWei).mul(collateralPerPair);
-        // lspContract
-        //   .create(mintAmount)
-        //   .then((tx: any) => {
-        //     return tx.wait(1);
-        //   })
-        //   .then(async () => {
-        //     setAmount("");
-        //     setLongTokenAmount("");
-        //     setShortTokenAmount("");
-        //     const balance = (await erc20Contract.balanceOf(
-        //       address
-        //     )) as ethers.BigNumber;
-        //     setCollateralBalance(balance);
-        //     refetchLongTokenBalance();
-        //     refetchShortTokenBalance();
-        //   });
+        const redeemAmount = weiAmount.mul(scaledToWei);
+        // console.log("redeemAmount", redeemAmount);
+        lspContract
+          .redeem(redeemAmount.div(scaledToWei))
+          .then((tx: any) => {
+            return tx.wait(1);
+          })
+          .then(async () => {
+            setAmount("");
+            setLongTokenAmount("");
+            setShortTokenAmount("");
+            const balance = (await erc20Contract.balanceOf(
+              address
+            )) as ethers.BigNumber;
+            setCollateralBalance(balance);
+            refetchLongTokenBalance();
+            refetchShortTokenBalance();
+          });
       } catch (err) {
         console.log("err", err);
       }
     }
-  }, []);
+  }, [lspContract, erc20Contract, longTokenAmount, shortTokenAmount]);
 
   return (
     <div>
