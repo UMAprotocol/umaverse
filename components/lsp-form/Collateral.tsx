@@ -73,12 +73,6 @@ const Collateral: FC<Props> = ({
           additionalEffects={(e) => {
             if (e.target.value) {
               const value = e.target.value;
-
-              // // test if the regexp is a float.
-              // const floatRegExp = /^[0-9]\d*(\.\d+)?$/;
-              // if (!floatRegExp.test(value)) {
-              //   return false;
-              // }
               setLongShortPairInputs(value);
             } else {
               setLongTokenAmount("0");

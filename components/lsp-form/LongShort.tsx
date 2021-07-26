@@ -58,10 +58,7 @@ const LongShort: FC<Props> = ({
       stb = "0",
       am = "0";
 
-    if (
-      longTokenBalance.gt(shortTokenBalance) ||
-      longTokenBalance.eq(shortTokenBalance)
-    ) {
+    if (longTokenBalance.gte(shortTokenBalance)) {
       ltb = ethers.utils.formatUnits(shortTokenBalance, shortTokenDecimals);
       stb = ethers.utils.formatUnits(shortTokenBalance, shortTokenDecimals);
       am = (
