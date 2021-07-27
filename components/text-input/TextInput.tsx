@@ -11,6 +11,7 @@ interface Props {
   // Optional arg: If there is some side effect of the change to the input
   // Pass in this function and it will run when the value changes
   additionalEffects?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onKeyDown?: React.KeyboardEventHandler<HTMLInputElement> | undefined;
 }
 
 export type LabelPlacement = "default | overlap";
@@ -22,6 +23,7 @@ const TextInput: FC<Props> = ({
   labelPlacement = "default" as LabelPlacement,
   width,
   additionalEffects,
+  onKeyDown,
 }) => {
   return (
     <StyledInput inputWidth={width}>
@@ -36,6 +38,7 @@ const TextInput: FC<Props> = ({
               additionalEffects(e);
             }
           }}
+          onKeyDown={onKeyDown}
         />
       </div>
     </StyledInput>

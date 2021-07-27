@@ -1,9 +1,10 @@
-import React, { FC } from "react";
+import React, { FC, useCallback } from "react";
 import { FormRow, BalanceRowToken } from "./LSPForm.styled";
 
 import TextInput from "../text-input";
 import { LabelPlacement } from "../text-input/TextInput";
 import { ethers } from "ethers";
+import { onlyAllowNumbersAndDecimals } from "./helpers";
 
 interface Props {
   setAmount: React.Dispatch<React.SetStateAction<string>>;
@@ -16,9 +17,9 @@ interface Props {
   collateralOnTop?: boolean;
   collateralPerPair: ethers.BigNumber;
   longTokenBalance: ethers.BigNumber;
-  longTokenDecimals: string;
   shortTokenBalance: ethers.BigNumber;
-  shortTokenDecimals: string;
+  // Note: Long/Short tokens are always the same as the collateral. Enforced on contract.
+  collateralDecimals: string;
 }
 
 const LongShort: FC<Props> = ({
@@ -31,10 +32,56 @@ const LongShort: FC<Props> = ({
   setAmount,
   collateralPerPair,
   longTokenBalance,
-  longTokenDecimals,
   shortTokenBalance,
-  shortTokenDecimals,
+  collateralDecimals,
 }) => {
+  const setCollateralInput = useCallback(
+    (
+      tokenAmount: string,
+      valueCallback: React.Dispatch<React.SetStateAction<string>>
+    ) => {
+      const normalizedCPP = ethers.utils.formatEther(collateralPerPair);
+
+      const newAmount = Number(tokenAmount) * Number(normalizedCPP);
+
+      setAmount(newAmount.toString());
+      valueCallback(tokenAmount);
+    },
+    [collateralPerPair]
+  );
+
+  const maxTokensRedeemable = useCallback(() => {
+    const normalizedCPP = ethers.utils.formatEther(collateralPerPair);
+
+    let ltbStb = "0",
+      am = "0";
+
+    if (longTokenBalance.gte(shortTokenBalance)) {
+      ltbStb = ethers.utils.formatUnits(shortTokenBalance, collateralDecimals);
+      am = (
+        Number(
+          ethers.utils.formatUnits(shortTokenBalance, collateralDecimals)
+        ) * Number(normalizedCPP)
+      ).toString();
+    }
+
+    if (longTokenBalance.lt(shortTokenBalance)) {
+      ltbStb = ethers.utils.formatUnits(longTokenBalance, collateralDecimals);
+      am = (
+        Number(
+          ethers.utils.formatUnits(
+            Number(longTokenBalance.toString()) * Number(normalizedCPP),
+            collateralDecimals
+          )
+        ) * Number(normalizedCPP)
+      ).toString();
+    }
+
+    setShortTokenAmount(ltbStb);
+    setLongTokenAmount(ltbStb);
+    setAmount(am);
+  }, [longTokenBalance, shortTokenBalance, collateralPerPair]);
+
   return (
     <>
       <FormRow>
@@ -46,17 +93,13 @@ const LongShort: FC<Props> = ({
           setValue={setLongTokenAmount}
           additionalEffects={(e) => {
             if (e.target.value) {
-              const normalizedCPP = ethers.utils.formatEther(collateralPerPair);
-
-              const newAmount = Number(e.target.value) * Number(normalizedCPP);
-
-              setAmount(newAmount.toString());
-              setShortTokenAmount(e.target.value);
+              setCollateralInput(e.target.value, setShortTokenAmount);
             } else {
               setShortTokenAmount("0");
               setAmount("0");
             }
           }}
+          onKeyDown={onlyAllowNumbersAndDecimals}
         />
         <TextInput
           label="short token"
@@ -66,17 +109,13 @@ const LongShort: FC<Props> = ({
           setValue={setShortTokenAmount}
           additionalEffects={(e) => {
             if (e.target.value) {
-              const normalizedCPP = ethers.utils.formatEther(collateralPerPair);
-
-              const newAmount = Number(e.target.value) * Number(normalizedCPP);
-
-              setAmount(newAmount.toString());
-              setLongTokenAmount(e.target.value);
+              setCollateralInput(e.target.value, setLongTokenAmount);
             } else {
               setAmount("0");
               setLongTokenAmount("0");
             }
           }}
+          onKeyDown={onlyAllowNumbersAndDecimals}
         />
       </FormRow>
       <BalanceRowToken>
@@ -85,20 +124,36 @@ const LongShort: FC<Props> = ({
             Your Balance{" "}
             {ethers.utils.formatUnits(
               longTokenBalance.toString(),
-              longTokenDecimals
+              collateralDecimals
             )}{" "}
           </span>
-          {!collateralOnTop && redeemForm && <span>Max</span>}
+          {!collateralOnTop && redeemForm && (
+            <span
+              onClick={() => {
+                maxTokensRedeemable();
+              }}
+            >
+              Max
+            </span>
+          )}
         </div>
         <div>
           <span>
             Your Balance{" "}
             {ethers.utils.formatUnits(
               shortTokenBalance.toString(),
-              shortTokenDecimals
+              collateralDecimals
             )}
           </span>
-          {!collateralOnTop && redeemForm && <span>Max</span>}
+          {!collateralOnTop && redeemForm && (
+            <span
+              onClick={() => {
+                maxTokensRedeemable();
+              }}
+            >
+              Max
+            </span>
+          )}
         </div>
       </BalanceRowToken>
     </>

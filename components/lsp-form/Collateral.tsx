@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useCallback } from "react";
 import {
   FormRow,
   BalanceRow,
@@ -11,6 +11,7 @@ import TextInput from "../text-input";
 import { LabelPlacement } from "../text-input/TextInput";
 import useWindowSize from "../../hooks/useWindowSize";
 import { ethers } from "ethers";
+import { onlyAllowNumbersAndDecimals } from "./helpers";
 
 interface Props {
   collateral: string;
@@ -22,6 +23,7 @@ interface Props {
   collateralOnTop?: boolean;
   collateralBalance: ethers.BigNumber;
   collateralPerPair: ethers.BigNumber;
+  // Note: Long/Short tokens are always the same as the collateral. Enforced on contract.
   collateralDecimals: string;
   setLongTokenAmount: React.Dispatch<React.SetStateAction<string>>;
   setShortTokenAmount: React.Dispatch<React.SetStateAction<string>>;
@@ -41,6 +43,19 @@ const Collateral: FC<Props> = ({
 }) => {
   const size = useWindowSize();
   const width = size.width && size.width > 728 ? "230px" : "100%";
+
+  const setLongShortPairInputs = useCallback(
+    (collateral: string) => {
+      const normalizedCPP = ethers.utils.formatEther(collateralPerPair);
+
+      const newTokenPairAmounts = Number(collateral) / Number(normalizedCPP);
+
+      setLongTokenAmount(newTokenPairAmounts.toString());
+      setShortTokenAmount(newTokenPairAmounts.toString());
+    },
+    [collateralPerPair]
+  );
+
   return (
     <>
       <FormRow>
@@ -58,17 +73,14 @@ const Collateral: FC<Props> = ({
           width={width}
           additionalEffects={(e) => {
             if (e.target.value) {
-              const normalizedCPP = ethers.utils.formatEther(collateralPerPair);
-              const newTokenPairAmounts =
-                Number(e.target.value) / Number(normalizedCPP);
-
-              setLongTokenAmount(newTokenPairAmounts.toString());
-              setShortTokenAmount(newTokenPairAmounts.toString());
+              const value = e.target.value;
+              setLongShortPairInputs(value);
             } else {
               setLongTokenAmount("0");
               setShortTokenAmount("0");
             }
           }}
+          onKeyDown={onlyAllowNumbersAndDecimals}
         />
       </FormRow>
       <BalanceRow>
@@ -80,7 +92,19 @@ const Collateral: FC<Props> = ({
               collateralDecimals
             )}
           </span>{" "}
-          {(collateralOnTop || !redeemForm) && <span>Max</span>}
+          {(collateralOnTop || !redeemForm) && (
+            <span
+              onClick={() => {
+                const normalizedBalance =
+                  ethers.utils.formatEther(collateralBalance);
+                setAmount(normalizedBalance);
+
+                setLongShortPairInputs(normalizedBalance);
+              }}
+            >
+              Max
+            </span>
+          )}
         </div>
       </BalanceRow>
     </>

@@ -31,19 +31,15 @@ const Testing = () => {
   const [longTokenAddress, setLongTokenAddress] = useState("");
   const [shortTokenAddress, setShortTokenAddress] = useState("");
 
-  const {
-    balance: longTokenBalance,
-    decimals: longTokenDecimals,
-    refetchBalance: refetchLongTokenBalance,
-  } = useERC20ContractValues(
-    longTokenAddress,
-    address,
-    web3Provider ? web3Provider.getSigner() : null
-  );
+  const { balance: longTokenBalance, refetchBalance: refetchLongTokenBalance } =
+    useERC20ContractValues(
+      longTokenAddress,
+      address,
+      web3Provider ? web3Provider.getSigner() : null
+    );
 
   const {
     balance: shortTokenBalance,
-    decimals: shortTokenDecimals,
     refetchBalance: refetchShortTokenBalance,
   } = useERC20ContractValues(
     shortTokenAddress,
@@ -104,9 +100,7 @@ const Testing = () => {
       setCollateralBalance={setCollateralBalance}
       collateralDecimals={collateralDecimals}
       longTokenBalance={longTokenBalance}
-      longTokenDecimals={longTokenDecimals}
       shortTokenBalance={shortTokenBalance}
-      shortTokenDecimals={shortTokenDecimals}
       refetchLongTokenBalance={refetchLongTokenBalance}
       refetchShortTokenBalance={refetchShortTokenBalance}
     />
