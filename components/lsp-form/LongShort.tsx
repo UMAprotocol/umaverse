@@ -17,9 +17,9 @@ interface Props {
   collateralOnTop?: boolean;
   collateralPerPair: ethers.BigNumber;
   longTokenBalance: ethers.BigNumber;
-  longTokenDecimals: string;
   shortTokenBalance: ethers.BigNumber;
-  shortTokenDecimals: string;
+  // Note: Long/Short tokens are always the same as the collateral. Enforced on contract.
+  collateralDecimals: string;
 }
 
 const LongShort: FC<Props> = ({
@@ -32,9 +32,8 @@ const LongShort: FC<Props> = ({
   setAmount,
   collateralPerPair,
   longTokenBalance,
-  longTokenDecimals,
   shortTokenBalance,
-  shortTokenDecimals,
+  collateralDecimals,
 }) => {
   const setCollateralInput = useCallback(
     (
@@ -58,21 +57,21 @@ const LongShort: FC<Props> = ({
       am = "0";
 
     if (longTokenBalance.gte(shortTokenBalance)) {
-      ltbStb = ethers.utils.formatUnits(shortTokenBalance, shortTokenDecimals);
+      ltbStb = ethers.utils.formatUnits(shortTokenBalance, collateralDecimals);
       am = (
         Number(
-          ethers.utils.formatUnits(shortTokenBalance, shortTokenDecimals)
+          ethers.utils.formatUnits(shortTokenBalance, collateralDecimals)
         ) * Number(normalizedCPP)
       ).toString();
     }
 
     if (longTokenBalance.lt(shortTokenBalance)) {
-      ltbStb = ethers.utils.formatUnits(longTokenBalance, longTokenDecimals);
+      ltbStb = ethers.utils.formatUnits(longTokenBalance, collateralDecimals);
       am = (
         Number(
           ethers.utils.formatUnits(
             Number(longTokenBalance.toString()) * Number(normalizedCPP),
-            longTokenDecimals
+            collateralDecimals
           )
         ) * Number(normalizedCPP)
       ).toString();
@@ -125,7 +124,7 @@ const LongShort: FC<Props> = ({
             Your Balance{" "}
             {ethers.utils.formatUnits(
               longTokenBalance.toString(),
-              longTokenDecimals
+              collateralDecimals
             )}{" "}
           </span>
           {!collateralOnTop && redeemForm && (
@@ -143,7 +142,7 @@ const LongShort: FC<Props> = ({
             Your Balance{" "}
             {ethers.utils.formatUnits(
               shortTokenBalance.toString(),
-              shortTokenDecimals
+              collateralDecimals
             )}
           </span>
           {!collateralOnTop && redeemForm && (

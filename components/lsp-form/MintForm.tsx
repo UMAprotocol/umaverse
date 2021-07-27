@@ -136,9 +136,8 @@ const MintForm: FC<Props> = ({
           setShortTokenAmount={setShortTokenAmount}
           collateralPerPair={collateralPerPair}
           longTokenBalance={longTokenBalance}
-          longTokenDecimals={longTokenDecimals}
           shortTokenBalance={shortTokenBalance}
-          shortTokenDecimals={shortTokenDecimals}
+          collateralDecimals={collateralDecimals}
         />
       </BottomFormWrapper>
       <ButtonWrapper>
