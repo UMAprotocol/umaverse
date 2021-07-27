@@ -21,9 +21,7 @@ interface Props {
   collateralPerPair: ethers.BigNumber;
   collateralDecimals: string;
   longTokenBalance: ethers.BigNumber;
-  longTokenDecimals: string;
   shortTokenBalance: ethers.BigNumber;
-  shortTokenDecimals: string;
   lspContract: ethers.Contract | null;
   erc20Contract: ethers.Contract | null;
   address: string;

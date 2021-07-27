@@ -34,9 +34,7 @@ interface Props {
   setCollateralBalance: React.Dispatch<React.SetStateAction<ethers.BigNumber>>;
   collateralDecimals: string;
   longTokenBalance: ethers.BigNumber;
-  longTokenDecimals: string;
   shortTokenBalance: ethers.BigNumber;
-  shortTokenDecimals: string;
   refetchLongTokenBalance: () => void;
   refetchShortTokenBalance: () => void;
 }
@@ -51,9 +49,7 @@ const MintForm: FC<Props> = ({
   setCollateralBalance,
   collateralDecimals,
   longTokenBalance,
-  longTokenDecimals,
   shortTokenBalance,
-  shortTokenDecimals,
   refetchLongTokenBalance,
   refetchShortTokenBalance,
 }) => {
@@ -87,12 +83,12 @@ const MintForm: FC<Props> = ({
         lspContract
           .create(mintAmount)
           .then((tx: any) => {
-            return tx.wait(1);
-          })
-          .then(async () => {
             setAmount("");
             setLongTokenAmount("");
             setShortTokenAmount("");
+            return tx.wait(1);
+          })
+          .then(async () => {
             const balance = (await erc20Contract.balanceOf(
               address
             )) as ethers.BigNumber;

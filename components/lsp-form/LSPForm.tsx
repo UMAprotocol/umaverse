@@ -22,9 +22,7 @@ interface Props {
   setCollateralBalance: React.Dispatch<React.SetStateAction<ethers.BigNumber>>;
   collateralDecimals: string;
   longTokenBalance: ethers.BigNumber;
-  longTokenDecimals: string;
   shortTokenBalance: ethers.BigNumber;
-  shortTokenDecimals: string;
   refetchLongTokenBalance: () => void;
   refetchShortTokenBalance: () => void;
 }
@@ -40,9 +38,7 @@ const LSPForm: FC<Props> = ({
   setCollateralBalance,
   collateralDecimals,
   longTokenBalance,
-  longTokenDecimals,
   shortTokenBalance,
-  shortTokenDecimals,
   refetchLongTokenBalance,
   refetchShortTokenBalance,
 }) => {
@@ -65,9 +61,7 @@ const LSPForm: FC<Props> = ({
               setCollateralBalance={setCollateralBalance}
               collateralDecimals={collateralDecimals}
               longTokenBalance={longTokenBalance}
-              longTokenDecimals={longTokenDecimals}
               shortTokenBalance={shortTokenBalance}
-              shortTokenDecimals={shortTokenDecimals}
               refetchLongTokenBalance={refetchLongTokenBalance}
               refetchShortTokenBalance={refetchShortTokenBalance}
             />
@@ -78,9 +72,7 @@ const LSPForm: FC<Props> = ({
               collateralPerPair={collateralPerPair}
               collateralDecimals={collateralDecimals}
               longTokenBalance={longTokenBalance}
-              longTokenDecimals={longTokenDecimals}
               shortTokenBalance={shortTokenBalance}
-              shortTokenDecimals={shortTokenDecimals}
               lspContract={lspContract}
               erc20Contract={erc20Contract}
               address={address}
