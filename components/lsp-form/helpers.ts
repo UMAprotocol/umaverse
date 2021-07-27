@@ -22,12 +22,14 @@ export const onlyAllowNumbersAndDecimals = (
     Number(event.key) >= 0 ||
     event.key === "." ||
     event.key === "Backspace" ||
-    event.key === "Tab"
+    event.key === "Tab" ||
+    // Allow copy paste
+    (event.metaKey && event.key === "v") ||
+    // Allow undo
+    (event.metaKey && event.key === "z")
   ) {
     return true;
   } else {
-    if (event.metaKey && event.key === "v") return true;
-
     event.preventDefault();
 
     return false;
