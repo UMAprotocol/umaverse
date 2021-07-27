@@ -37,9 +37,7 @@ const RedeemForm: FC<Props> = ({
   collateralPerPair,
   collateralDecimals,
   longTokenBalance,
-  longTokenDecimals,
   shortTokenBalance,
-  shortTokenDecimals,
   lspContract,
   erc20Contract,
   address,
@@ -64,15 +62,15 @@ const RedeemForm: FC<Props> = ({
         // User has specified in the input.
         // All operations that make the number larger come first. All the operations that make the number smaller come last.
         const redeemAmount = weiAmount.mul(scaledToWei);
-        lspContract
+        await lspContract
           .redeem(redeemAmount.div(scaledToWei))
           .then((tx: any) => {
-            return tx.wait(1);
-          })
-          .then(async () => {
             setAmount("");
             setLongTokenAmount("");
             setShortTokenAmount("");
+            return tx.wait(1);
+          })
+          .then(async () => {
             const balance = (await erc20Contract.balanceOf(
               address
             )) as ethers.BigNumber;
@@ -114,10 +112,9 @@ const RedeemForm: FC<Props> = ({
             setShortTokenAmount={setShortTokenAmount}
             collateralPerPair={collateralPerPair}
             longTokenBalance={longTokenBalance}
-            longTokenDecimals={longTokenDecimals}
             shortTokenBalance={shortTokenBalance}
-            shortTokenDecimals={shortTokenDecimals}
             collateralOnTop={collateralOnTop}
+            collateralDecimals={collateralDecimals}
           />
         )}
       </TopFormWrapper>
@@ -139,10 +136,9 @@ const RedeemForm: FC<Props> = ({
             setShortTokenAmount={setShortTokenAmount}
             collateralPerPair={collateralPerPair}
             longTokenBalance={longTokenBalance}
-            longTokenDecimals={longTokenDecimals}
             shortTokenBalance={shortTokenBalance}
-            shortTokenDecimals={shortTokenDecimals}
             collateralOnTop={collateralOnTop}
+            collateralDecimals={collateralDecimals}
           />
         ) : (
           <Collateral
