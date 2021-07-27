@@ -26,7 +26,9 @@ export const onlyAllowNumbersAndDecimals = (
     // Allow copy paste
     (event.metaKey && event.key === "v") ||
     // Allow undo
-    (event.metaKey && event.key === "z")
+    (event.metaKey && event.key === "z") ||
+    // Allow cut
+    (event.metaKey && event.key === "x")
   ) {
     return true;
   } else {
