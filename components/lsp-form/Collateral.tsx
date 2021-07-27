@@ -23,6 +23,7 @@ interface Props {
   collateralOnTop?: boolean;
   collateralBalance: ethers.BigNumber;
   collateralPerPair: ethers.BigNumber;
+  // Note: Long/Short tokens are always the same as the collateral. Enforced on contract.
   collateralDecimals: string;
   setLongTokenAmount: React.Dispatch<React.SetStateAction<string>>;
   setShortTokenAmount: React.Dispatch<React.SetStateAction<string>>;
