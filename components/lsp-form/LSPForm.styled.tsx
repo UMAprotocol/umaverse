@@ -208,3 +208,8 @@ export const CollateralWrapper = styled.div`
     padding-left: 1.25rem;
   }
 `;
+
+export const SettleTokenBalance = styled.div`
+  margin: 0.5rem auto;
+  font-weight: 600;
+`;

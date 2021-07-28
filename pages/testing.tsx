@@ -65,17 +65,12 @@ const Testing = () => {
   console.log("new values", contractState, contractExpirationTime, currentTime);
 
   useEffect(() => {
-    if (currentTime && contractExpirationTime) {
-      if (
-        currentTime > contractExpirationTime &&
-        contractState === ContractState.Open
-      ) {
-        setShowSettle(true);
-      }
-
-      // if (contractState > 0) {
-      //   setShowSettle(false);
-      // }
+    if (
+      currentTime &&
+      contractExpirationTime &&
+      currentTime > contractExpirationTime
+    ) {
+      setShowSettle(true);
     }
   }, [contractExpirationTime, currentTime, contractState]);
   // Get contract data and set values.
@@ -154,6 +149,7 @@ const Testing = () => {
       refetchShortTokenBalance={refetchShortTokenBalance}
       showSettle={showSettle}
       setShowSettle={setShowSettle}
+      contractState={contractState}
       setContractState={setContractState}
     />
   );

@@ -6,6 +6,7 @@ import {
   SettleWrapper,
   SettleTitle,
   SettleText,
+  SettleTokenBalance,
 } from "./LSPForm.styled";
 import { ethers } from "ethers";
 import MintForm from "./MintForm";
@@ -28,6 +29,7 @@ interface Props {
   refetchShortTokenBalance: () => void;
   showSettle: boolean;
   setShowSettle: React.Dispatch<React.SetStateAction<boolean>>;
+  contractState: ContractState;
   setContractState: React.Dispatch<React.SetStateAction<ContractState>>;
 }
 
@@ -47,6 +49,7 @@ const LSPForm: FC<Props> = ({
   refetchShortTokenBalance,
   showSettle,
   setShowSettle,
+  contractState,
   setContractState,
 }) => {
   const expire = useCallback(async () => {
@@ -63,6 +66,29 @@ const LSPForm: FC<Props> = ({
       }
     }
   }, [lspContract, setShowSettle, setContractState]);
+
+  const settle = useCallback(async () => {
+    if (lspContract) {
+      try {
+        await lspContract
+          .settle(longTokenBalance, shortTokenBalance)
+          .then((tx: any) => {
+            return tx.wait(1).then(async () => {
+              refetchLongTokenBalance();
+              refetchShortTokenBalance();
+              if (erc20Contract) {
+                const balance = (await erc20Contract.balanceOf(
+                  address
+                )) as ethers.BigNumber;
+                setCollateralBalance(balance);
+              }
+            });
+          });
+      } catch (err) {
+        console.log("err in settle", err);
+      }
+    }
+  }, [lspContract, longTokenBalance, shortTokenBalance]);
 
   return (
     <Wrapper>
@@ -106,11 +132,37 @@ const LSPForm: FC<Props> = ({
       {showSettle && (
         <SettleWrapper>
           <SettleTitle>Settle Position</SettleTitle>
-          <SettleText>
-            The LSP contract is expireable. You can now settle your position at
-            the oracle returned price.
-          </SettleText>
-          <SettleButton onClick={() => expire()}>Settle</SettleButton>
+          {contractState === ContractState.Open && (
+            <SettleText>
+              The LSP contract is expireable. You can now settle your position
+              at the oracle returned price.
+            </SettleText>
+          )}
+          {/* contractState is an enum -- when it's not open, it's greater than 0. */}
+          {contractState > 0 && (
+            <SettleText>
+              The LSP contract is expired. You can now settle your position at
+              the oracle returned price. The following tokens will be redeemed:
+              <SettleTokenBalance>
+                Long Token Balance:{" "}
+                {ethers.utils.formatUnits(longTokenBalance, collateralDecimals)}
+              </SettleTokenBalance>
+              <SettleTokenBalance>
+                Short Token Balance:{" "}
+                {ethers.utils.formatUnits(
+                  shortTokenBalance,
+                  collateralDecimals
+                )}
+              </SettleTokenBalance>
+            </SettleText>
+          )}
+          <SettleButton
+            onClick={() => {
+              contractState === ContractState.Open ? expire() : settle();
+            }}
+          >
+            {contractState > 0 ? "Settle" : "Expire"}
+          </SettleButton>
         </SettleWrapper>
       )}
     </Wrapper>
