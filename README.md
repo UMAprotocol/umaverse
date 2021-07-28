@@ -45,3 +45,23 @@ A `type-check` script is also added to `package.json`, which runs TypeScript's `
 See our [Hardhat repo](https://github.com/UMAprotocol/hardhat-test) for how to add UMA to a dev account and fork mainnet.
 
 Send UMA to this contract to test Mint / Redeem feature: 0x372802d8A2D69bB43872a1AABe2bd403a0FafA1F
+
+## Enviroment Variables
+
+This section is meant to serve as a complete description of all the env variables used in Umaverse
+
+| Name                        	| Status   	| Description                                                                                                                 	|
+|-----------------------------	|----------	|-----------------------------------------------------------------------------------------------------------------------------	|
+| SENTRY_PROJECT              	| Required 	| Sentry specific variable, check https://docs.sentry.io/platforms/javascript/guides/nextjs/ for more info                    	|
+| SENTRY_ORG                  	| Required 	| Sentry specific variable, check https://docs.sentry.io/platforms/javascript/guides/nextjs/ for more info                    	|
+| SENTRY_URL                  	| Required 	| Sentry specific variable, check https://docs.sentry.io/platforms/javascript/guides/nextjs/ for more info                    	|
+| SENTRY_DNS                  	| Required 	| Sentry specific variable, check https://docs.sentry.io/platforms/javascript/guides/nextjs/ for more info                    	|
+| NEXT_PUBLIC_SENTRY_DSN      	| Required 	| Sentry specific variable, check https://docs.sentry.io/platforms/javascript/guides/nextjs/ for more info                    	|
+| SENTRY_SERVER_INIT_PATH     	| Required 	| Sentry specific variable, check https://docs.sentry.io/platforms/javascript/guides/nextjs/ for more info                    	|
+| SENTRY_AUTH_TOKEN           	| Required 	| Sentry specific variable, check https://docs.sentry.io/platforms/javascript/guides/nextjs/ for more info                    	|
+| CONTENTFUL_SPACE_ID         	| Required 	| Contentful Space ID, needed to fetch from the CMS.                                                                          	|
+| CONTENTFUL_ACCESS_TOKEN     	| Required 	| Contentful Access token, needed to fetch from the CMS.                                                                      	|
+| NEXT_PUBLIC_UMA_API_URL     	| Required 	| The url of the UMA api, used to query synths data.                                                                          	|
+| NEXT_PUBLIC_INFURA_ID       	| Required 	| InfuraID of the Infura project node used to query onchain data.                                                             	|
+| NEXT_PUBLIC_ONBOARD_API_KEY 	| Required 	| Onboard API key, needed for using bnc-onboard. Check https://docs.blocknative.com/onboard for more info.                    	|
+| NEXT_PUBLIC_PORTIS_API_KEY  	| Optional 	| Portis API key, needed to support log in with portis and onboard. Check https://docs.blocknative.com/onboard for more info. 	|
