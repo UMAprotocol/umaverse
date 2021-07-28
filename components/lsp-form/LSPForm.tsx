@@ -10,7 +10,7 @@ import {
 import { ethers } from "ethers";
 import MintForm from "./MintForm";
 import RedeemForm from "./RedeemForm";
-
+import { ContractState } from "../../pages/testing";
 interface Props {
   address: string;
   web3Provider: ethers.providers.Web3Provider | null;
@@ -28,6 +28,7 @@ interface Props {
   refetchShortTokenBalance: () => void;
   showSettle: boolean;
   setShowSettle: React.Dispatch<React.SetStateAction<boolean>>;
+  setContractState: React.Dispatch<React.SetStateAction<ContractState>>;
 }
 
 const LSPForm: FC<Props> = ({
@@ -46,10 +47,23 @@ const LSPForm: FC<Props> = ({
   refetchShortTokenBalance,
   showSettle,
   setShowSettle,
+  setContractState,
 }) => {
-  const expire = useCallback(() => {
-    console.log("expire callback");
-  }, []);
+  const expire = useCallback(async () => {
+    if (lspContract) {
+      try {
+        await lspContract.expire().then((tx: any) => {
+          return tx.wait(1).then(() => {
+            setShowSettle(false);
+            setContractState(ContractState.ExpiredPriceRequested);
+          });
+        });
+      } catch (err) {
+        console.log("err in expire call", err);
+      }
+    }
+  }, [lspContract, setShowSettle, setContractState]);
+
   return (
     <Wrapper>
       {!showSettle && (
@@ -93,7 +107,7 @@ const LSPForm: FC<Props> = ({
         <SettleWrapper>
           <SettleTitle>Settle Position</SettleTitle>
           <SettleText>
-            The LSP contract has expired. You can now settle your position at
+            The LSP contract is expireable. You can now settle your position at
             the oracle returned price.
           </SettleText>
           <SettleButton onClick={() => expire()}>Settle</SettleButton>

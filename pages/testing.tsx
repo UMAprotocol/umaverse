@@ -8,7 +8,7 @@ import createLSPContractInstance from "../components/lsp-form/createLSPContractI
 import createERC20ContractInstance from "../components/lsp-form/createERC20ContractInstance";
 import useERC20ContractValues from "../hooks/useERC20ContractValues";
 
-enum ContractState {
+export enum ContractState {
   Open,
   ExpiredPriceRequested,
   ExpiredPriceReceived,
@@ -154,6 +154,7 @@ const Testing = () => {
       refetchShortTokenBalance={refetchShortTokenBalance}
       showSettle={showSettle}
       setShowSettle={setShowSettle}
+      setContractState={setContractState}
     />
   );
 };
