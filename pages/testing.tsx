@@ -8,6 +8,12 @@ import createLSPContractInstance from "../components/lsp-form/createLSPContractI
 import createERC20ContractInstance from "../components/lsp-form/createERC20ContractInstance";
 import useERC20ContractValues from "../hooks/useERC20ContractValues";
 
+enum ContractState {
+  Open,
+  ExpiredPriceRequested,
+  ExpiredPriceReceived,
+}
+
 const toBN = ethers.BigNumber.from;
 const Testing = () => {
   const [web3Provider, setWeb3Provider] =
@@ -47,11 +53,39 @@ const Testing = () => {
     web3Provider ? web3Provider.getSigner() : null
   );
 
+  const [contractState, setContractState] = useState<ContractState>(
+    ContractState.Open
+  );
+  const [contractExpirationTime, setContractExpirationTime] =
+    useState<string>("");
+
+  const [currentTime, setCurrentTime] = useState<string>("");
+
+  console.log("new values", contractState, contractExpirationTime, currentTime);
   // Get contract data and set values.
   useEffect(() => {
     if (web3Provider && !lspContract) {
       const signer = web3Provider.getSigner();
       const contract = createLSPContractInstance(signer, KNOWN_LSP_ADDRESS);
+      // console.log("contract", contract);
+      contract.contractState().then((cs: ContractState) => {
+        console.log("contract state?", cs);
+        setContractState(cs);
+      });
+
+      contract
+        .expirationTimestamp()
+        .then((res: ethers.BigNumber) => {
+          setContractExpirationTime(res.toString());
+        })
+        .catch((err: any) => {
+          console.log("err in timestamp call", err);
+        });
+
+      contract.getCurrentTime().then((res: ethers.BigNumber) => {
+        setCurrentTime(res.toString());
+      });
+
       contract.collateralToken().then(async (res: any) => {
         const erc20 = createERC20ContractInstance(signer, res);
         erc20.decimals().then((decimals: ethers.BigNumber) => {
