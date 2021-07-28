@@ -6,6 +6,7 @@ import { Hydrate } from "react-query/hydration";
 import { ReactQueryDevtools } from "react-query/devtools";
 
 import { COLORS } from "../utils";
+import { ConnectionProvider } from "../hooks";
 
 const reset = css`
   /* http://meyerweb.com/eric/tools/css/reset/
@@ -222,8 +223,10 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   return (
     <QueryClientProvider client={queryClient}>
       <Hydrate state={pageProps.dehydratedState}>
-        <Global styles={globalStyles} />
-        <Component {...pageProps} />
+        <ConnectionProvider>
+          <Global styles={globalStyles} />
+          <Component {...pageProps} />
+        </ConnectionProvider>
       </Hydrate>
       <ReactQueryDevtools />
     </QueryClientProvider>
