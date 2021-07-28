@@ -60,8 +60,24 @@ const Testing = () => {
     useState<string>("");
 
   const [currentTime, setCurrentTime] = useState<string>("");
+  const [showSettle, setShowSettle] = useState(false);
 
   console.log("new values", contractState, contractExpirationTime, currentTime);
+
+  useEffect(() => {
+    if (currentTime && contractExpirationTime) {
+      if (
+        currentTime > contractExpirationTime &&
+        contractState === ContractState.Open
+      ) {
+        setShowSettle(true);
+      }
+
+      // if (contractState > 0) {
+      //   setShowSettle(false);
+      // }
+    }
+  }, [contractExpirationTime, currentTime, contractState]);
   // Get contract data and set values.
   useEffect(() => {
     if (web3Provider && !lspContract) {
@@ -69,7 +85,6 @@ const Testing = () => {
       const contract = createLSPContractInstance(signer, KNOWN_LSP_ADDRESS);
       // console.log("contract", contract);
       contract.contractState().then((cs: ContractState) => {
-        console.log("contract state?", cs);
         setContractState(cs);
       });
 
@@ -137,6 +152,8 @@ const Testing = () => {
       shortTokenBalance={shortTokenBalance}
       refetchLongTokenBalance={refetchLongTokenBalance}
       refetchShortTokenBalance={refetchShortTokenBalance}
+      showSettle={showSettle}
+      setShowSettle={setShowSettle}
     />
   );
 };

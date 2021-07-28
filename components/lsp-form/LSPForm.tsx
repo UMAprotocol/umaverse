@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useCallback } from "react";
 import Tabs from "../tabs";
 import {
   Wrapper,
@@ -26,6 +26,8 @@ interface Props {
   shortTokenBalance: ethers.BigNumber;
   refetchLongTokenBalance: () => void;
   refetchShortTokenBalance: () => void;
+  showSettle: boolean;
+  setShowSettle: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const LSPForm: FC<Props> = ({
@@ -42,9 +44,12 @@ const LSPForm: FC<Props> = ({
   shortTokenBalance,
   refetchLongTokenBalance,
   refetchShortTokenBalance,
+  showSettle,
+  setShowSettle,
 }) => {
-  const [showSettle, setShowSettle] = useState(false);
-
+  const expire = useCallback(() => {
+    console.log("expire callback");
+  }, []);
   return (
     <Wrapper>
       {!showSettle && (
@@ -91,9 +96,7 @@ const LSPForm: FC<Props> = ({
             The LSP contract has expired. You can now settle your position at
             the oracle returned price.
           </SettleText>
-          <SettleButton onClick={() => setShowSettle(false)}>
-            Settle
-          </SettleButton>
+          <SettleButton onClick={() => expire()}>Settle</SettleButton>
         </SettleWrapper>
       )}
     </Wrapper>
