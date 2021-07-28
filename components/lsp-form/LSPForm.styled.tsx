@@ -152,7 +152,7 @@ export const MintButton = styled(BaseButton)`
 export const SettleWrapper = styled.div`
   height: 100%;
   min-height: 400px;
-  border-top: 4px solid var(--primary-700);
+  border-top: 4px solid #ff4b4b;
   text-align: center;
   background: var(--gray-300);
 `;
@@ -160,7 +160,7 @@ export const SettleWrapper = styled.div`
 export const SettleButton = styled(BaseButton)`
   width: 90%;
   margin: 0 auto;
-  background-color: var(--primary-700);
+  background-color: #ff4b4b;
   color: var(--white);
   text-align: center;
   border-radius: 8px;
