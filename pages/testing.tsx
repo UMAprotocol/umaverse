@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Contract, ethers } from "ethers";
+import { ethers } from "ethers";
 
 import LSPForm from "../components/lsp-form/LSPForm";
 import { KNOWN_LSP_ADDRESS } from "../utils/constants";
