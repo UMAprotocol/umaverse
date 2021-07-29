@@ -139,7 +139,14 @@ const LSPForm: FC<Props> = ({
             </SettleText>
           )}
           {/* contractState is an enum -- when it's not open, it's greater than 0. */}
-          {contractState > 0 && (
+          {contractState === ContractState.ExpiredPriceRequested && (
+            <SettleText>
+              The LSP contract is expired. The final price most go through the
+              Optimistic Oracle first -- once this price is settled, you can
+              redeem your tokens. Please check back later.
+            </SettleText>
+          )}
+          {contractState === ContractState.ExpiredPriceReceived && (
             <SettleText>
               The LSP contract is expired. You can now settle your position at
               the oracle returned price. The following tokens will be redeemed:
@@ -157,8 +164,13 @@ const LSPForm: FC<Props> = ({
             </SettleText>
           )}
           <SettleButton
+            disabled={contractState === ContractState.ExpiredPriceRequested}
             onClick={() => {
-              contractState === ContractState.Open ? expire() : settle();
+              // On click function only works when open or final price received.
+              if (contractState === ContractState.Open) return expire();
+              if (contractState === ContractState.ExpiredPriceReceived)
+                return settle();
+              return false;
             }}
           >
             {contractState > 0 ? "Settle" : "Expire"}

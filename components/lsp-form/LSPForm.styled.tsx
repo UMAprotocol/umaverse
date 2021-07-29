@@ -157,7 +157,11 @@ export const SettleWrapper = styled.div`
   background: var(--gray-300);
 `;
 
-export const SettleButton = styled(BaseButton)`
+interface ISettleButton {
+  disabled?: boolean;
+}
+
+export const SettleButton = styled(BaseButton)<ISettleButton>`
   width: 90%;
   margin: 0 auto;
   background-color: #ff4b4b;
@@ -168,6 +172,8 @@ export const SettleButton = styled(BaseButton)`
   font-weight: 600;
   font-family: inherit;
   padding: 0.66rem 0;
+  opacity: ${(props) => (props.disabled ? "0.5" : "1")};
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
   @media ${QUERIES.laptopAndUp} {
     width: 380px;
   }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ethers } from "ethers";
+import { Contract, ethers } from "ethers";
 
 import LSPForm from "../components/lsp-form/LSPForm";
 import { KNOWN_LSP_ADDRESS } from "../utils/constants";
@@ -62,8 +62,6 @@ const Testing = () => {
   const [currentTime, setCurrentTime] = useState<string>("");
   const [showSettle, setShowSettle] = useState(false);
 
-  console.log("new values", contractState, contractExpirationTime, currentTime);
-
   useEffect(() => {
     if (
       currentTime &&
@@ -78,22 +76,34 @@ const Testing = () => {
     if (web3Provider && !lspContract) {
       const signer = web3Provider.getSigner();
       const contract = createLSPContractInstance(signer, KNOWN_LSP_ADDRESS);
-      // console.log("contract", contract);
-      contract.contractState().then((cs: ContractState) => {
+      contract.contractState().then(async (cs: ContractState) => {
         setContractState(cs);
+        if (cs === ContractState.ExpiredPriceRequested) {
+          try {
+            const isSettable = await contract.callStatic.settle(0, 0).then(
+              () => true,
+              () => false
+            );
+            if (isSettable) {
+              setContractState(ContractState.ExpiredPriceReceived);
+            }
+          } catch (err) {
+            console.log("err in call", err);
+          }
+        }
       });
 
       contract
         .expirationTimestamp()
-        .then((res: ethers.BigNumber) => {
-          setContractExpirationTime(res.toString());
+        .then((ts: ethers.BigNumber) => {
+          setContractExpirationTime(ts.toString());
         })
         .catch((err: any) => {
           console.log("err in timestamp call", err);
         });
 
-      contract.getCurrentTime().then((res: ethers.BigNumber) => {
-        setCurrentTime(res.toString());
+      contract.getCurrentTime().then((ts: ethers.BigNumber) => {
+        setCurrentTime(ts.toString());
       });
 
       contract.collateralToken().then(async (res: any) => {
