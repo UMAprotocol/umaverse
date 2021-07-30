@@ -2,14 +2,14 @@ import React from "react";
 
 type Props =
   | {
-      value: number;
+      value: number | string;
       defaultValue?: string;
-      format?: (v: number) => React.ReactNode;
+      format?: (v: number | string) => React.ReactNode;
     }
   | {
-      value?: number;
+      value?: number | string;
       defaultValue: string;
-      format?: (v: number) => React.ReactNode;
+      format?: (v: number | string) => React.ReactNode;
     };
 
 export const Value: React.FC<Props> = ({

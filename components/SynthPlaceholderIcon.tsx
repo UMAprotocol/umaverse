@@ -18,6 +18,8 @@ const placeholders: Record<
   Option: Option,
   "Synthetic Asset": SyntheticAsset,
   "Yield Dollar": YieldDollar,
+  "Range Token": SyntheticAsset,
+  "Success Token": SyntheticAsset,
 };
 
 export const SynthPlaceholderIcon: React.FC<Props> = ({
@@ -25,5 +27,8 @@ export const SynthPlaceholderIcon: React.FC<Props> = ({
   ...delegated
 }) => {
   const Component = placeholders[category];
+  if (!Component) {
+    return null;
+  }
   return <Component {...delegated} />;
 };

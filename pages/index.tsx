@@ -21,18 +21,14 @@ import {
   ContentfulSynth,
 } from "../utils";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
-import { client, Emp, fetchCompleteSynth } from "../utils/umaApi";
+import { client, fetchCompleteSynth } from "../utils/umaApi";
 
 export const getStaticProps: GetStaticProps = async () => {
   const queryClient = new QueryClient();
   const cmsSynths = await contentfulClient.getAllSynths();
 
-  await queryClient.prefetchQuery(
-    "all synths",
-    async () =>
-      (await Promise.all(cmsSynths.map(fetchCompleteSynth))).filter(
-        errorFilter
-      ) as Emp[]
+  await queryClient.prefetchQuery("all synths", async () =>
+    (await Promise.all(cmsSynths.map(fetchCompleteSynth))).filter(errorFilter)
   );
   await queryClient.prefetchQuery(
     "total tvl",
@@ -58,12 +54,8 @@ export const getStaticProps: GetStaticProps = async () => {
 const IndexPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
   cmsSynths,
 }) => {
-  const { data: allSynths } = useQuery(
-    "all synths",
-    async () =>
-      (await Promise.all(cmsSynths.map(fetchCompleteSynth))).filter(
-        errorFilter
-      ) as Emp[]
+  const { data: allSynths } = useQuery("all synths", async () =>
+    (await Promise.all(cmsSynths.map(fetchCompleteSynth))).filter(errorFilter)
   );
   const { data: totalTvl } = useQuery(
     "total tvl",
@@ -94,11 +86,11 @@ const IndexPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
                 Total Value Locked <span>(TVL)</span>
               </CardHeading>
               <Value
-                value={formatWeiString(totalTvl!)}
+                value={totalTvl ?? 0}
                 format={(v) => {
                   return (
                     <>
-                      ${formatMillions(Math.floor(v))}{" "}
+                      ${formatMillions(Math.floor(formatWeiString(v)))}{" "}
                       <span style={{ fontWeight: 400 }}>
                         {v >= 10 ** 9 ? "B" : v >= 10 ** 6 ? "M" : ""}
                       </span>
@@ -114,11 +106,11 @@ const IndexPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
                 Total Value Minted <span>(TVM)</span>
               </CardHeading>
               <Value
-                value={formatWeiString(totalTvm ?? 0)}
+                value={totalTvm ?? 0}
                 format={(v) => {
                   return (
                     <>
-                      ${formatMillions(Math.floor(v))}{" "}
+                      ${formatMillions(Math.floor(formatWeiString(v)))}{" "}
                       <span style={{ fontWeight: 400 }}>
                         {v >= 10 ** 9 ? "B" : v >= 10 ** 6 ? "M" : ""}
                       </span>
@@ -135,7 +127,7 @@ const IndexPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
               </CardHeading>
               <Value
                 value={3.2}
-                format={(v: number) => (
+                format={(v) => (
                   <span style={{ color: "var(--green)" }}>{v} %</span>
                 )}
               />

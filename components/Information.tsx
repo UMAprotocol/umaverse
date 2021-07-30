@@ -4,15 +4,17 @@ import { ethers } from "ethers";
 import { DateTime } from "luxon";
 
 import { QUERIES } from "../utils";
-import type { Emp } from "../utils/umaApi";
+import type { Synth } from "../utils/umaApi";
 import DuplicateIcon from "../public/icons/duplicate.svg";
 
-type Props = {
-  synth: Emp;
-};
+type Props =
+  | {
+      synth: Synth<{ type: "lsp" }>;
+    }
+  | { synth: Synth<{ type: "emp" }> };
 export const Information: React.FC<Props> = ({ synth }) => {
-  const handleCopyClick = () => {
-    window.navigator.clipboard.writeText(synth.tokenCurrency);
+  const handleCopyClick = (text: string) => {
+    window.navigator.clipboard.writeText(text);
   };
   return (
     <Wrapper>
@@ -20,19 +22,52 @@ export const Information: React.FC<Props> = ({ synth }) => {
       <Table>
         <Row>
           <div>Name:</div>
-          <div>{synth.tokenName}</div>
+          <div>
+            {synth.type == "emp" ? synth.tokenName : synth.longTokenName}
+          </div>
         </Row>
         <Row>
           <div>Symbol:</div>
-          <div>{synth.tokenSymbol}</div>
-        </Row>
-        <Row>
-          <div>Address:</div>
           <div>
-            {synth.tokenCurrency}{" "}
-            <StyledDuplicateIcon onClick={handleCopyClick} />
+            {synth.type == "emp"
+              ? synth.tokenSymbol
+              : `${synth.longTokenSymbol}-${synth.shortTokenSymbol}`}
           </div>
         </Row>
+
+        {synth.type === "emp" ? (
+          <Row>
+            <div>Address:</div>
+            <div>
+              {synth.tokenCurrency}{" "}
+              <StyledDuplicateIcon
+                onClick={() => handleCopyClick(synth.tokenCurrency)}
+              />
+            </div>
+          </Row>
+        ) : (
+          <>
+            <Row>
+              <div>Long Address:</div>
+              <div>
+                {synth.longToken}{" "}
+                <StyledDuplicateIcon
+                  onClick={() => handleCopyClick(synth.longToken)}
+                />
+              </div>
+            </Row>
+            <Row>
+              <div>Short Address:</div>
+              <div>
+                {synth.shortToken}{" "}
+                <StyledDuplicateIcon
+                  onClick={() => handleCopyClick(synth.shortToken)}
+                />
+              </div>
+            </Row>
+          </>
+        )}
+
         <Row>
           <div>Category:</div>
           <div>{synth.category}</div>
@@ -49,26 +84,30 @@ export const Information: React.FC<Props> = ({ synth }) => {
           <div>Price Identifier:</div>
           <div>{synth.priceIdentifier}</div>
         </Row>
-        <Row>
-          <div>Identifier Price:</div>
-          <div>{synth.identifierPrice}</div>
-        </Row>
-        <Row>
-          <div>Global Collateral Ratio:</div>
-          <div>{ethers.utils.formatEther(synth.gcr)}</div>
-        </Row>
-        <Row>
-          <div>Collateral Requirement:</div>
-          <div>{ethers.utils.formatEther(synth.collateralRequirement)}</div>
-        </Row>
-        <Row>
-          <div>Unique Sponsors:</div>
-          <div>{synth.sponsors.length}</div>
-        </Row>
-        <Row>
-          <div>Minimum Sponsor Tokens:</div>
-          <div>{ethers.utils.formatEther(synth.minSponsorTokens)}</div>
-        </Row>
+        {synth.type === "emp" && (
+          <>
+            <Row>
+              <div>Identifier Price:</div>
+              <div>{synth.identifierPrice}</div>
+            </Row>
+            <Row>
+              <div>Global Collateral Ratio:</div>
+              <div>{ethers.utils.formatEther(synth.gcr)}</div>
+            </Row>
+            <Row>
+              <div>Collateral Requirement:</div>
+              <div>{ethers.utils.formatEther(synth.collateralRequirement)}</div>
+            </Row>
+            <Row>
+              <div>Unique Sponsors:</div>
+              <div>{synth.sponsors.length}</div>
+            </Row>
+            <Row>
+              <div>Minimum Sponsor Tokens:</div>
+              <div>{ethers.utils.formatEther(synth.minSponsorTokens)}</div>
+            </Row>
+          </>
+        )}
       </Table>
     </Wrapper>
   );

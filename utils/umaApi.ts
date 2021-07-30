@@ -11,7 +11,8 @@ const baseOptions = {
   method: "POST",
 };
 
-const baseUrl = process.env.UMA_API_URL || "https://prod.api.umaproject.org";
+const baseUrl =
+  process.env.NEXT_PUBLIC_UMA_API_URL || "https://prod.api.umaproject.org";
 
 function constructRequest(...params: unknown[]) {
   try {
@@ -37,8 +38,8 @@ export async function request<T>(
   }
   return response.json();
 }
-
-export type EmpState = {
+// Basic types
+interface EmpState {
   id: string;
   address: string;
   priceIdentifier: string;
@@ -70,39 +71,90 @@ export type EmpState = {
   gcr: string;
   identifierPrice: string;
   tokenMarketPrice: string;
-};
-export type EmpStats = {
+  type: "emp";
+}
+interface LspState {
+  id: string;
+  address: string;
+  updated: number;
+  collateralPerPair: string;
+  priceIdentifier: string;
+  collateralToken: string;
+  longToken: string;
+  shortToken: string;
+  finder: string;
+  financialProductLibrary: string;
+  customAncillaryData: string;
+  prepaidProposerReward: number;
+  expirationTimestamp: number;
+  expiryPrice: string;
+  expiryPercentLong: string;
+  contractState: number;
+  totalPositionCollateral: string;
+  sponsors: string[];
+  longTokenDecimals: number;
+  shortTokenDecimals: number;
+  collateralDecimals: number;
+  longTokenName: string;
+  shortTokenName: string;
+  collateralName: string;
+  longTokenSymbol: string;
+  shortTokenSymbol: string;
+  collateralSymbol: string;
+  type: "lsp";
+}
+export type ContractType = "emp" | "lsp";
+export type SynthState<T extends { type: ContractType }> = T extends {
+  type: "emp";
+}
+  ? EmpState
+  : LspState;
+
+export type SynthStats = {
   id: string;
   address: string;
   tvl: string;
   tvm: string;
 };
+export type Synth<T extends { type: ContractType }> = ContentfulSynth &
+  SynthStats &
+  SynthState<T> & { tvl24hChange: number };
+
 export type TimeSeries = {
   id: string;
   address: string;
   value: string;
   timestamp: number;
 }[];
-type GetEmpsAddresses = () => Promise<string[]>;
-type GetEmpState = (address: string) => Promise<EmpState>;
-type GetEmpsState = (address: string) => Promise<EmpState[]>;
-type GetEmpStats = (address: string) => Promise<EmpStats>;
+
+// Function types
+type GetAddresses = () => Promise<string[]>;
+type GetState = <T extends { type: ContractType }>(
+  address: string
+) => Promise<SynthState<T>>;
+
+// type GetSynthsState = (address: string) => Promise<SynthState[]>;
+type GetSynthStats = (address: string) => Promise<SynthStats>;
 type GetStat = (addresses?: string | string[]) => Promise<string>;
 type GetStatBetween = (
   addresses: string | string[],
   startTimestamp?: number
-) => Promise<EmpStats[]>;
+) => Promise<SynthStats[]>;
 
 type GetPriceSlice = (address: string) => Promise<string[]>;
 
-const getEmpsAddresses: GetEmpsAddresses = () => request("listEmpAddresses");
-const getEmpState: GetEmpState = (address) => request("getEmpState", address);
-const getEmpsState: GetEmpsState = () =>
-  getEmpsAddresses().then((addresses) =>
-    Promise.all(addresses.map(getEmpState))
-  );
+const getAddresses: GetAddresses = async () => {
+  const empAddresses: string[] = await request("listEmpAddresses");
+  const lspAddresses: string[] = await request("listAddresses");
+  return [...empAddresses, ...lspAddresses];
+};
 
-const getEmpStats: GetEmpStats = async (address) => {
+const getState: GetState = async (address) => {
+  const state: any = await request("global/getState", address);
+  return state;
+};
+
+const getSynthStats: GetSynthStats = async (address) => {
   return {
     id: address,
     address,
@@ -130,26 +182,21 @@ const getYesterdayPrice: GetPriceSlice = (address: string) =>
   );
 export const client = {
   request,
-  getEmpsAddresses,
-  getEmpState,
-  getEmpsState,
-  getEmpStats,
+  getAddresses,
+  getState,
+  getSynthStats,
   getLatestTvl,
   getLatestTvm,
   getTvl,
   getYesterdayPrice,
 };
 
-export type Emp = ContentfulSynth &
-  EmpStats &
-  EmpState & { tvl24hChange: number };
-
-export async function fetchCompleteSynth(
+export async function fetchCompleteSynth<T extends { type: ContractType }>(
   synth: ContentfulSynth
-): Promise<Emp | Error> {
+): Promise<Synth<T> | Error> {
   try {
-    const stats = await client.getEmpStats(synth.address);
-    const state = await client.getEmpState(synth.address);
+    const stats = await client.getSynthStats(synth.address);
+    const state = await client.getState<T>(synth.address);
     const lastTvl = await client.getLatestTvl(synth.address);
     const [{ value: ydayTvl }] = await client.request(
       "tvlHistorySlice",
@@ -172,4 +219,8 @@ export async function fetchCompleteSynth(
   } catch (err) {
     return new SynthFetchingError(err.message, synth);
   }
+}
+
+export function formatLSPName(longTokenName: string): string {
+  return longTokenName.substring(-2);
 }

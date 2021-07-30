@@ -26,7 +26,7 @@ import {
 
 import { MaxWidthWrapper } from "./Wrapper";
 import { BaseButton } from "./Button";
-import { Emp } from "../utils/umaApi";
+import { Synth } from "../utils/umaApi";
 
 const RankCircle = styled.div`
   border-radius: 9999px;
@@ -42,7 +42,7 @@ const RankCircle = styled.div`
 `;
 
 const Name: React.FC<
-  Pick<Emp, "shortDescription" | "tokenName" | "category" | "logo">
+  Pick<Synth, "shortDescription" | "tokenName" | "category" | "logo">
 > = ({ logo, category, tokenName, shortDescription }) => {
   // Contentful won't return an absolute URL so we have to complete it or next/image won't parse it
   const formattedUrl = logo?.fields.file.url
@@ -131,7 +131,7 @@ const columns = [
     Header: "Category",
     // set the Id here so we can reference it safely when filtering™
     id: "category",
-    accessor: (row: Emp) => capitalize(row.category),
+    accessor: (row: Synth) => capitalize(row.category),
     filter: "category",
   },
 
@@ -165,7 +165,7 @@ const columns = [
       </span>
     ),
   },
-] as Column<Emp>[];
+] as Column<Synth>[];
 
 function activeSynthsFilter(
   rows: TRow[],
@@ -175,10 +175,10 @@ function activeSynthsFilter(
   if (!globalFilterValue) {
     return rows;
   }
-  return rows.filter((row) => !(row.original as Emp).expired);
+  return rows.filter((row) => !(row.original as Synth).expired);
 }
 type Props = {
-  data: Emp[];
+  data: Synth[];
   hasFilters?: boolean;
 };
 export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
