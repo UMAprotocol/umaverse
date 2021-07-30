@@ -152,15 +152,19 @@ export const MintButton = styled(BaseButton)`
 export const SettleWrapper = styled.div`
   height: 100%;
   min-height: 400px;
-  border-top: 4px solid var(--primary-700);
+  border-top: 4px solid #ff4b4b;
   text-align: center;
   background: var(--gray-300);
 `;
 
-export const SettleButton = styled(BaseButton)`
+interface ISettleButton {
+  disabled?: boolean;
+}
+
+export const SettleButton = styled(BaseButton)<ISettleButton>`
   width: 90%;
   margin: 0 auto;
-  background-color: var(--primary-700);
+  background-color: #ff4b4b;
   color: var(--white);
   text-align: center;
   border-radius: 8px;
@@ -168,6 +172,8 @@ export const SettleButton = styled(BaseButton)`
   font-weight: 600;
   font-family: inherit;
   padding: 0.66rem 0;
+  opacity: ${(props) => (props.disabled ? "0.5" : "1")};
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
   @media ${QUERIES.laptopAndUp} {
     width: 380px;
   }
@@ -207,4 +213,9 @@ export const CollateralWrapper = styled.div`
     color: #919191;
     padding-left: 1.25rem;
   }
+`;
+
+export const SettleTokenBalance = styled.div`
+  margin: 0.5rem auto;
+  font-weight: 600;
 `;

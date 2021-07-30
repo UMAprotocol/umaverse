@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useCallback } from "react";
 import Tabs from "../tabs";
 import {
   Wrapper,
@@ -6,11 +6,12 @@ import {
   SettleWrapper,
   SettleTitle,
   SettleText,
+  SettleTokenBalance,
 } from "./LSPForm.styled";
 import { ethers } from "ethers";
 import MintForm from "./MintForm";
 import RedeemForm from "./RedeemForm";
-
+import { ContractState } from "../../pages/testing";
 interface Props {
   address: string;
   web3Provider: ethers.providers.Web3Provider | null;
@@ -26,6 +27,10 @@ interface Props {
   shortTokenBalance: ethers.BigNumber;
   refetchLongTokenBalance: () => void;
   refetchShortTokenBalance: () => void;
+  showSettle: boolean;
+  setShowSettle: React.Dispatch<React.SetStateAction<boolean>>;
+  contractState: ContractState;
+  setContractState: React.Dispatch<React.SetStateAction<ContractState>>;
 }
 
 const LSPForm: FC<Props> = ({
@@ -42,8 +47,48 @@ const LSPForm: FC<Props> = ({
   shortTokenBalance,
   refetchLongTokenBalance,
   refetchShortTokenBalance,
+  showSettle,
+  setShowSettle,
+  contractState,
+  setContractState,
 }) => {
-  const [showSettle, setShowSettle] = useState(false);
+  const expire = useCallback(async () => {
+    if (lspContract) {
+      try {
+        await lspContract
+          .expire()
+          .then((tx: any) => tx.wait(1))
+          .then(() => {
+            setShowSettle(false);
+            setContractState(ContractState.ExpiredPriceRequested);
+          });
+      } catch (err) {
+        console.log("err in expire call", err);
+      }
+    }
+  }, [lspContract, setShowSettle, setContractState]);
+
+  const settle = useCallback(async () => {
+    if (lspContract) {
+      try {
+        await lspContract
+          .settle(longTokenBalance, shortTokenBalance)
+          .then((tx: any) => tx.wait(1))
+          .then(async () => {
+            refetchLongTokenBalance();
+            refetchShortTokenBalance();
+            if (erc20Contract) {
+              const balance = (await erc20Contract.balanceOf(
+                address
+              )) as ethers.BigNumber;
+              setCollateralBalance(balance);
+            }
+          });
+      } catch (err) {
+        console.log("err in settle", err);
+      }
+    }
+  }, [lspContract, longTokenBalance, shortTokenBalance]);
 
   return (
     <Wrapper>
@@ -87,12 +132,48 @@ const LSPForm: FC<Props> = ({
       {showSettle && (
         <SettleWrapper>
           <SettleTitle>Settle Position</SettleTitle>
-          <SettleText>
-            The LSP contract has expired. You can now settle your position at
-            the oracle returned price.
-          </SettleText>
-          <SettleButton onClick={() => setShowSettle(false)}>
-            Settle
+          {contractState === ContractState.Open && (
+            <SettleText>
+              The LSP contract is expireable. You can now settle your position
+              at the oracle returned price.
+            </SettleText>
+          )}
+          {/* contractState is an enum -- when it's not open, it's greater than 0. */}
+          {contractState === ContractState.ExpiredPriceRequested && (
+            <SettleText>
+              The LSP contract is expired. The final price most go through the
+              Optimistic Oracle first -- once this price is settled, you can
+              redeem your tokens. Please check back later.
+            </SettleText>
+          )}
+          {contractState === ContractState.ExpiredPriceReceived && (
+            <SettleText>
+              The LSP contract is expired. You can now settle your position at
+              the oracle returned price. The following tokens will be redeemed:
+              <SettleTokenBalance>
+                Long Token Balance:{" "}
+                {ethers.utils.formatUnits(longTokenBalance, collateralDecimals)}
+              </SettleTokenBalance>
+              <SettleTokenBalance>
+                Short Token Balance:{" "}
+                {ethers.utils.formatUnits(
+                  shortTokenBalance,
+                  collateralDecimals
+                )}
+              </SettleTokenBalance>
+            </SettleText>
+          )}
+          <SettleButton
+            disabled={contractState === ContractState.ExpiredPriceRequested}
+            onClick={() => {
+              // On click function only works when open or final price received.
+              if (contractState === ContractState.Open) return expire();
+              if (contractState === ContractState.ExpiredPriceReceived)
+                return settle();
+              return false;
+            }}
+          >
+            {contractState > 0 ? "Settle" : "Expire"}
           </SettleButton>
         </SettleWrapper>
       )}
