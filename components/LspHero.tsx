@@ -6,7 +6,7 @@ import type { Synth } from "../utils/umaApi";
 type Props = {
   synth: Synth<{ type: "lsp" }>;
 };
-export const LspHero: React.FC<Props> = ({ synth }) => {
+export const LspHero: React.FC<Props> = () => {
   return (
     <Wrapper>
       <div>Placeholders here</div>

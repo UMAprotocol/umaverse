@@ -21,7 +21,7 @@ import {
   ContentfulSynth,
 } from "../utils";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
-import { client, fetchCompleteSynth } from "../utils/umaApi";
+import { client, fetchCompleteSynth, Synth } from "../utils/umaApi";
 
 export const getStaticProps: GetStaticProps = async () => {
   const queryClient = new QueryClient();
@@ -54,8 +54,12 @@ export const getStaticProps: GetStaticProps = async () => {
 const IndexPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
   cmsSynths,
 }) => {
-  const { data: allSynths } = useQuery("all synths", async () =>
-    (await Promise.all(cmsSynths.map(fetchCompleteSynth))).filter(errorFilter)
+  const { data: allSynths } = useQuery(
+    "all synths",
+    async () =>
+      (await Promise.all(cmsSynths.map(fetchCompleteSynth))).filter(
+        errorFilter
+      ) as Synth<any>[]
   );
   const { data: totalTvl } = useQuery(
     "total tvl",
@@ -136,7 +140,7 @@ const IndexPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
         </CardWrapper>
       </Hero>
 
-      <Table data={allSynths!} />
+      <Table data={allSynths ?? []} />
     </Layout>
   );
 };
