@@ -55,12 +55,13 @@ const LSPForm: FC<Props> = ({
   const expire = useCallback(async () => {
     if (lspContract) {
       try {
-        await lspContract.expire().then((tx: any) => {
-          return tx.wait(1).then(() => {
+        await lspContract
+          .expire()
+          .then((tx: any) => tx.wait(1))
+          .then(() => {
             setShowSettle(false);
             setContractState(ContractState.ExpiredPriceRequested);
           });
-        });
       } catch (err) {
         console.log("err in expire call", err);
       }
@@ -72,17 +73,16 @@ const LSPForm: FC<Props> = ({
       try {
         await lspContract
           .settle(longTokenBalance, shortTokenBalance)
-          .then((tx: any) => {
-            return tx.wait(1).then(async () => {
-              refetchLongTokenBalance();
-              refetchShortTokenBalance();
-              if (erc20Contract) {
-                const balance = (await erc20Contract.balanceOf(
-                  address
-                )) as ethers.BigNumber;
-                setCollateralBalance(balance);
-              }
-            });
+          .then((tx: any) => tx.wait(1))
+          .then(async () => {
+            refetchLongTokenBalance();
+            refetchShortTokenBalance();
+            if (erc20Contract) {
+              const balance = (await erc20Contract.balanceOf(
+                address
+              )) as ethers.BigNumber;
+              setCollateralBalance(balance);
+            }
           });
       } catch (err) {
         console.log("err in settle", err);
