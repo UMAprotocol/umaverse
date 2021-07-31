@@ -1,15 +1,14 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { GetStaticProps, InferGetStaticPropsType, GetStaticPaths } from "next";
+import { GetStaticProps, GetStaticPaths } from "next";
 import Image from "next/image";
 import { useQuery, QueryClient } from "react-query";
 import { dehydrate } from "react-query/hydration";
+import { DateTime } from "luxon";
 
 import {
   Layout,
   Hero,
-  Card as UnstyledCard,
-  Value,
   Link as UnstyledLink,
   About,
   Information as UnstyledInformation,
@@ -19,11 +18,11 @@ import {
   MaxWidthWrapper,
   Table,
   ResponsiveLineChart,
+  EmpHero,
+  LspHero,
 } from "../components";
 import {
-  formatMillions,
   QUERIES,
-  ContentfulSynth,
   formatContentfulUrl,
   errorFilter,
   formatWeiString,
@@ -34,9 +33,11 @@ import UnstyledRightArrow from "../public/icons/arrow-right.svg";
 import UnstyledExternalLink from "../public/icons/external-link.svg";
 import {
   client,
-  EmpState,
-  EmpStats,
+  SynthState,
+  Synth,
+  ContractType,
   fetchCompleteSynth,
+  formatLSPName,
 } from "../utils/umaApi";
 
 const BackAction = () => {
@@ -58,7 +59,6 @@ const ActionWrapper = styled(UnstyledLink)`
   margin-bottom: 16px;
 `;
 
-type Emp = ContentfulSynth & EmpStats & EmpState;
 export const getStaticProps: GetStaticProps = async (ctx) => {
   const { address } = ctx.params as { address: string };
 
@@ -66,14 +66,14 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery(
     ["synth state", address],
-    async () => await client.getEmpState(address)
+    async () => await client.getState(address)
   );
 
   const state = (await queryClient.getQueryData([
     "synth state",
     address,
-  ])) as EmpState;
-  const stats = await client.getEmpStats(address);
+  ])) as SynthState<{ type: ContractType }>;
+  const stats = await client.getSynthStats(address);
   const apiData = {
     ...stats,
     ...state,
@@ -93,7 +93,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
   const cmsRelatedSynths = await contentfulClient.getRelatedSynths(data);
   const relatedSynths = (
     await Promise.all(cmsRelatedSynths.map(fetchCompleteSynth))
-  ).filter(errorFilter) as Emp[];
+  ).filter(errorFilter) as Synth<{ type: ContractType }>[];
 
   // get TVL history for this synth
   await queryClient.prefetchQuery(
@@ -126,24 +126,32 @@ export const getStaticPaths: GetStaticPaths = async () => {
     fallback: "blocking",
   };
 };
-
-const SynthPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
-  data,
-  relatedSynths,
-  change24h,
-}) => {
+type Props =
+  | {
+      data: Synth<{ type: "emp" }>;
+      relatedSynths: Synth<{ type: ContractType }>[];
+      change24h: number;
+    }
+  | {
+      data: Synth<{ type: "lsp" }>;
+      relatedSynths: Synth<{ type: ContractType }>[];
+      change24h: number;
+    };
+const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
   const formattedLogo = data?.logo?.fields.file.url
     ? formatContentfulUrl(data.logo.fields.file.url)
     : null;
 
   const { data: synthState } = useQuery(
     ["synth state", data.address],
-    async () => await client.getEmpState(data.address)
+    async () => await client.getState<typeof data>(data.address)
   );
   const { data: tvlHistory, isLoading: isLoadingTvl } = useQuery(
     ["tvl history", data.address],
     async () => await client.getTvl(data.address)
   );
+  const isExpired =
+    DateTime.now().toSeconds() > Number(synthState?.expirationTimestamp);
   return (
     <Layout title="Umaverse">
       <Hero topAction={<BackAction />}>
@@ -155,94 +163,73 @@ const SynthPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
           )}
 
           <div>
-            <Heading>{data.tokenName}</Heading>
+            <Heading>
+              {data.type === "emp"
+                ? data.tokenName
+                : formatLSPName(data.longTokenName)}
+            </Heading>
             <Description>{data.address}</Description>
           </div>
-          <StyledLiveIndicator isLive={!data.expired} />
+          <StyledLiveIndicator isLive={!isExpired} />
         </HeroContentWrapper>
-        <CardWrapper>
-          <Card>
-            <CardContent>
-              <CardHeading>
-                Total Value Locked <span>(TVL)</span>
-              </CardHeading>
-              <Value
-                value={data.tvl}
-                format={(v) => {
-                  const formattedValue = formatWeiString(v);
-                  return (
-                    <>
-                      ${formatMillions(Math.floor(formattedValue))}{" "}
-                      <span style={{ fontWeight: 400 }}>
-                        {formattedValue >= 10 ** 9
-                          ? "B"
-                          : formattedValue >= 10 ** 6
-                          ? "M"
-                          : ""}
-                      </span>
-                    </>
-                  );
-                }}
-              />
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent>
-              <CardHeading>Token Price</CardHeading>
-              <Value
-                value={data.tokenMarketPrice}
-                format={(v) => `$${formatWeiString(v).toFixed(2)}`}
-              ></Value>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent>
-              <CardHeading>
-                Change <span>(24h)</span>
-              </CardHeading>
-              <Value
-                value={change24h}
-                format={(v: number) => (
-                  <span style={{ color: "var(--green)" }}>{v} %</span>
-                )}
-              />
-            </CardContent>
-          </Card>
-        </CardWrapper>
+        {data.type === "emp" ? (
+          <EmpHero synth={data} change24h={change24h} />
+        ) : (
+          <LspHero synth={data} />
+        )}
       </Hero>
       <MainWrapper>
         <About description={data.description} />
         <AsideWrapper>
-          <SecondaryHeading>Total Value Locked (TVL)</SecondaryHeading>
-          <ChartWrapper>
-            {/* @ts-expect-error bla */}
-            <ResponsiveLineChart data={tvlHistory!} isLoading={isLoadingTvl} />
-          </ChartWrapper>
+          {data.type === "emp" ? (
+            <>
+              <SecondaryHeading>Total Value Locked (TVL)</SecondaryHeading>
+              <ChartWrapper>
+                <ResponsiveLineChart
+                  // @ts-expect-error bla
+                  data={tvlHistory ?? []}
+                  isLoading={isLoadingTvl}
+                />
+              </ChartWrapper>
+            </>
+          ) : (
+            <div>some LSP stuff here</div>
+          )}
         </AsideWrapper>
-        <Information synth={{ ...data, ...synthState }} />
+        <Information
+          synth={{ ...data, ...synthState } as Synth<{ type: ContractType }>}
+        />
         <AsideWrapper>
-          <SecondaryHeading>Manage Position</SecondaryHeading>
-          <ul>
-            <Link href={data.mintmanage}>
-              Mint / Manage <ExternalLink />
-            </Link>
-            <Link
-              href={`https://matcha.xyz/markets/1/${data.tokenCurrency.toLowerCase()}`}
-            >
-              Trade
-              <ExternalLink />
-            </Link>
-            <Link href={`https://etherscan.io/address/${data.address}`}>
-              Etherscan <span>[Contract]</span> <ExternalLink />
-            </Link>
-            <Link href={`https://etherscan.io/address/${data.tokenCurrency}`}>
-              Etherscan <span>[Token] </span>
-              <ExternalLink />
-            </Link>
-            <Link href="https://docs.umaproject.org">
-              UMA Docs <RightArrow />
-            </Link>
-          </ul>
+          {data.type === "emp" ? (
+            <>
+              <SecondaryHeading>Manage Position</SecondaryHeading>
+              <ul>
+                <Link href={data.mintmanage}>
+                  Mint / Manage <ExternalLink />
+                </Link>
+                <Link
+                  href={`https://matcha.xyz/markets/1/${data.tokenCurrency.toLowerCase()}`}
+                >
+                  Trade
+                  <ExternalLink />
+                </Link>
+                <Link href={`https://etherscan.io/address/${data.address}`}>
+                  Etherscan <span>[Contract]</span> <ExternalLink />
+                </Link>
+                <Link
+                  href={`https://etherscan.io/address/${data.tokenCurrency}`}
+                >
+                  Etherscan <span>[Token] {data.type}</span>
+                  <ExternalLink />
+                </Link>
+                <Link href="https://docs.umaproject.org">
+                  UMA Docs <RightArrow />
+                </Link>
+              </ul>
+            </>
+          ) : (
+            <div> form here</div>
+          )}
         </AsideWrapper>
       </MainWrapper>
       <GettingStarted />
@@ -259,46 +246,6 @@ const SynthPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
 };
 
 export default SynthPage;
-
-const CardWrapper = styled.div`
-  color: var(--gray-700);
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  grid-template-rows: auto;
-  row-gap: 10px;
-  margin-top: 30px;
-  @media ${QUERIES.tabletAndUp} {
-    column-gap: 20px;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: fit-content 1fr;
-  }
-`;
-
-const Card = styled(UnstyledCard)`
-  position: relative;
-`;
-const CardContent = styled.div`
-  padding: 15px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-  & > h3 {
-    font-weight: 700;
-  }
-  & > div {
-    color: var(--primary);
-    font-size: clamp(1.375rem, 1.3vw + 1.1rem, 2.25rem);
-    font-weight: 700;
-  }
-`;
-
-const CardHeading = styled.h3`
-  font-weight: 600;
-  & > span {
-    font-weight: 300;
-  }
-`;
 
 const Heading = styled.h1`
   font-weight: 700;

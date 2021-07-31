@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { DateTime } from "luxon";
 
 import styled from "@emotion/styled";
 import { motion, AnimatePresence } from "framer-motion";
@@ -26,7 +27,7 @@ import {
 
 import { MaxWidthWrapper } from "./Wrapper";
 import { BaseButton } from "./Button";
-import { Emp } from "../utils/umaApi";
+import { Synth, formatLSPName } from "../utils/umaApi";
 
 const RankCircle = styled.div`
   border-radius: 9999px;
@@ -40,10 +41,11 @@ const RankCircle = styled.div`
     color: var(--gray-700);
   }
 `;
-
-const Name: React.FC<
-  Pick<Emp, "shortDescription" | "tokenName" | "category" | "logo">
-> = ({ logo, category, tokenName, shortDescription }) => {
+type NameProps = {
+  synth: Synth<any>;
+};
+const Name: React.FC<NameProps> = ({ synth }) => {
+  const { logo, category } = synth;
   // Contentful won't return an absolute URL so we have to complete it or next/image won't parse it
   const formattedUrl = logo?.fields.file.url
     ? formatContentfulUrl(logo.fields.file.url)
@@ -56,8 +58,13 @@ const Name: React.FC<
       </ImageWrapper>
 
       <div>
-        <NameHeading>{tokenName}</NameHeading>
-        <span>{shortDescription}</span>
+        <NameHeading>
+          {synth.type === "emp"
+            ? synth.tokenName
+            : formatLSPName(synth.longTokenName)}
+        </NameHeading>
+
+        <span>{synth.shortDescription}</span>
       </div>
     </NameWrapper>
   );
@@ -118,20 +125,13 @@ const columns = [
   {
     Header: "Name",
     // eslint-disable-next-line react/display-name
-    accessor: (row) => (
-      <Name
-        logo={row.logo}
-        tokenName={row.tokenName}
-        shortDescription={row.shortDescription}
-        category={row.category}
-      />
-    ),
+    accessor: (row) => <Name synth={row} />,
   },
   {
     Header: "Category",
     // set the Id here so we can reference it safely when filtering™
     id: "category",
-    accessor: (row: Emp) => capitalize(row.category),
+    accessor: (row) => capitalize(row.category),
     filter: "category",
   },
 
@@ -165,7 +165,7 @@ const columns = [
       </span>
     ),
   },
-] as Column<Emp>[];
+] as Column<Synth<any>>[];
 
 function activeSynthsFilter(
   rows: TRow[],
@@ -175,10 +175,14 @@ function activeSynthsFilter(
   if (!globalFilterValue) {
     return rows;
   }
-  return rows.filter((row) => !(row.original as Emp).expired);
+  return rows.filter(
+    (row) =>
+      (row.original as Synth<any>).expirationTimestamp >
+      DateTime.now().toSeconds()
+  );
 }
 type Props = {
-  data: Emp[];
+  data: Synth<any>[];
   hasFilters?: boolean;
 };
 export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
