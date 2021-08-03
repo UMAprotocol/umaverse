@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, FC } from "react";
 import { ethers } from "ethers";
 
-import LSPForm from "../components/lsp-form/LSPForm";
-import { KNOWN_LSP_ADDRESS } from "../utils/constants";
+import LSPForm from ".//LSPForm";
 
-import createLSPContractInstance from "../components/lsp-form/createLSPContractInstance";
-import createERC20ContractInstance from "../components/lsp-form/createERC20ContractInstance";
-import useERC20ContractValues from "../hooks/useERC20ContractValues";
-import { useConnection } from "../hooks";
+import createLSPContractInstance from "./createLSPContractInstance";
+import createERC20ContractInstance from "./createERC20ContractInstance";
+import useERC20ContractValues from "../../hooks/useERC20ContractValues";
+import { useConnection } from "../../hooks";
 
 export enum ContractState {
   Open,
@@ -15,8 +14,12 @@ export enum ContractState {
   ExpiredPriceReceived,
 }
 
+interface Props {
+  contractAddress: string;
+}
+
 const toBN = ethers.BigNumber.from;
-const Testing = () => {
+const LSP: FC<Props> = ({ contractAddress }) => {
   const { account = "", signer, provider } = useConnection();
 
   const [lspContract, setLSPContract] = useState<ethers.Contract | null>(null);
@@ -65,7 +68,7 @@ const Testing = () => {
   // Get contract data and set values.
   useEffect(() => {
     if (signer && !lspContract) {
-      const contract = createLSPContractInstance(signer, KNOWN_LSP_ADDRESS);
+      const contract = createLSPContractInstance(signer, contractAddress);
       contract.contractState().then(async (cs: ContractState) => {
         setContractState(cs);
         if (cs === ContractState.ExpiredPriceRequested) {
@@ -121,13 +124,13 @@ const Testing = () => {
 
       setLSPContract(contract);
     }
-  }, [lspContract, signer, account]);
+  }, [lspContract, signer, account, contractAddress]);
 
   return (
     <LSPForm
       address={account}
       web3Provider={provider}
-      contractAddress={KNOWN_LSP_ADDRESS}
+      contractAddress={contractAddress}
       lspContract={lspContract}
       erc20Contract={erc20Contract}
       collateralBalance={collateralBalance}
@@ -146,4 +149,4 @@ const Testing = () => {
   );
 };
 
-export default Testing;
+export default LSP;

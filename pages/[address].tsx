@@ -21,6 +21,8 @@ import {
   EmpHero,
   LspHero,
 } from "../components";
+import LSP from "../components/lsp";
+
 import {
   QUERIES,
   formatContentfulUrl,
@@ -138,6 +140,7 @@ type Props =
       change24h: number;
     };
 const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
+  console.log("data??", data);
   const formattedLogo = data?.logo?.fields.file.url
     ? formatContentfulUrl(data.logo.fields.file.url)
     : null;
@@ -193,7 +196,7 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
               </ChartWrapper>
             </>
           ) : (
-            <div>some LSP stuff here</div>
+            <LSP contractAddress={data.address} />
           )}
         </AsideWrapper>
         <Information
