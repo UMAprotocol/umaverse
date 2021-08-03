@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { useState, useEffect, useCallback } from "react";
-import createERC20ContractInstance from "../components/lsp-form/createERC20ContractInstance";
+import createERC20ContractInstance from "../components/lsp/createERC20ContractInstance";
 
 export default function useERC20ContractValues(
   contractAddress: string,

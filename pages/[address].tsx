@@ -196,7 +196,7 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
               </ChartWrapper>
             </>
           ) : (
-            <LSP contractAddress={data.address} />
+            <div />
           )}
         </AsideWrapper>
         <Information
@@ -231,7 +231,7 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
               </ul>
             </>
           ) : (
-            <div> form here</div>
+            <LSP contractAddress={data.address} />
           )}
         </AsideWrapper>
       </MainWrapper>
