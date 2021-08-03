@@ -16,10 +16,11 @@ export enum ContractState {
 
 interface Props {
   contractAddress: string;
+  collateralSymbol: string;
 }
 
 const toBN = ethers.BigNumber.from;
-const LSP: FC<Props> = ({ contractAddress }) => {
+const LSP: FC<Props> = ({ contractAddress, collateralSymbol }) => {
   const { account = "", signer, provider } = useConnection();
 
   const [lspContract, setLSPContract] = useState<ethers.Contract | null>(null);
@@ -67,7 +68,7 @@ const LSP: FC<Props> = ({ contractAddress }) => {
   }, [contractExpirationTime, currentTime, contractState]);
   // Get contract data and set values.
   useEffect(() => {
-    if (signer && !lspContract) {
+    if (signer && !lspContract && contractAddress && account) {
       const contract = createLSPContractInstance(signer, contractAddress);
       contract.contractState().then(async (cs: ContractState) => {
         setContractState(cs);
@@ -105,8 +106,13 @@ const LSP: FC<Props> = ({ contractAddress }) => {
           setCollateralDecimals(decimals.toString());
         });
 
-        const balance = (await erc20.balanceOf(account)) as ethers.BigNumber;
-        setCollateralBalance(balance);
+        try {
+          const balance = (await erc20.balanceOf(account)) as ethers.BigNumber;
+          setCollateralBalance(balance);
+        } catch (err) {
+          console.log("err in balance", err);
+        }
+
         setERC20Contract(erc20);
       });
 

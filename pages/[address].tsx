@@ -231,7 +231,10 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
               </ul>
             </>
           ) : (
-            <LSP contractAddress={data.address} />
+            <LSP
+              contractAddress={data.address}
+              collateralSymbol={data.collateralSymbol}
+            />
           )}
         </AsideWrapper>
       </MainWrapper>
