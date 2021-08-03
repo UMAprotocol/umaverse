@@ -7,6 +7,7 @@ import { KNOWN_LSP_ADDRESS } from "../utils/constants";
 import createLSPContractInstance from "../components/lsp-form/createLSPContractInstance";
 import createERC20ContractInstance from "../components/lsp-form/createERC20ContractInstance";
 import useERC20ContractValues from "../hooks/useERC20ContractValues";
+import { useConnection } from "../hooks";
 
 export enum ContractState {
   Open,
@@ -16,9 +17,7 @@ export enum ContractState {
 
 const toBN = ethers.BigNumber.from;
 const Testing = () => {
-  const [web3Provider, setWeb3Provider] =
-    useState<ethers.providers.Web3Provider | null>(null);
-  const [address, setAddress] = useState("");
+  const { account = "", signer, provider } = useConnection();
 
   const [lspContract, setLSPContract] = useState<ethers.Contract | null>(null);
   const [erc20Contract, setERC20Contract] = useState<ethers.Contract | null>(
@@ -38,20 +37,12 @@ const Testing = () => {
   const [shortTokenAddress, setShortTokenAddress] = useState("");
 
   const { balance: longTokenBalance, refetchBalance: refetchLongTokenBalance } =
-    useERC20ContractValues(
-      longTokenAddress,
-      address,
-      web3Provider ? web3Provider.getSigner() : null
-    );
+    useERC20ContractValues(longTokenAddress, account, signer ?? null);
 
   const {
     balance: shortTokenBalance,
     refetchBalance: refetchShortTokenBalance,
-  } = useERC20ContractValues(
-    shortTokenAddress,
-    address,
-    web3Provider ? web3Provider.getSigner() : null
-  );
+  } = useERC20ContractValues(shortTokenAddress, account, signer ?? null);
 
   const [contractState, setContractState] = useState<ContractState>(
     ContractState.Open
@@ -73,8 +64,7 @@ const Testing = () => {
   }, [contractExpirationTime, currentTime, contractState]);
   // Get contract data and set values.
   useEffect(() => {
-    if (web3Provider && !lspContract) {
-      const signer = web3Provider.getSigner();
+    if (signer && !lspContract) {
       const contract = createLSPContractInstance(signer, KNOWN_LSP_ADDRESS);
       contract.contractState().then(async (cs: ContractState) => {
         setContractState(cs);
@@ -112,7 +102,7 @@ const Testing = () => {
           setCollateralDecimals(decimals.toString());
         });
 
-        const balance = (await erc20.balanceOf(address)) as ethers.BigNumber;
+        const balance = (await erc20.balanceOf(account)) as ethers.BigNumber;
         setCollateralBalance(balance);
         setERC20Contract(erc20);
       });
@@ -131,21 +121,12 @@ const Testing = () => {
 
       setLSPContract(contract);
     }
-  }, [web3Provider, lspContract]);
-
-  useEffect(() => {
-    if ((window as any).ethereum && web3Provider === null) {
-      const mm = (window as any).ethereum;
-      const provider = new ethers.providers.Web3Provider(mm);
-      setAddress(mm.selectedAddress);
-      setWeb3Provider(provider);
-    }
-  }, []);
+  }, [lspContract, signer, account]);
 
   return (
     <LSPForm
-      address={address}
-      web3Provider={web3Provider}
+      address={account}
+      web3Provider={provider}
       contractAddress={KNOWN_LSP_ADDRESS}
       lspContract={lspContract}
       erc20Contract={erc20Contract}

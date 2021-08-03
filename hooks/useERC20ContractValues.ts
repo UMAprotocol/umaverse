@@ -5,7 +5,7 @@ import createERC20ContractInstance from "../components/lsp-form/createERC20Contr
 export default function useERC20ContractValues(
   contractAddress: string,
   userAddress: string,
-  signer: ethers.providers.JsonRpcSigner | null
+  signer: ethers.Signer | null
 ) {
   const [contract, setContract] = useState<ethers.Contract | null>(null);
   const [balance, setBalance] = useState<ethers.BigNumber>(

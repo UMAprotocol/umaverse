@@ -28,7 +28,7 @@ interface Props {
   setShowSettle: React.Dispatch<React.SetStateAction<boolean>>;
   lspContract: ethers.Contract | null;
   erc20Contract: ethers.Contract | null;
-  web3Provider: ethers.providers.Web3Provider | null;
+  web3Provider?: ethers.providers.Web3Provider;
   collateralBalance: ethers.BigNumber;
   collateralPerPair: ethers.BigNumber;
   setCollateralBalance: React.Dispatch<React.SetStateAction<ethers.BigNumber>>;
@@ -101,7 +101,17 @@ const MintForm: FC<Props> = ({
         console.log("err", err);
       }
     }
-  }, [lspContract, erc20Contract, amount]);
+  }, [
+    lspContract,
+    erc20Contract,
+    amount,
+    address,
+    contractAddress,
+    collateralPerPair,
+    setCollateralBalance,
+    refetchLongTokenBalance,
+    refetchShortTokenBalance,
+  ]);
 
   return (
     <div>
