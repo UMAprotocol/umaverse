@@ -12,6 +12,7 @@ import LongShort from "./LongShort";
 import Collateral from "./Collateral";
 import DoubleArrow from "../../public/icons/arrows-switch.svg";
 import toWeiSafe from "../../utils/convertToWeiSafely";
+import { useConnection } from "../../hooks";
 
 const toBN = ethers.BigNumber.from;
 const scaledToWei = toBN("10").pow("18");
@@ -48,6 +49,8 @@ const RedeemForm: FC<Props> = ({
   const [longTokenAmount, setLongTokenAmount] = useState("");
   const [shortTokenAmount, setShortTokenAmount] = useState("");
   const [collateralOnTop, setCollateralOnTop] = useState(false);
+
+  const { signer } = useConnection();
 
   const redeem = useCallback(async () => {
     if (lspContract && erc20Contract && longTokenAmount && shortTokenAmount) {
@@ -156,8 +159,11 @@ const RedeemForm: FC<Props> = ({
       </BottomFormWrapper>
       <ButtonWrapper>
         <MintButton
+          disabled={!signer}
           onClick={() => {
-            return redeem();
+            if (signer) {
+              return redeem();
+            }
           }}
         >
           Redeem

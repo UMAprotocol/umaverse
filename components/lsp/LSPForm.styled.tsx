@@ -144,6 +144,7 @@ export const MintButton = styled(BaseButton)`
   font-family: inherit;
   padding: 0.75rem 0;
   width: 100%;
+  opacity: ${(props) => (props.disabled ? "0.5" : "1")};
   @media ${QUERIES.laptopAndUp} {
     width: 370px;
   }

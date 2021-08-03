@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { ethers } from "ethers";
 import toWeiSafe from "../../utils/convertToWeiSafely";
+import { useConnection } from "../../hooks";
 
 import LongShort from "./LongShort";
 import Collateral from "./Collateral";
@@ -60,6 +61,7 @@ const MintForm: FC<Props> = ({
   const [amount, setAmount] = useState("");
   const [longTokenAmount, setLongTokenAmount] = useState("");
   const [shortTokenAmount, setShortTokenAmount] = useState("");
+  const { signer } = useConnection();
 
   const mint = useCallback(async () => {
     if (lspContract && erc20Contract && amount) {
@@ -151,8 +153,11 @@ const MintForm: FC<Props> = ({
       </BottomFormWrapper>
       <ButtonWrapper>
         <MintButton
+          disabled={!signer}
           onClick={() => {
-            return mint();
+            if (signer) {
+              return mint();
+            }
           }}
         >
           Mint
