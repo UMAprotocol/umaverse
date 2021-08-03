@@ -31,6 +31,7 @@ interface Props {
   setShowSettle: React.Dispatch<React.SetStateAction<boolean>>;
   contractState: ContractState;
   setContractState: React.Dispatch<React.SetStateAction<ContractState>>;
+  collateralSymbol: string;
 }
 
 const LSPForm: FC<Props> = ({
@@ -51,6 +52,7 @@ const LSPForm: FC<Props> = ({
   setShowSettle,
   contractState,
   setContractState,
+  collateralSymbol,
 }) => {
   const expire = useCallback(async () => {
     if (lspContract) {
@@ -119,6 +121,7 @@ const LSPForm: FC<Props> = ({
               shortTokenBalance={shortTokenBalance}
               refetchLongTokenBalance={refetchLongTokenBalance}
               refetchShortTokenBalance={refetchShortTokenBalance}
+              collateralSymbol={collateralSymbol}
             />
           </div>
           <div data-label="Redeem">

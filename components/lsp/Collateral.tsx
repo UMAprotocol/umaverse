@@ -59,10 +59,10 @@ const Collateral: FC<Props> = ({
   return (
     <>
       <FormRow>
-        {collateral === "eth" && <EthIcon style={iconStyles} />}
-        {collateral === "uniswap" && <UniswapIcon style={iconStyles} />}
+        {collateral === "ETH" && <EthIcon style={iconStyles} />}
+        {collateral === "UNI" && <UniswapIcon style={iconStyles} />}
         <CollateralWrapper>
-          <div>{collateral.toUpperCase()}</div>
+          <div>{collateral && collateral.toUpperCase()}</div>
         </CollateralWrapper>
         <TextInput
           label="collateral"

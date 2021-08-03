@@ -151,6 +151,7 @@ const LSP: FC<Props> = ({ contractAddress, collateralSymbol }) => {
       setShowSettle={setShowSettle}
       contractState={contractState}
       setContractState={setContractState}
+      collateralSymbol={collateralSymbol}
     />
   );
 };

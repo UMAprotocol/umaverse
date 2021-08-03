@@ -38,6 +38,7 @@ interface Props {
   shortTokenBalance: ethers.BigNumber;
   refetchLongTokenBalance: () => void;
   refetchShortTokenBalance: () => void;
+  collateralSymbol: string;
 }
 
 const MintForm: FC<Props> = ({
@@ -53,8 +54,9 @@ const MintForm: FC<Props> = ({
   shortTokenBalance,
   refetchLongTokenBalance,
   refetchShortTokenBalance,
+  collateralSymbol,
 }) => {
-  const [collateral, setCollateral] = useState("uma");
+  const [collateral, setCollateral] = useState(collateralSymbol);
   const [amount, setAmount] = useState("");
   const [longTokenAmount, setLongTokenAmount] = useState("");
   const [shortTokenAmount, setShortTokenAmount] = useState("");

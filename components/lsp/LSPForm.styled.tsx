@@ -113,10 +113,10 @@ export const DownArrowWrapper = styled.div`
     margin-left: 184px;
   }
   svg {
-    margin-top: 9px;
-    margin-left: 9px;
+    margin-top: 7px;
+    margin-left: 7px;
     fill: #272528;
-    width: 100%;
+    width: 16px;
   }
 `;
 
