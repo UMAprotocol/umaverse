@@ -47,6 +47,7 @@ const Collateral: FC<Props> = ({
   const setLongShortPairInputs = useCallback(
     (collateral: string) => {
       const normalizedCPP = ethers.utils.formatEther(collateralPerPair);
+      console.log("normal", normalizedCPP);
 
       const newTokenPairAmounts = Number(collateral) / Number(normalizedCPP);
 

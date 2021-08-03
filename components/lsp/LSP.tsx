@@ -8,6 +8,7 @@ import createERC20ContractInstance from "./createERC20ContractInstance";
 import useERC20ContractValues from "../../hooks/useERC20ContractValues";
 import { useConnection } from "../../hooks";
 
+import { Synth } from "../utils/umaApi";
 export enum ContractState {
   Open,
   ExpiredPriceRequested,
@@ -17,10 +18,12 @@ export enum ContractState {
 interface Props {
   contractAddress: string;
   collateralSymbol: string;
+  data: Synth;
 }
 
 const toBN = ethers.BigNumber.from;
-const LSP: FC<Props> = ({ contractAddress, collateralSymbol }) => {
+const LSP: FC<Props> = ({ data }) => {
+  console.log("data", data);
   const { account = "", signer, provider } = useConnection();
 
   const [lspContract, setLSPContract] = useState<ethers.Contract | null>(null);
@@ -31,22 +34,13 @@ const LSP: FC<Props> = ({ contractAddress, collateralSymbol }) => {
     toBN("0")
   );
 
-  const [collateralPerPair, setCollateralPerPair] = useState<ethers.BigNumber>(
-    toBN("1")
-  );
-
-  const [collateralDecimals, setCollateralDecimals] = useState("18");
-
-  const [longTokenAddress, setLongTokenAddress] = useState("");
-  const [shortTokenAddress, setShortTokenAddress] = useState("");
-
   const { balance: longTokenBalance, refetchBalance: refetchLongTokenBalance } =
-    useERC20ContractValues(longTokenAddress, account, signer ?? null);
+    useERC20ContractValues(data.longToken, account, signer ?? null);
 
   const {
     balance: shortTokenBalance,
     refetchBalance: refetchShortTokenBalance,
-  } = useERC20ContractValues(shortTokenAddress, account, signer ?? null);
+  } = useERC20ContractValues(data.shortToken, account, signer ?? null);
 
   const [contractState, setContractState] = useState<ContractState>(
     ContractState.Open
@@ -66,10 +60,11 @@ const LSP: FC<Props> = ({ contractAddress, collateralSymbol }) => {
       setShowSettle(true);
     }
   }, [contractExpirationTime, currentTime, contractState]);
+
   // Get contract data and set values.
   useEffect(() => {
-    if (signer && !lspContract && contractAddress && account) {
-      const contract = createLSPContractInstance(signer, contractAddress);
+    if (signer && !lspContract && data.address && account) {
+      const contract = createLSPContractInstance(signer, data.address);
       contract.contractState().then(async (cs: ContractState) => {
         setContractState(cs);
         if (cs === ContractState.ExpiredPriceRequested) {
@@ -99,50 +94,29 @@ const LSP: FC<Props> = ({ contractAddress, collateralSymbol }) => {
       contract.getCurrentTime().then((ts: ethers.BigNumber) => {
         setCurrentTime(ts.toString());
       });
+      const erc20 = createERC20ContractInstance(signer, data.collateralToken);
 
-      contract.collateralToken().then(async (res: any) => {
-        const erc20 = createERC20ContractInstance(signer, res);
-        erc20.decimals().then((decimals: ethers.BigNumber) => {
-          setCollateralDecimals(decimals.toString());
-        });
-
-        try {
-          const balance = (await erc20.balanceOf(account)) as ethers.BigNumber;
-          setCollateralBalance(balance);
-        } catch (err) {
-          console.log("err in balance", err);
-        }
-
-        setERC20Contract(erc20);
+      erc20.balanceOf(account).then((balance: ethers.BigNumber) => {
+        setCollateralBalance(balance);
       });
 
-      contract.collateralPerPair().then((cpp: ethers.BigNumber) => {
-        setCollateralPerPair(cpp);
-      });
-
-      contract.longToken().then((addr: string) => {
-        setLongTokenAddress(addr);
-      });
-
-      contract.shortToken().then((addr: string) => {
-        setShortTokenAddress(addr);
-      });
+      setERC20Contract(erc20);
 
       setLSPContract(contract);
     }
-  }, [lspContract, signer, account, contractAddress]);
+  }, [lspContract, signer, account, data.address]);
 
   return (
     <LSPForm
       address={account}
       web3Provider={provider}
-      contractAddress={contractAddress}
+      contractAddress={data.contractAddress}
       lspContract={lspContract}
       erc20Contract={erc20Contract}
       collateralBalance={collateralBalance}
-      collateralPerPair={collateralPerPair}
+      collateralPerPair={data.collateralPerPair}
       setCollateralBalance={setCollateralBalance}
-      collateralDecimals={collateralDecimals}
+      collateralDecimals={data.collateralDecimals}
       longTokenBalance={longTokenBalance}
       shortTokenBalance={shortTokenBalance}
       refetchLongTokenBalance={refetchLongTokenBalance}
@@ -151,7 +125,7 @@ const LSP: FC<Props> = ({ contractAddress, collateralSymbol }) => {
       setShowSettle={setShowSettle}
       contractState={contractState}
       setContractState={setContractState}
-      collateralSymbol={collateralSymbol}
+      collateralSymbol={data.collateralSymbol}
     />
   );
 };

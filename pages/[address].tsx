@@ -140,7 +140,6 @@ type Props =
       change24h: number;
     };
 const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
-  console.log("data??", data);
   const formattedLogo = data?.logo?.fields.file.url
     ? formatContentfulUrl(data.logo.fields.file.url)
     : null;
@@ -232,6 +231,7 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
             </>
           ) : (
             <LSP
+              data={data}
               contractAddress={data.address}
               collateralSymbol={data.collateralSymbol}
             />
