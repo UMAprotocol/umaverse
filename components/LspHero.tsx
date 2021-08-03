@@ -50,6 +50,22 @@ export const LspHero: React.FC<Props> = () => {
           </Button>
         </CardHead>
         {isConnected && <div>{account}</div>}
+        {isConnected && (
+          <BalancesWrapper>
+            <Balance>
+              <span>Long</span>
+              <div>125.00 TKN-L</div>
+            </Balance>
+            <Balance>
+              <span>Short</span>
+              <div>125.00 TKN-S</div>
+            </Balance>
+            <Balance>
+              <span>Collateral</span>
+              <div>0.7431 ETH</div>
+            </Balance>
+          </BalancesWrapper>
+        )}
       </WalletCard>
     </Wrapper>
   );
@@ -57,6 +73,7 @@ export const LspHero: React.FC<Props> = () => {
 
 const Wrapper = styled.div`
   padding: 20px 0;
+  background: #fefffe;
 `;
 
 const WalletCard = styled(UnstyledCard)`
@@ -92,4 +109,33 @@ const Heading = styled.h1`
 
 const WalletIcon = styled(UnstyledWalletIcon)`
   align-self: center;
+`;
+
+const BalancesWrapper = styled.div`
+  display: flex;
+`;
+
+const Balance = styled.div`
+  font-weight: 600;
+  flex-grow: 1;
+  background: #f5f5f5;
+  padding: 1rem 1rem;
+  margin-top: 1rem;
+  &:first-of-type {
+    margin-right: 0.5rem;
+  }
+  &:nth-of-type(2) {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+  }
+  &:last-of-type {
+    margin-left: 0.5rem;
+  }
+  span {
+    display: block;
+    font-size: 0.875rem;
+  }
+  div {
+    font-size: 1.5rem;
+  }
 `;
