@@ -184,6 +184,7 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
       </Hero>
       <MainWrapper>
         <About description={data.description} />
+
         <AsideWrapper>
           {data.type === "emp" ? (
             <>
@@ -196,9 +197,7 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
                 />
               </ChartWrapper>
             </>
-          ) : (
-            <div />
-          )}
+          ) : null}
         </AsideWrapper>
         <Information
           synth={{ ...data, ...synthState } as Synth<{ type: ContractType }>}
