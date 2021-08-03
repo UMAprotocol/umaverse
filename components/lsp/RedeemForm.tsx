@@ -1,4 +1,4 @@
-import React, { FC, useState, useCallback } from "react";
+import React, { FC, useState, useCallback, useEffect } from "react";
 import {
   SmallTitle,
   TopFormWrapper,
@@ -13,6 +13,7 @@ import Collateral from "./Collateral";
 import DoubleArrow from "../../public/icons/arrows-switch.svg";
 import toWeiSafe from "../../utils/convertToWeiSafely";
 import { useConnection } from "../../hooks";
+import ConnectWallet from "./ConnectWallet";
 
 const toBN = ethers.BigNumber.from;
 const scaledToWei = toBN("10").pow("18");
@@ -29,6 +30,8 @@ interface Props {
   setCollateralBalance: React.Dispatch<React.SetStateAction<ethers.BigNumber>>;
   refetchLongTokenBalance: () => void;
   refetchShortTokenBalance: () => void;
+  showWallet: boolean;
+  setShowWallet: (value: React.SetStateAction<boolean>) => void;
 }
 
 const RedeemForm: FC<Props> = ({
@@ -43,6 +46,8 @@ const RedeemForm: FC<Props> = ({
   setCollateralBalance,
   refetchLongTokenBalance,
   refetchShortTokenBalance,
+  showWallet,
+  setShowWallet,
 }) => {
   const [collateral, setCollateral] = useState("uma");
   const [amount, setAmount] = useState("");
@@ -51,6 +56,12 @@ const RedeemForm: FC<Props> = ({
   const [collateralOnTop, setCollateralOnTop] = useState(false);
 
   const { signer } = useConnection();
+
+  useEffect(() => {
+    if (signer) {
+      setShowWallet(false);
+    }
+  }, [signer]);
 
   const redeem = useCallback(async () => {
     if (lspContract && erc20Contract && longTokenAmount && shortTokenAmount) {
@@ -87,88 +98,96 @@ const RedeemForm: FC<Props> = ({
 
   return (
     <div>
-      <TopFormWrapper>
-        <SmallTitle>Input</SmallTitle>
-        {collateralOnTop ? (
-          <Collateral
-            collateralBalance={collateralBalance}
-            collateralPerPair={collateralPerPair}
-            collateral={collateral}
-            setCollateral={setCollateral}
-            amount={amount}
-            setAmount={setAmount}
-            redeemForm
-            collateralOnTop={collateralOnTop}
-            collateralDecimals={collateralDecimals}
-            setLongTokenAmount={setLongTokenAmount}
-            setShortTokenAmount={setShortTokenAmount}
-          />
-        ) : (
-          <LongShort
-            redeemForm
-            setAmount={setAmount}
-            longTokenAmount={longTokenAmount}
-            setLongTokenAmount={setLongTokenAmount}
-            shortTokenAmount={shortTokenAmount}
-            setShortTokenAmount={setShortTokenAmount}
-            collateralPerPair={collateralPerPair}
-            longTokenBalance={longTokenBalance}
-            shortTokenBalance={shortTokenBalance}
-            collateralOnTop={collateralOnTop}
-            collateralDecimals={collateralDecimals}
-          />
-        )}
-      </TopFormWrapper>
-      <SwapArrowWrapper>
-        <DoubleArrow
-          onClick={() => setCollateralOnTop((prevValue) => !prevValue)}
-        />
-      </SwapArrowWrapper>
+      {!showWallet && (
+        <>
+          <TopFormWrapper>
+            <SmallTitle>Input</SmallTitle>
+            {collateralOnTop ? (
+              <Collateral
+                collateralBalance={collateralBalance}
+                collateralPerPair={collateralPerPair}
+                collateral={collateral}
+                setCollateral={setCollateral}
+                amount={amount}
+                setAmount={setAmount}
+                redeemForm
+                collateralOnTop={collateralOnTop}
+                collateralDecimals={collateralDecimals}
+                setLongTokenAmount={setLongTokenAmount}
+                setShortTokenAmount={setShortTokenAmount}
+              />
+            ) : (
+              <LongShort
+                redeemForm
+                setAmount={setAmount}
+                longTokenAmount={longTokenAmount}
+                setLongTokenAmount={setLongTokenAmount}
+                shortTokenAmount={shortTokenAmount}
+                setShortTokenAmount={setShortTokenAmount}
+                collateralPerPair={collateralPerPair}
+                longTokenBalance={longTokenBalance}
+                shortTokenBalance={shortTokenBalance}
+                collateralOnTop={collateralOnTop}
+                collateralDecimals={collateralDecimals}
+              />
+            )}
+          </TopFormWrapper>
+          <SwapArrowWrapper>
+            <DoubleArrow
+              onClick={() => setCollateralOnTop((prevValue) => !prevValue)}
+            />
+          </SwapArrowWrapper>
 
-      <BottomFormWrapper>
-        <SmallTitle>Output</SmallTitle>
-        {collateralOnTop ? (
-          <LongShort
-            redeemForm
-            setAmount={setAmount}
-            longTokenAmount={longTokenAmount}
-            setLongTokenAmount={setLongTokenAmount}
-            shortTokenAmount={shortTokenAmount}
-            setShortTokenAmount={setShortTokenAmount}
-            collateralPerPair={collateralPerPair}
-            longTokenBalance={longTokenBalance}
-            shortTokenBalance={shortTokenBalance}
-            collateralOnTop={collateralOnTop}
-            collateralDecimals={collateralDecimals}
-          />
-        ) : (
-          <Collateral
-            collateral={collateral}
-            setCollateral={setCollateral}
-            amount={amount}
-            setAmount={setAmount}
-            collateralBalance={collateralBalance}
-            collateralPerPair={collateralPerPair}
-            collateralDecimals={collateralDecimals}
-            setLongTokenAmount={setLongTokenAmount}
-            setShortTokenAmount={setShortTokenAmount}
-            redeemForm
-            collateralOnTop={collateralOnTop}
-          />
-        )}
-      </BottomFormWrapper>
-      <ButtonWrapper>
-        <MintButton
-          disabled={!signer}
-          onClick={() => {
-            if (signer) {
-              return redeem();
-            }
-          }}
-        >
-          Redeem
-        </MintButton>
-      </ButtonWrapper>
+          <BottomFormWrapper>
+            <SmallTitle>Output</SmallTitle>
+            {collateralOnTop ? (
+              <LongShort
+                redeemForm
+                setAmount={setAmount}
+                longTokenAmount={longTokenAmount}
+                setLongTokenAmount={setLongTokenAmount}
+                shortTokenAmount={shortTokenAmount}
+                setShortTokenAmount={setShortTokenAmount}
+                collateralPerPair={collateralPerPair}
+                longTokenBalance={longTokenBalance}
+                shortTokenBalance={shortTokenBalance}
+                collateralOnTop={collateralOnTop}
+                collateralDecimals={collateralDecimals}
+              />
+            ) : (
+              <Collateral
+                collateral={collateral}
+                setCollateral={setCollateral}
+                amount={amount}
+                setAmount={setAmount}
+                collateralBalance={collateralBalance}
+                collateralPerPair={collateralPerPair}
+                collateralDecimals={collateralDecimals}
+                setLongTokenAmount={setLongTokenAmount}
+                setShortTokenAmount={setShortTokenAmount}
+                redeemForm
+                collateralOnTop={collateralOnTop}
+              />
+            )}
+          </BottomFormWrapper>
+          <ButtonWrapper>
+            <MintButton
+              showDisabled={!signer}
+              onClick={() => {
+                if (signer) {
+                  return redeem();
+                } else {
+                  return setShowWallet(true);
+                }
+              }}
+            >
+              Redeem
+            </MintButton>
+          </ButtonWrapper>
+        </>
+      )}
+
+      {showWallet && <ConnectWallet setShowWallet={setShowWallet} />}
     </div>
   );
 };

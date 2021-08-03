@@ -6,7 +6,6 @@ import {
   DownArrowWrapper,
   ButtonWrapper,
   MintButton,
-  MetaMaskButton,
 } from "./LSPForm.styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDown } from "@fortawesome/free-solid-svg-icons";
@@ -42,6 +41,8 @@ interface Props {
   refetchLongTokenBalance: () => void;
   refetchShortTokenBalance: () => void;
   collateralSymbol: string;
+  showWallet: boolean;
+  setShowWallet: (value: React.SetStateAction<boolean>) => void;
 }
 
 const MintForm: FC<Props> = ({
@@ -58,15 +59,15 @@ const MintForm: FC<Props> = ({
   refetchLongTokenBalance,
   refetchShortTokenBalance,
   collateralSymbol,
+  showWallet,
+  setShowWallet,
 }) => {
   const [collateral, setCollateral] = useState(collateralSymbol);
   const [amount, setAmount] = useState("");
   const [longTokenAmount, setLongTokenAmount] = useState("");
   const [shortTokenAmount, setShortTokenAmount] = useState("");
   const { signer } = useConnection();
-  const [showWallet, setShowWallet] = useState(false);
 
-  console.log("show wallet", showWallet);
   useEffect(() => {
     if (signer) {
       setShowWallet(false);

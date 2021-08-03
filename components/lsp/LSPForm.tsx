@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from "react";
+import React, { FC, useCallback, useState } from "react";
 import Tabs from "../tabs";
 import {
   Wrapper,
@@ -69,6 +69,7 @@ const LSPForm: FC<Props> = ({
       }
     }
   }, [lspContract, setShowSettle, setContractState]);
+  const [showWallet, setShowWallet] = useState(false);
 
   const settle = useCallback(async () => {
     if (lspContract) {
@@ -122,6 +123,8 @@ const LSPForm: FC<Props> = ({
               refetchLongTokenBalance={refetchLongTokenBalance}
               refetchShortTokenBalance={refetchShortTokenBalance}
               collateralSymbol={collateralSymbol}
+              showWallet={showWallet}
+              setShowWallet={setShowWallet}
             />
           </div>
           <div data-label="Redeem">
@@ -137,6 +140,8 @@ const LSPForm: FC<Props> = ({
               setCollateralBalance={setCollateralBalance}
               refetchLongTokenBalance={refetchLongTokenBalance}
               refetchShortTokenBalance={refetchShortTokenBalance}
+              showWallet={showWallet}
+              setShowWallet={setShowWallet}
             />
           </div>
         </Tabs>
