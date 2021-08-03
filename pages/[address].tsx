@@ -139,6 +139,7 @@ type Props =
       relatedSynths: Synth<{ type: ContractType }>[];
       change24h: number;
     };
+
 const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
   const formattedLogo = data?.logo?.fields.file.url
     ? formatContentfulUrl(data.logo.fields.file.url)
@@ -154,6 +155,7 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
   );
   const isExpired =
     DateTime.now().toSeconds() > Number(synthState?.expirationTimestamp);
+
   return (
     <Layout title="Umaverse">
       <Hero topAction={<BackAction />}>

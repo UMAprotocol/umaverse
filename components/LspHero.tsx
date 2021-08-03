@@ -11,6 +11,7 @@ import UnstyledWalletIcon from "../public/icons/wallet.svg";
 type Props = {
   synth: Synth<{ type: "lsp" }>;
 };
+
 export const LspHero: React.FC<Props> = () => {
   const { initOnboard, resetOnboard } = useOnboard();
   const { account, isConnected } = useConnection();
