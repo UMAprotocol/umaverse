@@ -92,11 +92,16 @@ const IndexPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
               <Value
                 value={totalTvl ?? 0}
                 format={(v) => {
+                  const parsedValue = formatWeiString(v);
                   return (
                     <>
-                      ${formatMillions(Math.floor(formatWeiString(v)))}{" "}
+                      ${formatMillions(Math.floor(parsedValue))}{" "}
                       <span style={{ fontWeight: 400 }}>
-                        {v >= 10 ** 9 ? "B" : v >= 10 ** 6 ? "M" : ""}
+                        {parsedValue >= 10 ** 9
+                          ? "B"
+                          : parsedValue >= 10 ** 6
+                          ? "M"
+                          : ""}
                       </span>
                     </>
                   );
@@ -112,11 +117,16 @@ const IndexPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
               <Value
                 value={totalTvm ?? 0}
                 format={(v) => {
+                  const parsedValue = formatWeiString(v);
                   return (
                     <>
-                      ${formatMillions(Math.floor(formatWeiString(v)))}{" "}
+                      ${formatMillions(Math.floor(parsedValue))}{" "}
                       <span style={{ fontWeight: 400 }}>
-                        {v >= 10 ** 9 ? "B" : v >= 10 ** 6 ? "M" : ""}
+                        {parsedValue >= 10 ** 9
+                          ? "B"
+                          : parsedValue >= 10 ** 6
+                          ? "M"
+                          : ""}
                       </span>
                     </>
                   );

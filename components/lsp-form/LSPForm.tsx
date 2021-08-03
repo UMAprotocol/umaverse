@@ -14,7 +14,7 @@ import RedeemForm from "./RedeemForm";
 import { ContractState } from "../../pages/testing";
 interface Props {
   address: string;
-  web3Provider: ethers.providers.Web3Provider | null;
+  web3Provider?: ethers.providers.Web3Provider;
   contractAddress: string;
   lspContract: ethers.Contract | null;
   erc20Contract: ethers.Contract | null;
@@ -88,7 +88,16 @@ const LSPForm: FC<Props> = ({
         console.log("err in settle", err);
       }
     }
-  }, [lspContract, longTokenBalance, shortTokenBalance]);
+  }, [
+    lspContract,
+    longTokenBalance,
+    shortTokenBalance,
+    refetchLongTokenBalance,
+    refetchShortTokenBalance,
+    erc20Contract,
+    address,
+    setCollateralBalance,
+  ]);
 
   return (
     <Wrapper>
