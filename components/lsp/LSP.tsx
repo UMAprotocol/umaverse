@@ -5,7 +5,7 @@ import LSPForm from ".//LSPForm";
 
 import createLSPContractInstance from "./createLSPContractInstance";
 import createERC20ContractInstance from "./createERC20ContractInstance";
-import useERC20ContractValues from "../../hooks/useERC20ContractValues";
+
 import { useConnection } from "../../hooks";
 
 import { Synth } from "../../utils/umaApi";
@@ -19,11 +19,20 @@ interface Props {
   contractAddress: string;
   collateralSymbol: string;
   data: Synth<{ type: "lsp" }>;
+  longTokenBalance: ethers.BigNumber;
+  shortTokenBalance: ethers.BigNumber;
+  refetchLongTokenBalance: () => void;
+  refetchShortTokenBalance: () => void;
 }
 
 const toBN = ethers.BigNumber.from;
-const LSP: FC<Props> = ({ data }) => {
-  console.log("data", data);
+const LSP: FC<Props> = ({
+  data,
+  longTokenBalance,
+  shortTokenBalance,
+  refetchLongTokenBalance,
+  refetchShortTokenBalance,
+}) => {
   const { account = "", signer, provider } = useConnection();
 
   const [lspContract, setLSPContract] = useState<ethers.Contract | null>(null);
@@ -33,14 +42,6 @@ const LSP: FC<Props> = ({ data }) => {
   const [collateralBalance, setCollateralBalance] = useState<ethers.BigNumber>(
     toBN("0")
   );
-
-  const { balance: longTokenBalance, refetchBalance: refetchLongTokenBalance } =
-    useERC20ContractValues(data.longToken, account, signer ?? null);
-
-  const {
-    balance: shortTokenBalance,
-    refetchBalance: refetchShortTokenBalance,
-  } = useERC20ContractValues(data.shortToken, account, signer ?? null);
 
   const [contractState, setContractState] = useState<ContractState>(
     ContractState.Open

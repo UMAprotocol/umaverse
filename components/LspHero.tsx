@@ -7,12 +7,19 @@ import { Dot } from "./Dot";
 import type { Synth } from "../utils/umaApi";
 import { useConnection, useOnboard } from "../hooks";
 import UnstyledWalletIcon from "../public/icons/wallet.svg";
+import { ethers } from "ethers";
 
 type Props = {
   synth: Synth<{ type: "lsp" }>;
+  longTokenBalance: ethers.BigNumber;
+  shortTokenBalance: ethers.BigNumber;
 };
 
-export const LspHero: React.FC<Props> = () => {
+export const LspHero: React.FC<Props> = ({
+  synth,
+  longTokenBalance,
+  shortTokenBalance,
+}) => {
   const { initOnboard, resetOnboard } = useOnboard();
   const { account, isConnected } = useConnection();
   const handleConnectionClick = React.useCallback(() => {
@@ -54,15 +61,27 @@ export const LspHero: React.FC<Props> = () => {
           <BalancesWrapper>
             <Balance>
               <span>Long</span>
-              <div>125.00 TKN-L</div>
+              <div>
+                {ethers.utils.formatUnits(
+                  longTokenBalance.toString(),
+                  synth.collateralDecimals
+                )}{" "}
+                {synth.longTokenSymbol}
+              </div>
             </Balance>
             <Balance>
               <span>Short</span>
-              <div>125.00 TKN-S</div>
+              <div>
+                {ethers.utils.formatUnits(
+                  shortTokenBalance.toString(),
+                  synth.collateralDecimals
+                )}{" "}
+                {synth.shortTokenSymbol}
+              </div>
             </Balance>
             <Balance>
               <span>Collateral</span>
-              <div>0.7431 ETH</div>
+              <div>0.7431 {synth.collateralSymbol}</div>
             </Balance>
           </BalancesWrapper>
         )}

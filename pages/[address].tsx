@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "@emotion/styled";
 import { GetStaticProps, GetStaticPaths } from "next";
 import Image from "next/image";
@@ -41,6 +41,8 @@ import {
   fetchCompleteSynth,
   formatLSPName,
 } from "../utils/umaApi";
+import useERC20ContractValues from "../hooks/useERC20ContractValues";
+import { useConnection } from "../hooks";
 
 const BackAction = () => {
   return (
@@ -141,6 +143,7 @@ type Props =
     };
 
 const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
+  const { account = "", signer, isConnected } = useConnection();
   const formattedLogo = data?.logo?.fields.file.url
     ? formatContentfulUrl(data.logo.fields.file.url)
     : null;
@@ -155,6 +158,29 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
   );
   const isExpired =
     DateTime.now().toSeconds() > Number(synthState?.expirationTimestamp);
+
+  const { balance: longTokenBalance, refetchBalance: refetchLongTokenBalance } =
+    useERC20ContractValues(
+      data.type === "lsp" ? data.longToken : "",
+      account,
+      signer ?? null
+    );
+
+  const {
+    balance: shortTokenBalance,
+    refetchBalance: refetchShortTokenBalance,
+  } = useERC20ContractValues(
+    data.type === "lsp" ? data.shortToken : "",
+    account,
+    signer ?? null
+  );
+
+  useEffect(() => {
+    if (signer && isConnected) {
+      refetchLongTokenBalance();
+      refetchShortTokenBalance();
+    }
+  }, [signer, isConnected]);
 
   return (
     <Layout title="Umaverse">
@@ -179,7 +205,11 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
         {data.type === "emp" ? (
           <EmpHero synth={data} change24h={change24h} />
         ) : (
-          <LspHero synth={data} />
+          <LspHero
+            longTokenBalance={longTokenBalance}
+            shortTokenBalance={shortTokenBalance}
+            synth={data}
+          />
         )}
       </Hero>
       <MainWrapper>
@@ -235,6 +265,10 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
               data={data}
               contractAddress={data.address}
               collateralSymbol={data.collateralSymbol}
+              longTokenBalance={longTokenBalance}
+              refetchLongTokenBalance={refetchLongTokenBalance}
+              shortTokenBalance={shortTokenBalance}
+              refetchShortTokenBalance={refetchShortTokenBalance}
             />
           )}
         </AsideWrapper>
