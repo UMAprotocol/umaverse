@@ -8,7 +8,7 @@ import createERC20ContractInstance from "./createERC20ContractInstance";
 import useERC20ContractValues from "../../hooks/useERC20ContractValues";
 import { useConnection } from "../../hooks";
 
-import { Synth } from "../utils/umaApi";
+import { Synth } from "../../utils/umaApi";
 export enum ContractState {
   Open,
   ExpiredPriceRequested,
@@ -18,7 +18,7 @@ export enum ContractState {
 interface Props {
   contractAddress: string;
   collateralSymbol: string;
-  data: Synth;
+  data: Synth<{ type: "lsp" }>;
 }
 
 const toBN = ethers.BigNumber.from;
@@ -110,13 +110,13 @@ const LSP: FC<Props> = ({ data }) => {
     <LSPForm
       address={account}
       web3Provider={provider}
-      contractAddress={data.contractAddress}
+      contractAddress={data.address}
       lspContract={lspContract}
       erc20Contract={erc20Contract}
       collateralBalance={collateralBalance}
-      collateralPerPair={data.collateralPerPair}
+      collateralPerPair={toBN(data.collateralPerPair)}
       setCollateralBalance={setCollateralBalance}
-      collateralDecimals={data.collateralDecimals}
+      collateralDecimals={data.collateralDecimals.toString()}
       longTokenBalance={longTokenBalance}
       shortTokenBalance={shortTokenBalance}
       refetchLongTokenBalance={refetchLongTokenBalance}
