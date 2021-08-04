@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "@emotion/styled";
 
 import { Card as UnstyledCard } from "./Card";
@@ -8,8 +8,6 @@ import type { Synth } from "../utils/umaApi";
 import { useConnection, useOnboard } from "../hooks";
 import UnstyledWalletIcon from "../public/icons/wallet.svg";
 import { ethers } from "ethers";
-
-const toBN = ethers.BigNumber.from;
 
 type Props = {
   synth: Synth<{ type: "lsp" }>;
