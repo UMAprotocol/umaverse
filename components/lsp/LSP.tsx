@@ -37,6 +37,7 @@ const LSP: FC<Props> = ({
   collateralBalance,
   setCollateralBalance,
 }) => {
+  console.log("data", data);
   const { account = "", signer, provider } = useConnection();
 
   const [lspContract, setLSPContract] = useState<ethers.Contract | null>(null);
@@ -53,6 +54,28 @@ const LSP: FC<Props> = ({
   const [currentTime, setCurrentTime] = useState<string>("");
   const [showSettle, setShowSettle] = useState(false);
 
+  // Check if contract is settable.
+  useEffect(() => {
+    if (signer && data.contractState === ContractState.ExpiredPriceRequested) {
+      const contract = createLSPContractInstance(signer, data.address);
+      try {
+        contract.callStatic
+          .settle(0, 0)
+          .then(
+            () => true,
+            () => false
+          )
+          .then((val: boolean) => {
+            if (val) {
+              setContractState(ContractState.ExpiredPriceReceived);
+            }
+          });
+      } catch (err) {
+        console.log("err in call", err);
+      }
+    }
+  }, [data.contractState, signer]);
+
   useEffect(() => {
     if (
       currentTime &&
@@ -67,22 +90,6 @@ const LSP: FC<Props> = ({
   useEffect(() => {
     if (signer && !lspContract && data.address && account) {
       const contract = createLSPContractInstance(signer, data.address);
-      contract.contractState().then(async (cs: ContractState) => {
-        setContractState(cs);
-        if (cs === ContractState.ExpiredPriceRequested) {
-          try {
-            const isSettable = await contract.callStatic.settle(0, 0).then(
-              () => true,
-              () => false
-            );
-            if (isSettable) {
-              setContractState(ContractState.ExpiredPriceReceived);
-            }
-          } catch (err) {
-            console.log("err in call", err);
-          }
-        }
-      });
 
       contract
         .expirationTimestamp()
