@@ -18,7 +18,7 @@ interface Props {
   web3Provider?: ethers.providers.Web3Provider;
   contractAddress: string;
   lspContract: ethers.Contract | null;
-  erc20Contract: ethers.Contract | null;
+  collateralERC20Contract: ethers.Contract | null;
   collateralBalance: ethers.BigNumber;
   collateralPerPair: ethers.BigNumber;
   setCollateralBalance: React.Dispatch<React.SetStateAction<ethers.BigNumber>>;
@@ -40,7 +40,7 @@ const LSPForm: FC<Props> = ({
   web3Provider,
   contractAddress,
   lspContract,
-  erc20Contract,
+  collateralERC20Contract,
   collateralBalance,
   collateralPerPair,
   setCollateralBalance,
@@ -81,8 +81,8 @@ const LSPForm: FC<Props> = ({
           .then(async () => {
             refetchLongTokenBalance();
             refetchShortTokenBalance();
-            if (erc20Contract) {
-              const balance = (await erc20Contract.balanceOf(
+            if (collateralERC20Contract) {
+              const balance = (await collateralERC20Contract.balanceOf(
                 address
               )) as ethers.BigNumber;
               setCollateralBalance(balance);
@@ -98,7 +98,7 @@ const LSPForm: FC<Props> = ({
     shortTokenBalance,
     refetchLongTokenBalance,
     refetchShortTokenBalance,
-    erc20Contract,
+    collateralERC20Contract,
     address,
     setCollateralBalance,
   ]);
@@ -113,7 +113,7 @@ const LSPForm: FC<Props> = ({
               collateralBalance={collateralBalance}
               contractAddress={contractAddress}
               lspContract={lspContract}
-              erc20Contract={erc20Contract}
+              collateralERC20Contract={collateralERC20Contract}
               web3Provider={web3Provider}
               setShowSettle={setShowSettle}
               collateralPerPair={collateralPerPair}
@@ -136,7 +136,7 @@ const LSPForm: FC<Props> = ({
               longTokenBalance={longTokenBalance}
               shortTokenBalance={shortTokenBalance}
               lspContract={lspContract}
-              erc20Contract={erc20Contract}
+              collateralERC20Contract={collateralERC20Contract}
               address={address}
               setCollateralBalance={setCollateralBalance}
               refetchLongTokenBalance={refetchLongTokenBalance}

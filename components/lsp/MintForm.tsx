@@ -29,7 +29,7 @@ interface Props {
   contractAddress: string;
   setShowSettle: React.Dispatch<React.SetStateAction<boolean>>;
   lspContract: ethers.Contract | null;
-  erc20Contract: ethers.Contract | null;
+  collateralERC20Contract: ethers.Contract | null;
   web3Provider?: ethers.providers.Web3Provider;
   collateralBalance: ethers.BigNumber;
   collateralPerPair: ethers.BigNumber;
@@ -47,7 +47,7 @@ interface Props {
 
 const MintForm: FC<Props> = ({
   lspContract,
-  erc20Contract,
+  collateralERC20Contract,
   contractAddress,
   collateralBalance,
   collateralPerPair,
@@ -75,17 +75,17 @@ const MintForm: FC<Props> = ({
   }, [signer]);
 
   const mint = useCallback(async () => {
-    if (lspContract && erc20Contract && amount) {
+    if (lspContract && collateralERC20Contract && amount) {
       const weiAmount = toWeiSafe(amount);
       try {
-        const allowance = await erc20Contract.allowance(
+        const allowance = await collateralERC20Contract.allowance(
           address,
           contractAddress
         );
-        const balance = await erc20Contract.balanceOf(address);
+        const balance = await collateralERC20Contract.balanceOf(address);
         const hasToApprove = allowance.lt(balance);
         if (hasToApprove) {
-          const approveTx = await erc20Contract.approve(
+          const approveTx = await collateralERC20Contract.approve(
             contractAddress,
             INFINITE_APPROVAL_AMOUNT
           );
@@ -105,7 +105,7 @@ const MintForm: FC<Props> = ({
             return tx.wait(1);
           })
           .then(async () => {
-            const balance = (await erc20Contract.balanceOf(
+            const balance = (await collateralERC20Contract.balanceOf(
               address
             )) as ethers.BigNumber;
             setCollateralBalance(balance);
@@ -118,7 +118,7 @@ const MintForm: FC<Props> = ({
     }
   }, [
     lspContract,
-    erc20Contract,
+    collateralERC20Contract,
     amount,
     address,
     contractAddress,

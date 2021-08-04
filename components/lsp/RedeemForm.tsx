@@ -25,7 +25,7 @@ interface Props {
   longTokenBalance: ethers.BigNumber;
   shortTokenBalance: ethers.BigNumber;
   lspContract: ethers.Contract | null;
-  erc20Contract: ethers.Contract | null;
+  collateralERC20Contract: ethers.Contract | null;
   address: string;
   setCollateralBalance: React.Dispatch<React.SetStateAction<ethers.BigNumber>>;
   refetchLongTokenBalance: () => void;
@@ -41,7 +41,7 @@ const RedeemForm: FC<Props> = ({
   longTokenBalance,
   shortTokenBalance,
   lspContract,
-  erc20Contract,
+  collateralERC20Contract,
   address,
   setCollateralBalance,
   refetchLongTokenBalance,
@@ -64,7 +64,12 @@ const RedeemForm: FC<Props> = ({
   }, [signer]);
 
   const redeem = useCallback(async () => {
-    if (lspContract && erc20Contract && longTokenAmount && shortTokenAmount) {
+    if (
+      lspContract &&
+      collateralERC20Contract &&
+      longTokenAmount &&
+      shortTokenAmount
+    ) {
       // Note: You need to have an equal amount of long and short tokens in order to redeem.
       // So what value you use of long token or short token should be arbitrary, as long as both are equal.
       // It should be noted too, as you can have more of one than the other, we need to make sure the user is not trying to redeem more tokens than they have of the matching pair.
@@ -83,7 +88,7 @@ const RedeemForm: FC<Props> = ({
             return tx.wait(1);
           })
           .then(async () => {
-            const balance = (await erc20Contract.balanceOf(
+            const balance = (await collateralERC20Contract.balanceOf(
               address
             )) as ethers.BigNumber;
             setCollateralBalance(balance);
@@ -94,7 +99,7 @@ const RedeemForm: FC<Props> = ({
         console.log("err", err);
       }
     }
-  }, [lspContract, erc20Contract, longTokenAmount, shortTokenAmount]);
+  }, [lspContract, collateralERC20Contract, longTokenAmount, shortTokenAmount]);
 
   return (
     <div>
