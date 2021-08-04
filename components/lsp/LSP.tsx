@@ -52,25 +52,27 @@ const LSP: FC<Props> = ({
 
   // Check if contract is settable.
   useEffect(() => {
-    if (signer && data.contractState === ContractState.ExpiredPriceRequested) {
-      const lc = createLSPContractInstance(signer, data.address);
-      try {
-        lc.callStatic
-          .settle(0, 0)
-          .then(
-            () => true,
-            () => false
-          )
-          .then((val: boolean) => {
-            if (val) {
-              setContractState(ContractState.ExpiredPriceReceived);
-            }
-          });
-      } catch (err) {
-        console.log("err in call", err);
-      }
+    if (
+      signer &&
+      data.contractState === ContractState.ExpiredPriceRequested &&
+      lspContract
+    ) {
+      lspContract.callStatic
+        .settle(0, 0)
+        .then(
+          () => true,
+          () => false
+        )
+        .then((val: boolean) => {
+          if (val) {
+            setContractState(ContractState.ExpiredPriceReceived);
+          }
+        })
+        .catch((err: any) => {
+          console.log("err in call", err);
+        });
     }
-  }, [data.contractState, signer]);
+  }, [data.contractState, signer, lspContract]);
 
   useEffect(() => {
     if (currentTime && Number(currentTime) > data.expirationTimestamp) {

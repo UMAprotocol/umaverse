@@ -166,7 +166,6 @@ const MintForm: FC<Props> = ({
             <MintButton
               showDisabled={!signer}
               onClick={() => {
-                console.log("clicked?");
                 if (signer) {
                   return mint();
                 } else {
