@@ -23,6 +23,8 @@ interface Props {
   shortTokenBalance: ethers.BigNumber;
   refetchLongTokenBalance: () => void;
   refetchShortTokenBalance: () => void;
+  collateralBalance: ethers.BigNumber;
+  setCollateralBalance: React.Dispatch<React.SetStateAction<ethers.BigNumber>>;
 }
 
 const toBN = ethers.BigNumber.from;
@@ -32,15 +34,14 @@ const LSP: FC<Props> = ({
   shortTokenBalance,
   refetchLongTokenBalance,
   refetchShortTokenBalance,
+  collateralBalance,
+  setCollateralBalance,
 }) => {
   const { account = "", signer, provider } = useConnection();
 
   const [lspContract, setLSPContract] = useState<ethers.Contract | null>(null);
   const [erc20Contract, setERC20Contract] = useState<ethers.Contract | null>(
     null
-  );
-  const [collateralBalance, setCollateralBalance] = useState<ethers.BigNumber>(
-    toBN("0")
   );
 
   const [contractState, setContractState] = useState<ContractState>(

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "@emotion/styled";
 
 import { Card as UnstyledCard } from "./Card";
@@ -9,16 +9,20 @@ import { useConnection, useOnboard } from "../hooks";
 import UnstyledWalletIcon from "../public/icons/wallet.svg";
 import { ethers } from "ethers";
 
+const toBN = ethers.BigNumber.from;
+
 type Props = {
   synth: Synth<{ type: "lsp" }>;
   longTokenBalance: ethers.BigNumber;
   shortTokenBalance: ethers.BigNumber;
+  collateralBalance: ethers.BigNumber;
 };
 
 export const LspHero: React.FC<Props> = ({
   synth,
   longTokenBalance,
   shortTokenBalance,
+  collateralBalance,
 }) => {
   const { initOnboard, resetOnboard } = useOnboard();
   const { account, isConnected } = useConnection();
@@ -29,6 +33,7 @@ export const LspHero: React.FC<Props> = ({
       initOnboard();
     }
   }, [initOnboard, isConnected, resetOnboard]);
+
   return (
     <Wrapper>
       <WalletCard>
@@ -81,7 +86,13 @@ export const LspHero: React.FC<Props> = ({
             </Balance>
             <Balance>
               <span>Collateral</span>
-              <div>0.7431 {synth.collateralSymbol}</div>
+              <div>
+                {ethers.utils.formatUnits(
+                  collateralBalance,
+                  synth.collateralDecimals
+                )}{" "}
+                {synth.collateralSymbol}
+              </div>
             </Balance>
           </BalancesWrapper>
         )}

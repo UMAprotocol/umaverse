@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { GetStaticProps, GetStaticPaths } from "next";
 import Image from "next/image";
@@ -43,6 +43,10 @@ import {
 } from "../utils/umaApi";
 import useERC20ContractValues from "../hooks/useERC20ContractValues";
 import { useConnection } from "../hooks";
+import { ethers } from "ethers";
+import createERC20ContractInstance from "../components/lsp/createERC20ContractInstance";
+
+const toBN = ethers.BigNumber.from;
 
 const BackAction = () => {
   return (
@@ -159,6 +163,10 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
   const isExpired =
     DateTime.now().toSeconds() > Number(synthState?.expirationTimestamp);
 
+  const [collateralBalance, setCollateralBalance] = useState<ethers.BigNumber>(
+    toBN("0")
+  );
+
   const { balance: longTokenBalance, refetchBalance: refetchLongTokenBalance } =
     useERC20ContractValues(
       data.type === "lsp" ? data.longToken : "",
@@ -176,11 +184,29 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
   );
 
   useEffect(() => {
-    if (signer && isConnected) {
+    console.log(
+      "signer",
+      signer,
+      "isConenct",
+      isConnected,
+      "account",
+      account,
+      "data.type",
+      data.type
+    );
+    if (signer && isConnected && account && data.type === "lsp") {
+      console.log("is this effect firing?");
       refetchLongTokenBalance();
       refetchShortTokenBalance();
+      const erc20 = createERC20ContractInstance(signer, data.collateralToken);
+      erc20.balanceOf(account).then((balance: ethers.BigNumber) => {
+        setCollateralBalance(balance);
+      });
     }
-  }, [signer, isConnected]);
+    if (!isConnected) {
+      setCollateralBalance(toBN("0"));
+    }
+  }, [signer, isConnected, account]);
 
   return (
     <Layout title="Umaverse">
@@ -209,6 +235,7 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
             longTokenBalance={longTokenBalance}
             shortTokenBalance={shortTokenBalance}
             synth={data}
+            collateralBalance={collateralBalance}
           />
         )}
       </Hero>
@@ -269,6 +296,8 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
               refetchLongTokenBalance={refetchLongTokenBalance}
               shortTokenBalance={shortTokenBalance}
               refetchShortTokenBalance={refetchShortTokenBalance}
+              collateralBalance={collateralBalance}
+              setCollateralBalance={setCollateralBalance}
             />
           )}
         </AsideWrapper>
