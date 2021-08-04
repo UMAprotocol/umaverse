@@ -143,6 +143,7 @@ const LSPForm: FC<Props> = ({
               refetchShortTokenBalance={refetchShortTokenBalance}
               showWallet={showWallet}
               setShowWallet={setShowWallet}
+              collateralSymbol={collateralSymbol}
             />
           </div>
         </Tabs>

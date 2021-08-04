@@ -32,6 +32,7 @@ interface Props {
   refetchShortTokenBalance: () => void;
   showWallet: boolean;
   setShowWallet: (value: React.SetStateAction<boolean>) => void;
+  collateralSymbol: string;
 }
 
 const RedeemForm: FC<Props> = ({
@@ -48,8 +49,8 @@ const RedeemForm: FC<Props> = ({
   refetchShortTokenBalance,
   showWallet,
   setShowWallet,
+  collateralSymbol,
 }) => {
-  const [collateral, setCollateral] = useState("uma");
   const [amount, setAmount] = useState("");
   const [longTokenAmount, setLongTokenAmount] = useState("");
   const [shortTokenAmount, setShortTokenAmount] = useState("");
@@ -111,8 +112,7 @@ const RedeemForm: FC<Props> = ({
               <Collateral
                 collateralBalance={collateralBalance}
                 collateralPerPair={collateralPerPair}
-                collateral={collateral}
-                setCollateral={setCollateral}
+                collateral={collateralSymbol}
                 amount={amount}
                 setAmount={setAmount}
                 redeemForm
@@ -161,8 +161,7 @@ const RedeemForm: FC<Props> = ({
               />
             ) : (
               <Collateral
-                collateral={collateral}
-                setCollateral={setCollateral}
+                collateral={collateralSymbol}
                 amount={amount}
                 setAmount={setAmount}
                 collateralBalance={collateralBalance}

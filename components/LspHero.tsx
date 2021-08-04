@@ -101,7 +101,7 @@ export const LspHero: React.FC<Props> = ({
 
 const Wrapper = styled.div`
   padding: 20px 0;
-  background: #fefffe;
+  background-color: var(--gray-200);
 `;
 
 const WalletCard = styled(UnstyledCard)`
@@ -146,7 +146,7 @@ const BalancesWrapper = styled.div`
 const Balance = styled.div`
   font-weight: 600;
   flex-grow: 1;
-  background: #f5f5f5;
+  background: var(--gray-300);
   padding: 1rem 1rem;
   margin-top: 1rem;
   &:first-of-type {

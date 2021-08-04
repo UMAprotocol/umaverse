@@ -62,7 +62,6 @@ const MintForm: FC<Props> = ({
   showWallet,
   setShowWallet,
 }) => {
-  const [collateral, setCollateral] = useState(collateralSymbol);
   const [amount, setAmount] = useState("");
   const [longTokenAmount, setLongTokenAmount] = useState("");
   const [shortTokenAmount, setShortTokenAmount] = useState("");
@@ -72,7 +71,7 @@ const MintForm: FC<Props> = ({
     if (signer) {
       setShowWallet(false);
     }
-  }, [signer]);
+  }, [signer, setShowWallet]);
 
   const mint = useCallback(async () => {
     if (lspContract && collateralERC20Contract && amount) {
@@ -135,8 +134,7 @@ const MintForm: FC<Props> = ({
           <TopFormWrapper>
             <SmallTitle>Input</SmallTitle>
             <Collateral
-              collateral={collateral}
-              setCollateral={setCollateral}
+              collateral={collateralSymbol}
               amount={amount}
               setAmount={setAmount}
               collateralBalance={collateralBalance}

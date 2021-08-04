@@ -15,7 +15,6 @@ import { onlyAllowNumbersAndDecimals } from "./helpers";
 
 interface Props {
   collateral: string;
-  setCollateral: React.Dispatch<React.SetStateAction<string>>;
   amount: string;
   setAmount: React.Dispatch<React.SetStateAction<string>>;
   // Adjust CSS slightly if its the redeem form or the mint form.
