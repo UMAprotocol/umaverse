@@ -41,13 +41,13 @@ const LSP: FC<Props> = ({
   const { account = "", signer, provider } = useConnection();
 
   const [lspContract, setLSPContract] = useState<ethers.Contract | null>(null);
-  const [erc20Contract, setERC20Contract] = useState<ethers.Contract | null>(
-    null
-  );
+  const [collateralERC20Contract, setCollateralERC20Contract] =
+    useState<ethers.Contract | null>(null);
 
   const [contractState, setContractState] = useState<ContractState>(
-    ContractState.Open
+    data.contractState
   );
+
   const [contractExpirationTime, setContractExpirationTime] =
     useState<string>("");
 
@@ -57,9 +57,9 @@ const LSP: FC<Props> = ({
   // Check if contract is settable.
   useEffect(() => {
     if (signer && data.contractState === ContractState.ExpiredPriceRequested) {
-      const contract = createLSPContractInstance(signer, data.address);
+      const lc = createLSPContractInstance(signer, data.address);
       try {
-        contract.callStatic
+        lc.callStatic
           .settle(0, 0)
           .then(
             () => true,
@@ -103,13 +103,13 @@ const LSP: FC<Props> = ({
       contract.getCurrentTime().then((ts: ethers.BigNumber) => {
         setCurrentTime(ts.toString());
       });
-      const erc20 = createERC20ContractInstance(signer, data.collateralToken);
+      const cERC20 = createERC20ContractInstance(signer, data.collateralToken);
 
-      erc20.balanceOf(account).then((balance: ethers.BigNumber) => {
+      cERC20.balanceOf(account).then((balance: ethers.BigNumber) => {
         setCollateralBalance(balance);
       });
 
-      setERC20Contract(erc20);
+      setCollateralERC20Contract(cERC20);
 
       setLSPContract(contract);
     }
@@ -121,7 +121,7 @@ const LSP: FC<Props> = ({
       web3Provider={provider}
       contractAddress={data.address}
       lspContract={lspContract}
-      erc20Contract={erc20Contract}
+      erc20Contract={collateralERC20Contract}
       collateralBalance={collateralBalance}
       collateralPerPair={toBN(data.collateralPerPair)}
       setCollateralBalance={setCollateralBalance}
