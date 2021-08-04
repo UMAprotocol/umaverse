@@ -1,7 +1,7 @@
 import React, { useState, useEffect, FC } from "react";
 import { ethers } from "ethers";
 
-import LSPForm from ".//LSPForm";
+import LSPForm from "./LSPForm";
 
 import createLSPContractInstance from "./createLSPContractInstance";
 import createERC20ContractInstance from "./createERC20ContractInstance";
