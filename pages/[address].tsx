@@ -184,18 +184,7 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
   );
 
   useEffect(() => {
-    console.log(
-      "signer",
-      signer,
-      "isConenct",
-      isConnected,
-      "account",
-      account,
-      "data.type",
-      data.type
-    );
     if (signer && isConnected && account && data.type === "lsp") {
-      console.log("is this effect firing?");
       refetchLongTokenBalance();
       refetchShortTokenBalance();
       const erc20 = createERC20ContractInstance(signer, data.collateralToken);

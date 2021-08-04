@@ -37,7 +37,6 @@ const LSP: FC<Props> = ({
   collateralBalance,
   setCollateralBalance,
 }) => {
-  console.log("data", data);
   const { account = "", signer, provider } = useConnection();
 
   const [lspContract, setLSPContract] = useState<ethers.Contract | null>(null);
@@ -47,9 +46,6 @@ const LSP: FC<Props> = ({
   const [contractState, setContractState] = useState<ContractState>(
     data.contractState
   );
-
-  const [contractExpirationTime, setContractExpirationTime] =
-    useState<string>("");
 
   const [currentTime, setCurrentTime] = useState<string>("");
   const [showSettle, setShowSettle] = useState(false);
@@ -77,28 +73,15 @@ const LSP: FC<Props> = ({
   }, [data.contractState, signer]);
 
   useEffect(() => {
-    if (
-      currentTime &&
-      contractExpirationTime &&
-      currentTime > contractExpirationTime
-    ) {
+    if (currentTime && Number(currentTime) > data.expirationTimestamp) {
       setShowSettle(true);
     }
-  }, [contractExpirationTime, currentTime, contractState]);
+  }, [data.expirationTimestamp, currentTime, contractState]);
 
   // Get contract data and set values.
   useEffect(() => {
-    if (signer && !lspContract && data.address && account) {
+    if (signer && !lspContract && data.address && account && provider) {
       const contract = createLSPContractInstance(signer, data.address);
-
-      contract
-        .expirationTimestamp()
-        .then((ts: ethers.BigNumber) => {
-          setContractExpirationTime(ts.toString());
-        })
-        .catch((err: any) => {
-          console.log("err in timestamp call", err);
-        });
 
       contract.getCurrentTime().then((ts: ethers.BigNumber) => {
         setCurrentTime(ts.toString());
