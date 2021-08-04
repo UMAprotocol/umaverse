@@ -18,7 +18,6 @@ import {
   QUERIES,
   errorFilter,
   formatWeiString,
-  ContentfulSynth,
 } from "../utils";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
 import { client, Emp, fetchCompleteSynth } from "../utils/umaApi";
@@ -30,21 +29,18 @@ export const getStaticProps: GetStaticProps = async () => {
   await queryClient.prefetchQuery(
     "all synths",
     async () =>
-      (await Promise.all(cmsSynths.map(fetchCompleteSynth))).filter(
-        errorFilter
-      ) as Emp[]
+      (
+        await Promise.all(cmsSynths.map(fetchCompleteSynth))
+      ).filter(errorFilter) as Emp[]
   );
   await queryClient.prefetchQuery(
     "total tvl",
     async () => await client.getLatestTvl()
   );
-  // FIXME: when bug in API fixed change back to all synths, for now only curated ones
+
   await queryClient.prefetchQuery(
     "total tvm",
-    async () =>
-      await client.getLatestTvm(
-        cmsSynths.map((synth: ContentfulSynth) => synth.address)
-      )
+    async () => await client.getLatestTvm()
   );
   return {
     props: {
@@ -71,10 +67,7 @@ const IndexPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
   );
   const { data: totalTvm } = useQuery(
     "total tvm",
-    async () =>
-      await client.getLatestTvm(
-        cmsSynths.map((synth: ContentfulSynth) => synth.address)
-      )
+    async () => await client.getLatestTvm()
   );
 
   return (
