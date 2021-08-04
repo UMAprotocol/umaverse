@@ -16,10 +16,11 @@ export const Wrapper = styled.div`
   max-width: 400px;
   width: 100%;
   font-family: "Halyard Display";
-  margin-bottom: -1rem;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
   @media ${QUERIES.tabletAndUp} {
     margin-left: 2rem;
-    margin-bottom: 2rem;
+    margin-top: 0rem;
   }
 `;
 

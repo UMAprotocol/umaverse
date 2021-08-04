@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
+import { QUERIES } from "../utils";
 
 import { Card as UnstyledCard } from "./Card";
 import { BaseButton } from "./Button";
@@ -53,13 +54,15 @@ export const LspHero: React.FC<Props> = ({
                 "--dotColor": "var(--connectionColor)",
               }}
             />
-            {isConnected ? "Connected" : "Disconnected"}
+            <ConnectionStatus>
+              {isConnected ? "Connected" : "Disconnected"}
+            </ConnectionStatus>
           </Status>
           <Button onClick={handleConnectionClick}>
             {isConnected ? "Disconnect" : "Connect"}
           </Button>
         </CardHead>
-        {isConnected && <div>{account}</div>}
+        {isConnected && <Account>{account}</Account>}
         {isConnected && (
           <BalancesWrapper>
             <Balance>
@@ -106,7 +109,9 @@ const Wrapper = styled.div`
 
 const WalletCard = styled(UnstyledCard)`
   color: var(--gray-700);
-  padding: 20px 35px;
+  @media ${QUERIES.tabletAndUp} {
+    padding: 20px 35px;
+  }
 `;
 
 const CardHead = styled.header`
@@ -125,8 +130,11 @@ const Button = styled(BaseButton)`
 const Status = styled.div`
   color: var(--connectionColor);
   font-size: ${14 / 16}rem;
-  display: flex;
+  display: block;
   align-items: baseline;
+  @media ${QUERIES.tabletAndUp} {
+    display: flex;
+  }
 `;
 
 const Heading = styled.h1`
@@ -137,33 +145,60 @@ const Heading = styled.h1`
 
 const WalletIcon = styled(UnstyledWalletIcon)`
   align-self: center;
+  display: none;
+  @media ${QUERIES.tabletAndUp} {
+    display: block;
+  }
 `;
 
 const BalancesWrapper = styled.div`
   display: flex;
+  width: 100%;
+  flex: 0 0 100%; /* Let it fill the entire space horizontally */
+  flex-direction: column;
+  @media ${QUERIES.tabletAndUp} {
+    flex-direction: row;
+  }
 `;
 
 const Balance = styled.div`
   font-weight: 600;
   flex-grow: 1;
   background: var(--gray-300);
-  padding: 1rem 1rem;
-  margin-top: 1rem;
-  &:first-of-type {
-    margin-right: 0.5rem;
-  }
-  &:nth-of-type(2) {
-    margin-left: 0.5rem;
-    margin-right: 0.5rem;
-  }
-  &:last-of-type {
-    margin-left: 0.5rem;
-  }
+  padding: 1rem;
+  margin: 0.5rem;
   span {
     display: block;
     font-size: 0.875rem;
   }
   div {
     font-size: 1.5rem;
+  }
+  @media ${QUERIES.tabletAndUp} {
+    margin: 1rem 0 0 0;
+    &:first-of-type {
+      margin-right: 0.5rem;
+    }
+    &:nth-of-type(2) {
+      margin-left: 0.5rem;
+      margin-right: 0.5rem;
+    }
+    &:last-of-type {
+      margin-left: 0.5rem;
+    }
+  }
+`;
+
+const ConnectionStatus = styled.span`
+  display: none;
+  @media ${QUERIES.tabletAndUp} {
+    display: flex;
+  }
+`;
+
+const Account = styled.div`
+  text-align: center;
+  @media ${QUERIES.tabletAndUp} {
+    text-align: left;
   }
 `;
