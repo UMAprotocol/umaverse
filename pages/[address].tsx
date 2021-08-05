@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { GetStaticProps, GetStaticPaths } from "next";
 import Image from "next/image";
@@ -21,6 +21,8 @@ import {
   EmpHero,
   LspHero,
 } from "../components";
+import LSP from "../components/lsp";
+
 import {
   QUERIES,
   formatContentfulUrl,
@@ -39,6 +41,12 @@ import {
   fetchCompleteSynth,
   formatLSPName,
 } from "../utils/umaApi";
+import useERC20ContractValues from "../hooks/useERC20ContractValues";
+import { useConnection } from "../hooks";
+import { ethers } from "ethers";
+import createERC20ContractInstance from "../components/lsp/createERC20ContractInstance";
+
+const toBN = ethers.BigNumber.from;
 
 const BackAction = () => {
   return (
@@ -137,7 +145,9 @@ type Props =
       relatedSynths: Synth<{ type: ContractType }>[];
       change24h: number;
     };
+
 const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
+  const { account = "", signer, isConnected } = useConnection();
   const formattedLogo = data?.logo?.fields.file.url
     ? formatContentfulUrl(data.logo.fields.file.url)
     : null;
@@ -152,6 +162,41 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
   );
   const isExpired =
     DateTime.now().toSeconds() > Number(synthState?.expirationTimestamp);
+
+  const [collateralBalance, setCollateralBalance] = useState<ethers.BigNumber>(
+    toBN("0")
+  );
+
+  const { balance: longTokenBalance, refetchBalance: refetchLongTokenBalance } =
+    useERC20ContractValues(
+      data.type === "lsp" ? data.longToken : "",
+      account,
+      signer ?? null
+    );
+
+  const {
+    balance: shortTokenBalance,
+    refetchBalance: refetchShortTokenBalance,
+  } = useERC20ContractValues(
+    data.type === "lsp" ? data.shortToken : "",
+    account,
+    signer ?? null
+  );
+
+  useEffect(() => {
+    if (signer && isConnected && account && data.type === "lsp") {
+      refetchLongTokenBalance();
+      refetchShortTokenBalance();
+      const erc20 = createERC20ContractInstance(signer, data.collateralToken);
+      erc20.balanceOf(account).then((balance: ethers.BigNumber) => {
+        setCollateralBalance(balance);
+      });
+    }
+    if (!isConnected) {
+      setCollateralBalance(toBN("0"));
+    }
+  }, [signer, isConnected, account]);
+
   return (
     <Layout title="Umaverse">
       <Hero topAction={<BackAction />}>
@@ -175,11 +220,17 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
         {data.type === "emp" ? (
           <EmpHero synth={data} change24h={change24h} />
         ) : (
-          <LspHero synth={data} />
+          <LspHero
+            longTokenBalance={longTokenBalance}
+            shortTokenBalance={shortTokenBalance}
+            synth={data}
+            collateralBalance={collateralBalance}
+          />
         )}
       </Hero>
       <MainWrapper>
         <About description={data.description} />
+
         <AsideWrapper>
           {data.type === "emp" ? (
             <>
@@ -192,9 +243,7 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
                 />
               </ChartWrapper>
             </>
-          ) : (
-            <div>some LSP stuff here</div>
-          )}
+          ) : null}
         </AsideWrapper>
         <Information
           synth={{ ...data, ...synthState } as Synth<{ type: ContractType }>}
@@ -228,7 +277,17 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
               </ul>
             </>
           ) : (
-            <div> form here</div>
+            <LSP
+              data={data}
+              contractAddress={data.address}
+              collateralSymbol={data.collateralSymbol}
+              longTokenBalance={longTokenBalance}
+              refetchLongTokenBalance={refetchLongTokenBalance}
+              shortTokenBalance={shortTokenBalance}
+              refetchShortTokenBalance={refetchShortTokenBalance}
+              collateralBalance={collateralBalance}
+              setCollateralBalance={setCollateralBalance}
+            />
           )}
         </AsideWrapper>
       </MainWrapper>

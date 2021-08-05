@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from "react";
+import React, { FC, useCallback, useState } from "react";
 import Tabs from "../tabs";
 import {
   Wrapper,
@@ -11,13 +11,14 @@ import {
 import { ethers } from "ethers";
 import MintForm from "./MintForm";
 import RedeemForm from "./RedeemForm";
-import { ContractState } from "../../pages/testing";
+import { ContractState } from "./LSP";
+
 interface Props {
   address: string;
   web3Provider?: ethers.providers.Web3Provider;
   contractAddress: string;
   lspContract: ethers.Contract | null;
-  erc20Contract: ethers.Contract | null;
+  collateralERC20Contract: ethers.Contract | null;
   collateralBalance: ethers.BigNumber;
   collateralPerPair: ethers.BigNumber;
   setCollateralBalance: React.Dispatch<React.SetStateAction<ethers.BigNumber>>;
@@ -31,6 +32,7 @@ interface Props {
   setShowSettle: React.Dispatch<React.SetStateAction<boolean>>;
   contractState: ContractState;
   setContractState: React.Dispatch<React.SetStateAction<ContractState>>;
+  collateralSymbol: string;
 }
 
 const LSPForm: FC<Props> = ({
@@ -38,7 +40,7 @@ const LSPForm: FC<Props> = ({
   web3Provider,
   contractAddress,
   lspContract,
-  erc20Contract,
+  collateralERC20Contract,
   collateralBalance,
   collateralPerPair,
   setCollateralBalance,
@@ -51,6 +53,7 @@ const LSPForm: FC<Props> = ({
   setShowSettle,
   contractState,
   setContractState,
+  collateralSymbol,
 }) => {
   const expire = useCallback(async () => {
     if (lspContract) {
@@ -67,6 +70,7 @@ const LSPForm: FC<Props> = ({
       }
     }
   }, [lspContract, setShowSettle, setContractState]);
+  const [showWallet, setShowWallet] = useState(false);
 
   const settle = useCallback(async () => {
     if (lspContract) {
@@ -77,8 +81,8 @@ const LSPForm: FC<Props> = ({
           .then(async () => {
             refetchLongTokenBalance();
             refetchShortTokenBalance();
-            if (erc20Contract) {
-              const balance = (await erc20Contract.balanceOf(
+            if (collateralERC20Contract) {
+              const balance = (await collateralERC20Contract.balanceOf(
                 address
               )) as ethers.BigNumber;
               setCollateralBalance(balance);
@@ -94,7 +98,7 @@ const LSPForm: FC<Props> = ({
     shortTokenBalance,
     refetchLongTokenBalance,
     refetchShortTokenBalance,
-    erc20Contract,
+    collateralERC20Contract,
     address,
     setCollateralBalance,
   ]);
@@ -109,7 +113,7 @@ const LSPForm: FC<Props> = ({
               collateralBalance={collateralBalance}
               contractAddress={contractAddress}
               lspContract={lspContract}
-              erc20Contract={erc20Contract}
+              collateralERC20Contract={collateralERC20Contract}
               web3Provider={web3Provider}
               setShowSettle={setShowSettle}
               collateralPerPair={collateralPerPair}
@@ -119,6 +123,9 @@ const LSPForm: FC<Props> = ({
               shortTokenBalance={shortTokenBalance}
               refetchLongTokenBalance={refetchLongTokenBalance}
               refetchShortTokenBalance={refetchShortTokenBalance}
+              collateralSymbol={collateralSymbol}
+              showWallet={showWallet}
+              setShowWallet={setShowWallet}
             />
           </div>
           <div data-label="Redeem">
@@ -129,11 +136,14 @@ const LSPForm: FC<Props> = ({
               longTokenBalance={longTokenBalance}
               shortTokenBalance={shortTokenBalance}
               lspContract={lspContract}
-              erc20Contract={erc20Contract}
+              collateralERC20Contract={collateralERC20Contract}
               address={address}
               setCollateralBalance={setCollateralBalance}
               refetchLongTokenBalance={refetchLongTokenBalance}
               refetchShortTokenBalance={refetchShortTokenBalance}
+              showWallet={showWallet}
+              setShowWallet={setShowWallet}
+              collateralSymbol={collateralSymbol}
             />
           </div>
         </Tabs>

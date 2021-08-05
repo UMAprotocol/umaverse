@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import { QUERIES } from "../../utils";
 import { BaseButton } from "../Button";
+import MetaMaskIcon from "../../public/icons/metamask.svg";
 
 export const iconStyles = {
   position: "absolute",
@@ -15,9 +16,11 @@ export const Wrapper = styled.div`
   max-width: 400px;
   width: 100%;
   font-family: "Halyard Display";
-
+  margin-top: 1rem;
+  margin-bottom: 2rem;
   @media ${QUERIES.tabletAndUp} {
-    margin-left: 92px;
+    margin-left: 2rem;
+    margin-top: 0rem;
   }
 `;
 
@@ -113,10 +116,10 @@ export const DownArrowWrapper = styled.div`
     margin-left: 184px;
   }
   svg {
-    margin-top: 9px;
-    margin-left: 9px;
+    margin-top: 7px;
+    margin-left: 7px;
     fill: #272528;
-    width: 100%;
+    width: 16px;
   }
 `;
 
@@ -134,7 +137,11 @@ export const ButtonWrapper = styled.div`
   padding: 1rem;
 `;
 
-export const MintButton = styled(BaseButton)`
+interface ILSPButton {
+  showDisabled?: boolean;
+}
+
+export const MintButton = styled(BaseButton)<ILSPButton>`
   background-color: var(--primary, 500);
   color: var(--white);
   text-align: center;
@@ -144,6 +151,7 @@ export const MintButton = styled(BaseButton)`
   font-family: inherit;
   padding: 0.75rem 0;
   width: 100%;
+  opacity: ${(props) => (props.showDisabled ? "0.5" : "1")};
   @media ${QUERIES.laptopAndUp} {
     width: 370px;
   }
@@ -157,11 +165,7 @@ export const SettleWrapper = styled.div`
   background: var(--gray-300);
 `;
 
-interface ISettleButton {
-  disabled?: boolean;
-}
-
-export const SettleButton = styled(BaseButton)<ISettleButton>`
+export const SettleButton = styled(BaseButton)<ILSPButton>`
   width: 90%;
   margin: 0 auto;
   background-color: #ff4b4b;
@@ -172,8 +176,8 @@ export const SettleButton = styled(BaseButton)<ISettleButton>`
   font-weight: 600;
   font-family: inherit;
   padding: 0.66rem 0;
-  opacity: ${(props) => (props.disabled ? "0.5" : "1")};
-  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
+  opacity: ${(props) => (props.showDisabled ? "0.5" : "1")};
+  cursor: ${(props) => (props.showDisabled ? "not-allowed" : "pointer")};
   @media ${QUERIES.laptopAndUp} {
     width: 380px;
   }
@@ -218,4 +222,35 @@ export const CollateralWrapper = styled.div`
 export const SettleTokenBalance = styled.div`
   margin: 0.5rem auto;
   font-weight: 600;
+`;
+
+export const ConnectWalletWrapper = styled.div`
+  min-height: 400px;
+`;
+
+export const ConnectWalletHeader = styled.div`
+  width: 90%;
+  margin: 1rem auto 2rem;
+`;
+
+export const MetaMaskButton = styled(BaseButton)`
+  width: 90%;
+  margin: 0 auto;
+  background-color: #fbfafb;
+  color: #000;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 300;
+  font-family: inherit;
+  padding: 1rem 0;
+  border: 1px solid hsla(0, 0%, 77%, 1);
+  text-indent: 64px;
+`;
+
+export const StyledMetaMaskIcon = styled(MetaMaskIcon)`
+  width: 32px;
+  height: 32px;
+  margin-left: 34px;
+  margin-top: 10px;
+  position: absolute;
 `;

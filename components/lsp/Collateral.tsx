@@ -15,7 +15,6 @@ import { onlyAllowNumbersAndDecimals } from "./helpers";
 
 interface Props {
   collateral: string;
-  setCollateral: React.Dispatch<React.SetStateAction<string>>;
   amount: string;
   setAmount: React.Dispatch<React.SetStateAction<string>>;
   // Adjust CSS slightly if its the redeem form or the mint form.
@@ -59,10 +58,10 @@ const Collateral: FC<Props> = ({
   return (
     <>
       <FormRow>
-        {collateral === "eth" && <EthIcon style={iconStyles} />}
-        {collateral === "uniswap" && <UniswapIcon style={iconStyles} />}
+        {collateral === "ETH" && <EthIcon style={iconStyles} />}
+        {collateral === "UNI" && <UniswapIcon style={iconStyles} />}
         <CollateralWrapper>
-          <div>{collateral.toUpperCase()}</div>
+          <div>{collateral && collateral.toUpperCase()}</div>
         </CollateralWrapper>
         <TextInput
           label="collateral"

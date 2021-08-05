@@ -1,4 +1,4 @@
-import React, { FC, useState, useCallback } from "react";
+import React, { FC, useState, useCallback, useEffect } from "react";
 import {
   SmallTitle,
   TopFormWrapper,
@@ -11,9 +11,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { ethers } from "ethers";
 import toWeiSafe from "../../utils/convertToWeiSafely";
+import { useConnection } from "../../hooks";
 
 import LongShort from "./LongShort";
 import Collateral from "./Collateral";
+import ConnectWallet from "./ConnectWallet";
 
 const toBN = ethers.BigNumber.from;
 const scaledToWei = toBN("10").pow("18");
@@ -27,7 +29,7 @@ interface Props {
   contractAddress: string;
   setShowSettle: React.Dispatch<React.SetStateAction<boolean>>;
   lspContract: ethers.Contract | null;
-  erc20Contract: ethers.Contract | null;
+  collateralERC20Contract: ethers.Contract | null;
   web3Provider?: ethers.providers.Web3Provider;
   collateralBalance: ethers.BigNumber;
   collateralPerPair: ethers.BigNumber;
@@ -38,11 +40,14 @@ interface Props {
   shortTokenBalance: ethers.BigNumber;
   refetchLongTokenBalance: () => void;
   refetchShortTokenBalance: () => void;
+  collateralSymbol: string;
+  showWallet: boolean;
+  setShowWallet: (value: React.SetStateAction<boolean>) => void;
 }
 
 const MintForm: FC<Props> = ({
   lspContract,
-  erc20Contract,
+  collateralERC20Contract,
   contractAddress,
   collateralBalance,
   collateralPerPair,
@@ -53,24 +58,33 @@ const MintForm: FC<Props> = ({
   shortTokenBalance,
   refetchLongTokenBalance,
   refetchShortTokenBalance,
+  collateralSymbol,
+  showWallet,
+  setShowWallet,
 }) => {
-  const [collateral, setCollateral] = useState("uma");
   const [amount, setAmount] = useState("");
   const [longTokenAmount, setLongTokenAmount] = useState("");
   const [shortTokenAmount, setShortTokenAmount] = useState("");
+  const { signer } = useConnection();
+
+  useEffect(() => {
+    if (signer) {
+      setShowWallet(false);
+    }
+  }, [signer, setShowWallet]);
 
   const mint = useCallback(async () => {
-    if (lspContract && erc20Contract && amount) {
+    if (lspContract && collateralERC20Contract && amount) {
       const weiAmount = toWeiSafe(amount);
       try {
-        const allowance = await erc20Contract.allowance(
+        const allowance = await collateralERC20Contract.allowance(
           address,
           contractAddress
         );
-        const balance = await erc20Contract.balanceOf(address);
+        const balance = await collateralERC20Contract.balanceOf(address);
         const hasToApprove = allowance.lt(balance);
         if (hasToApprove) {
-          const approveTx = await erc20Contract.approve(
+          const approveTx = await collateralERC20Contract.approve(
             contractAddress,
             INFINITE_APPROVAL_AMOUNT
           );
@@ -90,7 +104,7 @@ const MintForm: FC<Props> = ({
             return tx.wait(1);
           })
           .then(async () => {
-            const balance = (await erc20Contract.balanceOf(
+            const balance = (await collateralERC20Contract.balanceOf(
               address
             )) as ethers.BigNumber;
             setCollateralBalance(balance);
@@ -103,7 +117,7 @@ const MintForm: FC<Props> = ({
     }
   }, [
     lspContract,
-    erc20Contract,
+    collateralERC20Contract,
     amount,
     address,
     contractAddress,
@@ -115,47 +129,56 @@ const MintForm: FC<Props> = ({
 
   return (
     <div>
-      <TopFormWrapper>
-        <SmallTitle>Input</SmallTitle>
-        <Collateral
-          collateral={collateral}
-          setCollateral={setCollateral}
-          amount={amount}
-          setAmount={setAmount}
-          collateralBalance={collateralBalance}
-          collateralPerPair={collateralPerPair}
-          collateralDecimals={collateralDecimals}
-          setLongTokenAmount={setLongTokenAmount}
-          setShortTokenAmount={setShortTokenAmount}
-        />
-      </TopFormWrapper>
-      <DownArrowWrapper>
-        <FontAwesomeIcon icon={faArrowDown} />
-      </DownArrowWrapper>
+      {!showWallet && (
+        <>
+          <TopFormWrapper>
+            <SmallTitle>Input</SmallTitle>
+            <Collateral
+              collateral={collateralSymbol}
+              amount={amount}
+              setAmount={setAmount}
+              collateralBalance={collateralBalance}
+              collateralPerPair={collateralPerPair}
+              collateralDecimals={collateralDecimals}
+              setLongTokenAmount={setLongTokenAmount}
+              setShortTokenAmount={setShortTokenAmount}
+            />
+          </TopFormWrapper>
+          <DownArrowWrapper>
+            <FontAwesomeIcon icon={faArrowDown} />
+          </DownArrowWrapper>
 
-      <BottomFormWrapper>
-        <SmallTitle>Output</SmallTitle>
-        <LongShort
-          setAmount={setAmount}
-          longTokenAmount={longTokenAmount}
-          setLongTokenAmount={setLongTokenAmount}
-          shortTokenAmount={shortTokenAmount}
-          setShortTokenAmount={setShortTokenAmount}
-          collateralPerPair={collateralPerPair}
-          longTokenBalance={longTokenBalance}
-          shortTokenBalance={shortTokenBalance}
-          collateralDecimals={collateralDecimals}
-        />
-      </BottomFormWrapper>
-      <ButtonWrapper>
-        <MintButton
-          onClick={() => {
-            return mint();
-          }}
-        >
-          Mint
-        </MintButton>
-      </ButtonWrapper>
+          <BottomFormWrapper>
+            <SmallTitle>Output</SmallTitle>
+            <LongShort
+              setAmount={setAmount}
+              longTokenAmount={longTokenAmount}
+              setLongTokenAmount={setLongTokenAmount}
+              shortTokenAmount={shortTokenAmount}
+              setShortTokenAmount={setShortTokenAmount}
+              collateralPerPair={collateralPerPair}
+              longTokenBalance={longTokenBalance}
+              shortTokenBalance={shortTokenBalance}
+              collateralDecimals={collateralDecimals}
+            />
+          </BottomFormWrapper>
+          <ButtonWrapper>
+            <MintButton
+              showDisabled={!signer}
+              onClick={() => {
+                if (signer) {
+                  return mint();
+                } else {
+                  setShowWallet(true);
+                }
+              }}
+            >
+              Mint
+            </MintButton>
+          </ButtonWrapper>
+        </>
+      )}
+      {showWallet && <ConnectWallet setShowWallet={setShowWallet} />}
     </div>
   );
 };
