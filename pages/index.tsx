@@ -31,7 +31,6 @@ import {
 export const getStaticProps: GetStaticProps = async () => {
   const queryClient = new QueryClient();
   const cmsSynths = await contentfulClient.getAllSynths();
-  console.log(cmsSynths.filter((synth) => synth.category === "Range Token"));
 
   await queryClient.prefetchQuery("all synths", async () =>
     (await Promise.all(cmsSynths.map(fetchCompleteSynth))).filter(errorFilter)
@@ -40,13 +39,10 @@ export const getStaticProps: GetStaticProps = async () => {
     "total tvl",
     async () => await client.getLatestTvl()
   );
-  // FIXME: when bug in API fixed change back to all synths, for now only curated ones
+
   await queryClient.prefetchQuery(
     "total tvm",
-    async () =>
-      await client.getLatestTvm(
-        cmsSynths.map((synth: ContentfulSynth) => synth.address)
-      )
+    async () => await client.getLatestTvm()
   );
   return {
     props: {

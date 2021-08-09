@@ -169,8 +169,10 @@ const getSynthStats: GetSynthStats = async (address) => {
 const time90DaysAgo = nDaysAgo(90);
 const oneDayAgo = nDaysAgo(1);
 
-const getLatestTvl: GetStat = (address) => request("tvl", address);
-const getLatestTvm: GetStat = (address) => request("tvm", address);
+const getLatestTvl: GetStat = (address) =>
+  address ? request("global/tvl", address) : request("global/globalTvl");
+const getLatestTvm: GetStat = (address) =>
+  address ? request("global/tvm", address) : request("global/globalTvm");
 const getTvl: GetStatBetween = (
   address,
   startTimestamp = Math.floor(time90DaysAgo().toSeconds())

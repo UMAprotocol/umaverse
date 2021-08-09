@@ -3,7 +3,6 @@ import { ContentfulSynth } from "./contentful";
 
 export function errorFilter(value: unknown | Error): boolean {
   if (value instanceof Error) {
-    console.log(value);
     Sentry.captureException(value);
     return false;
   }
