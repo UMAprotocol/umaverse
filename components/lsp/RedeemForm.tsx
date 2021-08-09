@@ -3,18 +3,18 @@ import {
   SmallTitle,
   TopFormWrapper,
   BottomFormWrapper,
-  SwapArrowWrapper,
+  DownArrowWrapper,
   ButtonWrapper,
   MintButton,
 } from "./LSPForm.styled";
 import { ethers } from "ethers";
 import LongShort from "./LongShort";
 import Collateral from "./Collateral";
-import DoubleArrow from "../../public/icons/arrows-switch.svg";
 import toWeiSafe from "../../utils/convertToWeiSafely";
 import { useConnection } from "../../hooks";
 import ConnectWallet from "./ConnectWallet";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowDown } from "@fortawesome/free-solid-svg-icons";
 const toBN = ethers.BigNumber.from;
 const scaledToWei = toBN("10").pow("18");
 
@@ -54,7 +54,6 @@ const RedeemForm: FC<Props> = ({
   const [amount, setAmount] = useState("");
   const [longTokenAmount, setLongTokenAmount] = useState("");
   const [shortTokenAmount, setShortTokenAmount] = useState("");
-  const [collateralOnTop, setCollateralOnTop] = useState(false);
 
   const { signer } = useConnection();
 
@@ -108,71 +107,36 @@ const RedeemForm: FC<Props> = ({
         <>
           <TopFormWrapper>
             <SmallTitle>Input</SmallTitle>
-            {collateralOnTop ? (
-              <Collateral
-                collateralBalance={collateralBalance}
-                collateralPerPair={collateralPerPair}
-                collateral={collateralSymbol}
-                amount={amount}
-                setAmount={setAmount}
-                redeemForm
-                collateralOnTop={collateralOnTop}
-                collateralDecimals={collateralDecimals}
-                setLongTokenAmount={setLongTokenAmount}
-                setShortTokenAmount={setShortTokenAmount}
-              />
-            ) : (
-              <LongShort
-                redeemForm
-                setAmount={setAmount}
-                longTokenAmount={longTokenAmount}
-                setLongTokenAmount={setLongTokenAmount}
-                shortTokenAmount={shortTokenAmount}
-                setShortTokenAmount={setShortTokenAmount}
-                collateralPerPair={collateralPerPair}
-                longTokenBalance={longTokenBalance}
-                shortTokenBalance={shortTokenBalance}
-                collateralOnTop={collateralOnTop}
-                collateralDecimals={collateralDecimals}
-              />
-            )}
-          </TopFormWrapper>
-          <SwapArrowWrapper>
-            <DoubleArrow
-              onClick={() => setCollateralOnTop((prevValue) => !prevValue)}
+            <LongShort
+              redeemForm
+              setAmount={setAmount}
+              longTokenAmount={longTokenAmount}
+              setLongTokenAmount={setLongTokenAmount}
+              shortTokenAmount={shortTokenAmount}
+              setShortTokenAmount={setShortTokenAmount}
+              collateralPerPair={collateralPerPair}
+              longTokenBalance={longTokenBalance}
+              shortTokenBalance={shortTokenBalance}
+              collateralDecimals={collateralDecimals}
             />
-          </SwapArrowWrapper>
+          </TopFormWrapper>
+          <DownArrowWrapper>
+            <FontAwesomeIcon icon={faArrowDown} />
+          </DownArrowWrapper>
 
           <BottomFormWrapper>
             <SmallTitle>Output</SmallTitle>
-            {collateralOnTop ? (
-              <LongShort
-                redeemForm
-                setAmount={setAmount}
-                longTokenAmount={longTokenAmount}
-                setLongTokenAmount={setLongTokenAmount}
-                shortTokenAmount={shortTokenAmount}
-                setShortTokenAmount={setShortTokenAmount}
-                collateralPerPair={collateralPerPair}
-                longTokenBalance={longTokenBalance}
-                shortTokenBalance={shortTokenBalance}
-                collateralOnTop={collateralOnTop}
-                collateralDecimals={collateralDecimals}
-              />
-            ) : (
-              <Collateral
-                collateral={collateralSymbol}
-                amount={amount}
-                setAmount={setAmount}
-                collateralBalance={collateralBalance}
-                collateralPerPair={collateralPerPair}
-                collateralDecimals={collateralDecimals}
-                setLongTokenAmount={setLongTokenAmount}
-                setShortTokenAmount={setShortTokenAmount}
-                redeemForm
-                collateralOnTop={collateralOnTop}
-              />
-            )}
+            <Collateral
+              collateral={collateralSymbol}
+              amount={amount}
+              setAmount={setAmount}
+              collateralBalance={collateralBalance}
+              collateralPerPair={collateralPerPair}
+              collateralDecimals={collateralDecimals}
+              setLongTokenAmount={setLongTokenAmount}
+              setShortTokenAmount={setShortTokenAmount}
+              redeemForm
+            />
           </BottomFormWrapper>
           <ButtonWrapper>
             <MintButton
