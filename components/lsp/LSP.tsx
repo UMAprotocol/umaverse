@@ -75,7 +75,7 @@ const LSP: FC<Props> = ({
   }, [data.contractState, signer, lspContract]);
 
   useEffect(() => {
-    if (currentTime && Number(currentTime) > data.expirationTimestamp) {
+    if (currentTime && Number(currentTime) >= data.expirationTimestamp) {
       setShowSettle(true);
     }
   }, [data.expirationTimestamp, currentTime, contractState]);

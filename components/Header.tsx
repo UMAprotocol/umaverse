@@ -178,7 +178,7 @@ export const Header: React.FC = () => {
   return (
     <Wrapper>
       <MaxWidth>
-        <Link href="https://umaproject.org">
+        <Link href="/">
           <Logo />
         </Link>
         <Navigation>

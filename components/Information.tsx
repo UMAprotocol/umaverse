@@ -16,6 +16,7 @@ export const Information: React.FC<Props> = ({ synth }) => {
   const handleCopyClick = (text: string) => {
     window.navigator.clipboard.writeText(text);
   };
+
   return (
     <Wrapper>
       <Heading>Token Information</Heading>

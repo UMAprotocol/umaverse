@@ -28,7 +28,9 @@ export const onlyAllowNumbersAndDecimals = (
     // Allow undo
     (event.metaKey && event.key === "z") ||
     // Allow cut
-    (event.metaKey && event.key === "x")
+    (event.metaKey && event.key === "x") ||
+    // Allow select all
+    (event.metaKey && event.key === "a")
   ) {
     return true;
   } else {

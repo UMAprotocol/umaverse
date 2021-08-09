@@ -62,7 +62,6 @@ const LSPForm: FC<Props> = ({
           .expire()
           .then((tx: any) => tx.wait(1))
           .then(() => {
-            setShowSettle(false);
             setContractState(ContractState.ExpiredPriceRequested);
           });
       } catch (err) {
