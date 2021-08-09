@@ -20,7 +20,7 @@ export const Wrapper = styled.div`
   margin-bottom: 2rem;
   @media ${QUERIES.tabletAndUp} {
     margin-left: 2rem;
-    margin-top: 0rem;
+    margin-top: 2rem;
   }
 `;
 

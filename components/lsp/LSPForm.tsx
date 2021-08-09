@@ -153,22 +153,24 @@ const LSPForm: FC<Props> = ({
           <SettleTitle>Settle Position</SettleTitle>
           {contractState === ContractState.Open && (
             <SettleText>
-              The LSP contract is expireable. You can now settle your position
-              at the oracle returned price.
+              The contract can now be expired. Expire the contract to obtain the
+              final settlement price.
             </SettleText>
           )}
           {/* contractState is an enum -- when it's not open, it's greater than 0. */}
           {contractState === ContractState.ExpiredPriceRequested && (
             <SettleText>
-              The LSP contract is expired. The final price most go through the
-              Optimistic Oracle first -- once this price is settled, you can
-              redeem your tokens. Please check back later.
+              The contract is expired and the settlement price is being
+              determined by UMA’s Optimistic Oracle. Once a price is returned by
+              the Optimistic Oracle you can settle your position. Please check
+              back later.
             </SettleText>
           )}
           {contractState === ContractState.ExpiredPriceReceived && (
             <SettleText>
-              The LSP contract is expired. You can now settle your position at
-              the oracle returned price. The following tokens will be redeemed:
+              The contract is expired and UMA’s Optimistic Oracle has determined
+              the final settlement price. Settle your position to obtain your
+              collateral. The following tokens will be redeemed for collateral:
               <SettleTokenBalance>
                 Long Token Balance:{" "}
                 {ethers.utils.formatUnits(longTokenBalance, collateralDecimals)}

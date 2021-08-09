@@ -243,6 +243,18 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
                 />
               </ChartWrapper>
             </>
+          ) : data.type === "lsp" ? (
+            <LSP
+              data={data}
+              contractAddress={data.address}
+              collateralSymbol={data.collateralSymbol}
+              longTokenBalance={longTokenBalance}
+              refetchLongTokenBalance={refetchLongTokenBalance}
+              shortTokenBalance={shortTokenBalance}
+              refetchShortTokenBalance={refetchShortTokenBalance}
+              collateralBalance={collateralBalance}
+              setCollateralBalance={setCollateralBalance}
+            />
           ) : null}
         </AsideWrapper>
         <Information
@@ -276,19 +288,7 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
                 </Link>
               </ul>
             </>
-          ) : (
-            <LSP
-              data={data}
-              contractAddress={data.address}
-              collateralSymbol={data.collateralSymbol}
-              longTokenBalance={longTokenBalance}
-              refetchLongTokenBalance={refetchLongTokenBalance}
-              shortTokenBalance={shortTokenBalance}
-              refetchShortTokenBalance={refetchShortTokenBalance}
-              collateralBalance={collateralBalance}
-              setCollateralBalance={setCollateralBalance}
-            />
-          )}
+          ) : null}
         </AsideWrapper>
       </MainWrapper>
       <GettingStarted />
