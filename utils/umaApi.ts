@@ -222,5 +222,9 @@ export async function fetchCompleteSynth<T extends { type: ContractType }>(
 }
 
 export function formatLSPName(longTokenName: string): string {
-  return longTokenName.substring(-2);
+  if (longTokenName && longTokenName.length > 2) {
+    return longTokenName.substring(-2);
+  }
+
+  return "No Token Found.";
 }
