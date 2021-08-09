@@ -21,11 +21,17 @@ import {
   ContentfulSynth,
 } from "../utils";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
-import { client, fetchCompleteSynth, Synth } from "../utils/umaApi";
+import {
+  client,
+  ContractType,
+  fetchCompleteSynth,
+  Synth,
+} from "../utils/umaApi";
 
 export const getStaticProps: GetStaticProps = async () => {
   const queryClient = new QueryClient();
   const cmsSynths = await contentfulClient.getAllSynths();
+  console.log(cmsSynths.filter((synth) => synth.category === "Range Token"));
 
   await queryClient.prefetchQuery("all synths", async () =>
     (await Promise.all(cmsSynths.map(fetchCompleteSynth))).filter(errorFilter)
@@ -59,7 +65,7 @@ const IndexPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
     async () =>
       (await Promise.all(cmsSynths.map(fetchCompleteSynth))).filter(
         errorFilter
-      ) as Synth<any>[]
+      ) as Synth<{ type: ContractType }>[]
   );
   const { data: totalTvl } = useQuery(
     "total tvl",

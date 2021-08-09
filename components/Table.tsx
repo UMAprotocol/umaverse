@@ -214,8 +214,14 @@ export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
     // @ts-expect-error React table options change based on the plugin used, but its not typed correctly so TS doesn't pick it up.
     setGlobalFilter,
   } = useTable(
-    //@ts-expect-error React table options change based on the plugin used, but its not typed correctly so TS doesn't pick it up.
-    { data: tableData, columns, filterTypes, globalFilter: activeSynthsFilter },
+    {
+      data: tableData,
+      columns,
+      filterTypes,
+      globalFilter: activeSynthsFilter,
+      //@ts-expect-error React table options change based on the plugin used, but its not typed correctly so TS doesn't pick it up.
+      initialState: { globalFilter: true },
+    },
     useFilters,
     useGlobalFilter
   );
@@ -259,7 +265,7 @@ export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
                   }
                 }}
               />
-              <span>Hide Expired</span>
+              <span>Show Expired</span>
             </ActiveFilterWrapper>
           </ControlsWrapper>
         )}
