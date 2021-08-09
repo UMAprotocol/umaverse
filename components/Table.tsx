@@ -221,6 +221,8 @@ export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
       globalFilter: activeSynthsFilter,
       //@ts-expect-error React table options change based on the plugin used, but its not typed correctly so TS doesn't pick it up.
       initialState: { globalFilter: true },
+      autoResetFilters: false,
+      autoResetGlobalFilter: false,
     },
     useFilters,
     useGlobalFilter
