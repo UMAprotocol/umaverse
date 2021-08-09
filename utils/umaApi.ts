@@ -221,7 +221,8 @@ export async function fetchCompleteSynth<T extends { type: ContractType }>(
   }
 }
 
-export function formatLSPName(longTokenName: string): string {
+// longTokenName can return undefined if value wasn't found in API so we need to do a null check.
+export function formatLSPName(longTokenName: string | undefined): string {
   if (longTokenName && longTokenName.length > 2) {
     return longTokenName.substring(-2);
   }
