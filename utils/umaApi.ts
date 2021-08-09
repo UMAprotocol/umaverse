@@ -227,5 +227,5 @@ export function formatLSPName(longTokenName: string | undefined): string {
     return longTokenName.substring(-2);
   }
 
-  return "No Token Found.";
+  return "No Token Found";
 }
