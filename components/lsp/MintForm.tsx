@@ -77,7 +77,10 @@ const MintForm: FC<Props> = ({
   }, [signer, setShowWallet]);
 
   useEffect(() => {
-    if (amount && toWeiSafe(amount).gt(collateralBalance)) {
+    if (
+      amount &&
+      toWeiSafe(amount, Number(collateralDecimals)).gt(collateralBalance)
+    ) {
       setShowMintError(true);
     } else if (showMintError) {
       setShowMintError(false);
