@@ -102,6 +102,7 @@ interface LspState {
   shortTokenSymbol: string;
   collateralSymbol: string;
   type: "lsp";
+  pairName: string;
 }
 export type ContractType = "emp" | "lsp";
 export type SynthState<T extends { type: ContractType }> = T extends {
