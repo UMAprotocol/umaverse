@@ -257,3 +257,13 @@ export const StyledMetaMaskIcon = styled(MetaMaskIcon)`
   margin-top: 10px;
   position: absolute;
 `;
+
+export const LSPFormError = styled.div`
+  color: #ff4b4b;
+  font-size: 1rem;
+  padding: 0.25rem 0.5rem;
+  margin: 0.5rem 1rem;
+  background-color: #fff5f7;
+  border: 1px solid #ff4b4b;
+  border-radius: 8px;
+`;

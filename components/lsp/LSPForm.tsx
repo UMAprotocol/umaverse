@@ -7,7 +7,7 @@ import {
   SettleTitle,
   SettleText,
   SettleTokenBalance,
-} from "./LSPForm.styled";
+} from "./LSP.styled";
 import { ethers } from "ethers";
 import MintForm from "./MintForm";
 import RedeemForm from "./RedeemForm";

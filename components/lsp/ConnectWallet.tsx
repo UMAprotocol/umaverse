@@ -4,7 +4,7 @@ import {
   ConnectWalletWrapper,
   ConnectWalletHeader,
   StyledMetaMaskIcon,
-} from "./LSPForm.styled";
+} from "./LSP.styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { useConnection, useOnboard } from "../../hooks";

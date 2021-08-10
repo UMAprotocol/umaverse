@@ -6,7 +6,8 @@ import {
   DownArrowWrapper,
   ButtonWrapper,
   MintButton,
-} from "./LSPForm.styled";
+  LSPFormError,
+} from "./LSP.styled";
 import { ethers } from "ethers";
 import LongShort from "./LongShort";
 import Collateral from "./Collateral";
@@ -56,12 +57,30 @@ const RedeemForm: FC<Props> = ({
   const [shortTokenAmount, setShortTokenAmount] = useState("");
 
   const { signer } = useConnection();
+  const [showRedeemError, setShowRedeemError] = useState(false);
 
   useEffect(() => {
     if (signer) {
       setShowWallet(false);
     }
   }, [signer]);
+
+  useEffect(() => {
+    if (
+      (longTokenAmount &&
+        toWeiSafe(longTokenAmount, Number(collateralDecimals)).gt(
+          longTokenBalance
+        )) ||
+      (shortTokenAmount &&
+        toWeiSafe(shortTokenAmount, Number(collateralDecimals)).gt(
+          shortTokenBalance
+        ))
+    ) {
+      setShowRedeemError(true);
+    } else if (showRedeemError) {
+      setShowRedeemError(false);
+    }
+  }, [longTokenAmount, shortTokenAmount, longTokenBalance, shortTokenBalance]);
 
   const redeem = useCallback(async () => {
     if (
@@ -119,6 +138,15 @@ const RedeemForm: FC<Props> = ({
               shortTokenBalance={shortTokenBalance}
               collateralDecimals={collateralDecimals}
             />
+            {showRedeemError && (
+              <LSPFormError>
+                {toWeiSafe(longTokenAmount, Number(collateralDecimals)).gt(
+                  longTokenBalance
+                )
+                  ? "You don't have enough long tokens to redeem."
+                  : "You don't have enough short tokens to redeem."}
+              </LSPFormError>
+            )}
           </TopFormWrapper>
           <DownArrowWrapper>
             <FontAwesomeIcon icon={faArrowDown} />
@@ -140,8 +168,9 @@ const RedeemForm: FC<Props> = ({
           </BottomFormWrapper>
           <ButtonWrapper>
             <MintButton
-              showDisabled={!signer}
+              showDisabled={!signer || showRedeemError}
               onClick={() => {
+                if (showRedeemError) return false;
                 if (signer) {
                   return redeem();
                 } else {
