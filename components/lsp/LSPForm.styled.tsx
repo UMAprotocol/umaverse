@@ -11,7 +11,7 @@ export const iconStyles = {
 } as React.CSSProperties;
 
 export const Wrapper = styled.div`
-  box-shadow: 0px 0px 35px #272528;
+  box-shadow: 0px 0px 35px 0px rgba(39, 37, 40, 0.1);
   background: var(--white);
   max-width: 400px;
   width: 100%;

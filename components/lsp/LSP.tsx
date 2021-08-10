@@ -82,6 +82,15 @@ const LSP: FC<Props> = ({
     }
   }, [data.expirationTimestamp, currentTime, contractState]);
 
+  // Coverage in case there is a transition between states and the price settles.
+  useEffect(() => {
+    if (
+      data.contractState > ContractState.ExpiredPriceRequested &&
+      settleButtonDisabled
+    )
+      setSettleButtonDisabled(true);
+  }, [data.contractState]);
+
   // Get contract data and set values.
   useEffect(() => {
     if (signer && !lspContract && data.address && account) {
@@ -123,6 +132,7 @@ const LSP: FC<Props> = ({
       setContractState={setContractState}
       collateralSymbol={data.collateralSymbol}
       settleButtonDisabled={settleButtonDisabled}
+      setSettleButtonDisabled={setSettleButtonDisabled}
     />
   );
 };
