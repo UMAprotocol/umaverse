@@ -4,7 +4,7 @@ import {
   BalanceRow,
   iconStyles,
   CollateralWrapper,
-} from "./LSPForm.styled";
+} from "./LSP.styled";
 import EthIcon from "../../public/icons/eth-icon.svg";
 import UniswapIcon from "../../public/icons/uniswap-logo.svg";
 import TextInput from "../text-input";

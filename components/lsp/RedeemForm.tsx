@@ -6,7 +6,7 @@ import {
   DownArrowWrapper,
   ButtonWrapper,
   MintButton,
-} from "./LSPForm.styled";
+} from "./LSP.styled";
 import { ethers } from "ethers";
 import LongShort from "./LongShort";
 import Collateral from "./Collateral";

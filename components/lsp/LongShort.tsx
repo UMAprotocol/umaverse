@@ -1,5 +1,5 @@
 import React, { FC, useCallback } from "react";
-import { FormRow, BalanceRowToken } from "./LSPForm.styled";
+import { FormRow, BalanceRowToken } from "./LSP.styled";
 
 import TextInput from "../text-input";
 import { LabelPlacement } from "../text-input/TextInput";
