@@ -140,7 +140,9 @@ const RedeemForm: FC<Props> = ({
             />
             {showRedeemError && (
               <LSPFormError>
-                {toWeiSafe(longTokenAmount).gt(longTokenBalance)
+                {toWeiSafe(longTokenAmount, Number(collateralDecimals)).gt(
+                  longTokenBalance
+                )
                   ? "You don't have enough long tokens to redeem."
                   : "You don't have enough short tokens to redeem."}
               </LSPFormError>
