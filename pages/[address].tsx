@@ -214,7 +214,6 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
     refetchShortTokenBalance,
   ]);
 
-  console.log("data", data);
   return (
     <Layout title="Umaverse">
       <Hero topAction={<BackAction />}>
