@@ -67,8 +67,14 @@ const RedeemForm: FC<Props> = ({
 
   useEffect(() => {
     if (
-      (longTokenAmount && toWeiSafe(longTokenAmount).gt(longTokenBalance)) ||
-      (shortTokenAmount && toWeiSafe(shortTokenAmount).gt(shortTokenBalance))
+      (longTokenAmount &&
+        toWeiSafe(longTokenAmount, Number(collateralDecimals)).gt(
+          longTokenBalance
+        )) ||
+      (shortTokenAmount &&
+        toWeiSafe(shortTokenAmount, Number(collateralDecimals)).gt(
+          shortTokenBalance
+        ))
     ) {
       setShowRedeemError(true);
     } else if (showRedeemError) {
