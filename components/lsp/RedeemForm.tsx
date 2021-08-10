@@ -67,12 +67,8 @@ const RedeemForm: FC<Props> = ({
 
   useEffect(() => {
     if (
-      (longTokenAmount &&
-        longTokenAmount >
-          ethers.utils.formatUnits(longTokenBalance, collateralDecimals)) ||
-      (shortTokenAmount &&
-        shortTokenAmount >
-          ethers.utils.formatUnits(shortTokenBalance, collateralDecimals))
+      (longTokenAmount && toWeiSafe(longTokenAmount).gt(longTokenBalance)) ||
+      (shortTokenAmount && toWeiSafe(shortTokenAmount).gt(shortTokenBalance))
     ) {
       setShowRedeemError(true);
     } else if (showRedeemError) {
@@ -138,8 +134,7 @@ const RedeemForm: FC<Props> = ({
             />
             {showRedeemError && (
               <LSPFormError>
-                {longTokenAmount >
-                ethers.utils.formatUnits(longTokenBalance, collateralDecimals)
+                {toWeiSafe(longTokenAmount).gt(longTokenBalance)
                   ? "You don't have enough long tokens to redeem."
                   : "You don't have enough short tokens to redeem."}
               </LSPFormError>

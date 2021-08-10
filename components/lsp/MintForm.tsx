@@ -77,10 +77,7 @@ const MintForm: FC<Props> = ({
   }, [signer, setShowWallet]);
 
   useEffect(() => {
-    if (
-      amount &&
-      amount > ethers.utils.formatUnits(collateralBalance, collateralDecimals)
-    ) {
+    if (amount && toWeiSafe(amount).gt(collateralBalance)) {
       setShowMintError(true);
     } else if (showMintError) {
       setShowMintError(false);
