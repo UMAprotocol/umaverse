@@ -49,6 +49,7 @@ const LSP: FC<Props> = ({
 
   const [currentTime, setCurrentTime] = useState<string>("");
   const [showSettle, setShowSettle] = useState(false);
+  const [settleButtonDisabled, setSettleButtonDisabled] = useState(false);
 
   // Check if contract is settable.
   useEffect(() => {
@@ -69,6 +70,7 @@ const LSP: FC<Props> = ({
           }
         })
         .catch((err: any) => {
+          setSettleButtonDisabled(true);
           console.log("err in call", err);
         });
     }
@@ -120,6 +122,7 @@ const LSP: FC<Props> = ({
       contractState={contractState}
       setContractState={setContractState}
       collateralSymbol={data.collateralSymbol}
+      settleButtonDisabled={settleButtonDisabled}
     />
   );
 };

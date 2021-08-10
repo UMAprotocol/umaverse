@@ -33,6 +33,7 @@ interface Props {
   contractState: ContractState;
   setContractState: React.Dispatch<React.SetStateAction<ContractState>>;
   collateralSymbol: string;
+  settleButtonDisabled: boolean;
 }
 
 const LSPForm: FC<Props> = ({
@@ -54,6 +55,7 @@ const LSPForm: FC<Props> = ({
   contractState,
   setContractState,
   collateralSymbol,
+  settleButtonDisabled,
 }) => {
   const expire = useCallback(async () => {
     if (lspContract) {
@@ -184,7 +186,7 @@ const LSPForm: FC<Props> = ({
             </SettleText>
           )}
           <SettleButton
-            disabled={contractState === ContractState.ExpiredPriceRequested}
+            disabled={settleButtonDisabled}
             onClick={() => {
               // On click function only works when open or final price received.
               if (contractState === ContractState.Open) return expire();
