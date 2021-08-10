@@ -227,8 +227,8 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
           <div>
             <Heading>
               {data.type === "emp"
-                ? data.tokenName
-                : formatLSPName(data.longTokenName || "")}
+                ? data.tokenName || ""
+                : formatLSPName(data.pairName || "")}
             </Heading>
             <Description>{data.address}</Description>
           </div>

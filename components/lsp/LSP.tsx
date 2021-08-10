@@ -88,7 +88,7 @@ const LSP: FC<Props> = ({
       data.contractState > ContractState.ExpiredPriceRequested &&
       settleButtonDisabled
     )
-      setSettleButtonDisabled(true);
+      setSettleButtonDisabled(false);
   }, [data.contractState]);
 
   // Get contract data and set values.
