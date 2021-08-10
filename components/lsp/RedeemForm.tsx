@@ -6,7 +6,7 @@ import {
   DownArrowWrapper,
   ButtonWrapper,
   MintButton,
-  RedeemError,
+  LSPFormError,
 } from "./LSP.styled";
 import { ethers } from "ethers";
 import LongShort from "./LongShort";
@@ -66,12 +66,6 @@ const RedeemForm: FC<Props> = ({
   }, [signer]);
 
   useEffect(() => {
-    console.log(
-      "LTA",
-      longTokenAmount,
-      "LTB",
-      ethers.utils.formatUnits(longTokenBalance, collateralDecimals)
-    );
     if (
       (longTokenAmount &&
         longTokenAmount >
@@ -143,12 +137,12 @@ const RedeemForm: FC<Props> = ({
               collateralDecimals={collateralDecimals}
             />
             {showRedeemError && (
-              <RedeemError>
+              <LSPFormError>
                 {longTokenAmount >
                 ethers.utils.formatUnits(longTokenBalance, collateralDecimals)
                   ? "You don't have enough long tokens to redeem."
                   : "You don't have enough short tokens to redeem."}
-              </RedeemError>
+              </LSPFormError>
             )}
           </TopFormWrapper>
           <DownArrowWrapper>

@@ -6,6 +6,7 @@ import {
   DownArrowWrapper,
   ButtonWrapper,
   MintButton,
+  LSPFormError,
 } from "./LSP.styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDown } from "@fortawesome/free-solid-svg-icons";
@@ -65,6 +66,8 @@ const MintForm: FC<Props> = ({
   const [amount, setAmount] = useState("");
   const [longTokenAmount, setLongTokenAmount] = useState("");
   const [shortTokenAmount, setShortTokenAmount] = useState("");
+  const [showMintError, setShowMintError] = useState(false);
+
   const { signer } = useConnection();
 
   useEffect(() => {
@@ -72,6 +75,17 @@ const MintForm: FC<Props> = ({
       setShowWallet(false);
     }
   }, [signer, setShowWallet]);
+
+  useEffect(() => {
+    if (
+      amount &&
+      amount > ethers.utils.formatUnits(collateralBalance, collateralDecimals)
+    ) {
+      setShowMintError(true);
+    } else if (showMintError) {
+      setShowMintError(false);
+    }
+  }, [longTokenAmount, shortTokenAmount, longTokenBalance, shortTokenBalance]);
 
   const mint = useCallback(async () => {
     if (lspContract && collateralERC20Contract && amount) {
@@ -143,6 +157,11 @@ const MintForm: FC<Props> = ({
               setLongTokenAmount={setLongTokenAmount}
               setShortTokenAmount={setShortTokenAmount}
             />
+            {showMintError && (
+              <LSPFormError>
+                You don&apos;t have enough collateral to mint.
+              </LSPFormError>
+            )}
           </TopFormWrapper>
           <DownArrowWrapper>
             <FontAwesomeIcon icon={faArrowDown} />

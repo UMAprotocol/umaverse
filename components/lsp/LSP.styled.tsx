@@ -258,7 +258,7 @@ export const StyledMetaMaskIcon = styled(MetaMaskIcon)`
   position: absolute;
 `;
 
-export const RedeemError = styled.div`
+export const LSPFormError = styled.div`
   color: #ff4b4b;
   font-size: 1rem;
   padding: 0.25rem 0.5rem;
