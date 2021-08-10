@@ -205,7 +205,14 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
     if (!isConnected) {
       setCollateralBalance(toBN("0"));
     }
-  }, [signer, isConnected, account]);
+  }, [
+    signer,
+    isConnected,
+    account,
+    data.type,
+    refetchLongTokenBalance,
+    refetchShortTokenBalance,
+  ]);
 
   return (
     <Layout title="Umaverse">

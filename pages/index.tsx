@@ -3,6 +3,7 @@ import styled from "@emotion/styled";
 
 import { useQuery, QueryClient } from "react-query";
 import { dehydrate } from "react-query/hydration";
+import { GetStaticProps, InferGetStaticPropsType } from "next";
 
 import {
   Layout,
@@ -20,8 +21,15 @@ import {
   formatWeiString,
   ContentfulSynth,
 } from "../utils";
-import { GetStaticProps, InferGetStaticPropsType } from "next";
-import { client, fetchCompleteSynth, Synth } from "../utils/umaApi";
+
+import {
+  client,
+  ContractType,
+  fetchCompleteSynth,
+  Synth,
+} from "../utils/umaApi";
+import { nDaysAgo } from "../utils/time";
+const oneDayAgo = nDaysAgo(1);
 
 export const getStaticProps: GetStaticProps = async () => {
   const queryClient = new QueryClient();
@@ -34,14 +42,27 @@ export const getStaticProps: GetStaticProps = async () => {
     "total tvl",
     async () => await client.getLatestTvl()
   );
-  // FIXME: when bug in API fixed change back to all synths, for now only curated ones
+
+  const lastTvl = (await queryClient.getQueryData(["total tvl"])) as string;
+
   await queryClient.prefetchQuery(
     "total tvm",
-    async () =>
-      await client.getLatestTvm(
-        cmsSynths.map((synth: ContentfulSynth) => synth.address)
-      )
+    async () => await client.getLatestTvm()
   );
+
+  await queryClient.prefetchQuery("total tvl change", async () => {
+    const [{ value: ydayTvl = NaN } = {}] = await client.request(
+      "global/globalTvlHistorySlice",
+      Math.floor(oneDayAgo().toSeconds())
+    );
+    return !Number.isNaN(ydayTvl)
+      ? Math.round(
+          ((formatWeiString(lastTvl) - formatWeiString(ydayTvl)) /
+            formatWeiString(ydayTvl)) *
+            1000
+        ) / 10
+      : 0;
+  });
   return {
     props: {
       cmsSynths,
@@ -59,7 +80,7 @@ const IndexPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
     async () =>
       (await Promise.all(cmsSynths.map(fetchCompleteSynth))).filter(
         errorFilter
-      ) as Synth<any>[]
+      ) as Synth<{ type: ContractType }>[]
   );
   const { data: totalTvl } = useQuery(
     "total tvl",
@@ -71,6 +92,23 @@ const IndexPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
       await client.getLatestTvm(
         cmsSynths.map((synth: ContentfulSynth) => synth.address)
       )
+  );
+  const { data: totalTvlChange } = useQuery(
+    "total tvl change",
+    async () => {
+      const [{ value: ydayTvl = NaN } = {}] = await client.request(
+        "global/globalTvlHistorySlice",
+        Math.floor(oneDayAgo().toSeconds())
+      );
+      return !Number.isNaN(ydayTvl)
+        ? Math.round(
+            ((formatWeiString(totalTvl!) - formatWeiString(ydayTvl)) /
+              formatWeiString(ydayTvl)) *
+              1000
+          ) / 10
+        : 0;
+    },
+    { enabled: Boolean(totalTvl) }
   );
 
   return (
@@ -140,9 +178,20 @@ const IndexPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
                 Change <span>(24h)</span>
               </CardHeading>
               <Value
-                value={3.2}
+                value={totalTvlChange ?? 0}
                 format={(v) => (
-                  <span style={{ color: "var(--green)" }}>{v} %</span>
+                  <span
+                    style={{
+                      color:
+                        v > 0
+                          ? "var(--green)"
+                          : v < 0
+                          ? "var(--primary)"
+                          : "var(--gray-700)",
+                    }}
+                  >
+                    {v} %
+                  </span>
                 )}
               />
             </CardContent>

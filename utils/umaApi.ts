@@ -150,8 +150,10 @@ const getAddresses: GetAddresses = async () => {
   return [...empAddresses, ...lspAddresses];
 };
 
-const getState: GetState = async (address) => {
-  const state: any = await request("global/getState", address);
+const getState: GetState = async <T extends { type: ContractType }>(
+  address: string
+) => {
+  const state: SynthState<T> = await request("global/getState", address);
   return state;
 };
 
@@ -167,8 +169,10 @@ const getSynthStats: GetSynthStats = async (address) => {
 const time90DaysAgo = nDaysAgo(90);
 const oneDayAgo = nDaysAgo(1);
 
-const getLatestTvl: GetStat = (address) => request("tvl", address);
-const getLatestTvm: GetStat = (address) => request("tvm", address);
+const getLatestTvl: GetStat = (address) =>
+  address ? request("global/tvl", address) : request("global/globalTvl");
+const getLatestTvm: GetStat = (address) =>
+  address ? request("global/tvm", address) : request("global/globalTvm");
 const getTvl: GetStatBetween = (
   address,
   startTimestamp = Math.floor(time90DaysAgo().toSeconds())
@@ -199,17 +203,18 @@ export async function fetchCompleteSynth<T extends { type: ContractType }>(
     const stats = await client.getSynthStats(synth.address);
     const state = await client.getState<T>(synth.address);
     const lastTvl = await client.getLatestTvl(synth.address);
-    const [{ value: ydayTvl }] = await client.request(
-      "tvlHistorySlice",
+    const [{ value: ydayTvl = NaN } = {}] = await client.request(
+      "global/tvlHistorySlice",
       synth.address,
       Math.floor(oneDayAgo().toSeconds())
     );
-    const tvl24hChange =
-      Math.round(
-        ((formatWeiString(lastTvl) - formatWeiString(ydayTvl)) /
-          formatWeiString(ydayTvl)) *
-          1000
-      ) / 10;
+    const tvl24hChange = !Number.isNaN(ydayTvl)
+      ? Math.round(
+          ((formatWeiString(lastTvl) - formatWeiString(ydayTvl)) /
+            formatWeiString(ydayTvl)) *
+            1000
+        ) / 10
+      : 0;
 
     return {
       ...stats,

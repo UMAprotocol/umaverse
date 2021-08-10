@@ -27,7 +27,7 @@ import {
 
 import { MaxWidthWrapper } from "./Wrapper";
 import { BaseButton } from "./Button";
-import { Synth, formatLSPName } from "../utils/umaApi";
+import { Synth, formatLSPName, ContractType } from "../utils/umaApi";
 
 const RankCircle = styled.div`
   border-radius: 9999px;
@@ -165,7 +165,7 @@ const columns = [
       </span>
     ),
   },
-] as Column<Synth<any>>[];
+] as Column<Synth<{ type: ContractType }>>[];
 
 function activeSynthsFilter(
   rows: TRow[],
@@ -177,12 +177,12 @@ function activeSynthsFilter(
   }
   return rows.filter(
     (row) =>
-      (row.original as Synth<any>).expirationTimestamp >
+      (row.original as Synth<{ type: ContractType }>).expirationTimestamp >
       DateTime.now().toSeconds()
   );
 }
 type Props = {
-  data: Synth<any>[];
+  data: Synth<{ type: ContractType }>[];
   hasFilters?: boolean;
 };
 export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
@@ -214,8 +214,16 @@ export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
     // @ts-expect-error React table options change based on the plugin used, but its not typed correctly so TS doesn't pick it up.
     setGlobalFilter,
   } = useTable(
-    //@ts-expect-error React table options change based on the plugin used, but its not typed correctly so TS doesn't pick it up.
-    { data: tableData, columns, filterTypes, globalFilter: activeSynthsFilter },
+    {
+      data: tableData,
+      columns,
+      filterTypes,
+      globalFilter: activeSynthsFilter,
+      //@ts-expect-error React table options change based on the plugin used, but its not typed correctly so TS doesn't pick it up.
+      initialState: { globalFilter: true },
+      autoResetFilters: false,
+      autoResetGlobalFilter: false,
+    },
     useFilters,
     useGlobalFilter
   );
@@ -259,7 +267,7 @@ export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
                   }
                 }}
               />
-              <span>Hide Expired</span>
+              <span>Show Expired</span>
             </ActiveFilterWrapper>
           </ControlsWrapper>
         )}
