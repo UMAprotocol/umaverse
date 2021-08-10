@@ -18,9 +18,12 @@ export const Wrapper = styled.div`
   font-family: "Halyard Display";
   margin-top: 1rem;
   margin-bottom: 2rem;
-  @media ${QUERIES.tabletAndUp} {
-    margin-left: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+  @media ${QUERIES.laptopAndUp} {
     margin-top: 2rem;
+    margin-left: 2rem;
+    margin-right: 0;
   }
 `;
 
