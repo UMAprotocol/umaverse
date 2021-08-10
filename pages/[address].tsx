@@ -71,7 +71,9 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
   const { address } = ctx.params as { address: string };
 
   const cmsSynth = await contentfulClient.getSynth(address);
+
   const queryClient = new QueryClient();
+
   await queryClient.prefetchQuery(
     ["synth state", address],
     async () => await client.getState(address)
@@ -81,17 +83,21 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
     "synth state",
     address,
   ])) as SynthState<{ type: ContractType }>;
+
   const stats = await client.getSynthStats(address);
+
   const apiData = {
     ...stats,
     ...state,
   };
 
-  if (!apiData) {
+  // state variable is undefined when address doesn't exist in API.
+  if (!state) {
     return {
       notFound: true,
     };
   }
+
   const data = {
     ...apiData,
     ...cmsSynth,
@@ -99,6 +105,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
 
   // fetch curated synths in the same category as this one
   const cmsRelatedSynths = await contentfulClient.getRelatedSynths(data);
+
   const relatedSynths = (
     await Promise.all(cmsRelatedSynths.map(fetchCompleteSynth))
   ).filter(errorFilter) as Synth<{ type: ContractType }>[];
@@ -124,16 +131,19 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const allCmsSynths = await contentfulClient.getAllSynths();
+
   const paths = allCmsSynths.map((synth) => ({
     params: {
       address: synth.address,
     },
   }));
+
   return {
     paths,
     fallback: "blocking",
   };
 };
+
 type Props =
   | {
       data: Synth<{ type: "emp" }>;
@@ -243,6 +253,18 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
                 />
               </ChartWrapper>
             </>
+          ) : data.type === "lsp" ? (
+            <LSP
+              data={data}
+              contractAddress={data.address}
+              collateralSymbol={data.collateralSymbol}
+              longTokenBalance={longTokenBalance}
+              refetchLongTokenBalance={refetchLongTokenBalance}
+              shortTokenBalance={shortTokenBalance}
+              refetchShortTokenBalance={refetchShortTokenBalance}
+              collateralBalance={collateralBalance}
+              setCollateralBalance={setCollateralBalance}
+            />
           ) : null}
         </AsideWrapper>
         <Information
@@ -276,19 +298,7 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
                 </Link>
               </ul>
             </>
-          ) : (
-            <LSP
-              data={data}
-              contractAddress={data.address}
-              collateralSymbol={data.collateralSymbol}
-              longTokenBalance={longTokenBalance}
-              refetchLongTokenBalance={refetchLongTokenBalance}
-              shortTokenBalance={shortTokenBalance}
-              refetchShortTokenBalance={refetchShortTokenBalance}
-              collateralBalance={collateralBalance}
-              setCollateralBalance={setCollateralBalance}
-            />
-          )}
+          ) : null}
         </AsideWrapper>
       </MainWrapper>
       <GettingStarted />

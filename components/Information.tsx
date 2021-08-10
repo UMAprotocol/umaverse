@@ -16,6 +16,7 @@ export const Information: React.FC<Props> = ({ synth }) => {
   const handleCopyClick = (text: string) => {
     window.navigator.clipboard.writeText(text);
   };
+
   return (
     <Wrapper>
       <Heading>Token Information</Heading>
@@ -28,11 +29,7 @@ export const Information: React.FC<Props> = ({ synth }) => {
         </Row>
         <Row>
           <div>Symbol:</div>
-          <div>
-            {synth.type == "emp"
-              ? synth.tokenSymbol
-              : `${synth.longTokenSymbol}-${synth.shortTokenSymbol}`}
-          </div>
+          <div>{synth.type == "emp" ? synth.tokenSymbol : synth.pairName}</div>
         </Row>
 
         {synth.type === "emp" ? (
