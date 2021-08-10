@@ -204,7 +204,7 @@ export async function fetchCompleteSynth<T extends { type: ContractType }>(
     const state = await client.getState<T>(synth.address);
     const lastTvl = await client.getLatestTvl(synth.address);
     const [{ value: ydayTvl = NaN } = {}] = await client.request(
-      "tvlHistorySlice",
+      "global/tvlHistorySlice",
       synth.address,
       Math.floor(oneDayAgo().toSeconds())
     );
