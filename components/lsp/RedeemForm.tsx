@@ -6,6 +6,7 @@ import {
   DownArrowWrapper,
   ButtonWrapper,
   MintButton,
+  RedeemError,
 } from "./LSP.styled";
 import { ethers } from "ethers";
 import LongShort from "./LongShort";
@@ -56,12 +57,34 @@ const RedeemForm: FC<Props> = ({
   const [shortTokenAmount, setShortTokenAmount] = useState("");
 
   const { signer } = useConnection();
+  const [showRedeemError, setShowRedeemError] = useState(false);
 
   useEffect(() => {
     if (signer) {
       setShowWallet(false);
     }
   }, [signer]);
+
+  useEffect(() => {
+    console.log(
+      "LTA",
+      longTokenAmount,
+      "LTB",
+      ethers.utils.formatUnits(longTokenBalance, collateralDecimals)
+    );
+    if (
+      (longTokenAmount &&
+        longTokenAmount >
+          ethers.utils.formatUnits(longTokenBalance, collateralDecimals)) ||
+      (shortTokenAmount &&
+        shortTokenAmount >
+          ethers.utils.formatUnits(shortTokenBalance, collateralDecimals))
+    ) {
+      setShowRedeemError(true);
+    } else if (showRedeemError) {
+      setShowRedeemError(false);
+    }
+  }, [longTokenAmount, shortTokenAmount, longTokenBalance, shortTokenBalance]);
 
   const redeem = useCallback(async () => {
     if (
@@ -119,6 +142,14 @@ const RedeemForm: FC<Props> = ({
               shortTokenBalance={shortTokenBalance}
               collateralDecimals={collateralDecimals}
             />
+            {showRedeemError && (
+              <RedeemError>
+                {longTokenAmount >
+                ethers.utils.formatUnits(longTokenBalance, collateralDecimals)
+                  ? "You don't have enough long tokens to redeem."
+                  : "You don't have enough short tokens to redeem."}
+              </RedeemError>
+            )}
           </TopFormWrapper>
           <DownArrowWrapper>
             <FontAwesomeIcon icon={faArrowDown} />
