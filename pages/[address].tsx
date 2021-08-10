@@ -214,6 +214,7 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
     refetchShortTokenBalance,
   ]);
 
+  console.log("data", data);
   return (
     <Layout title="Umaverse">
       <Hero topAction={<BackAction />}>
@@ -228,7 +229,7 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
             <Heading>
               {data.type === "emp"
                 ? data.tokenName || ""
-                : formatLSPName(data.pairName || "")}
+                : formatLSPName(data.longTokenName || "")}
             </Heading>
             <Description>{data.address}</Description>
           </div>
