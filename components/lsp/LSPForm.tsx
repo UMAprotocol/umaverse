@@ -107,10 +107,6 @@ const LSPForm: FC<Props> = ({
     setCollateralBalance,
   ]);
 
-  console.log(
-    contractState === ContractState.ExpiredPriceRequested ||
-      settleButtonDisabled
-  );
   return (
     <Wrapper>
       {!showSettle && (
