@@ -11,16 +11,19 @@ export const iconStyles = {
 } as React.CSSProperties;
 
 export const Wrapper = styled.div`
-  box-shadow: 0px 4px 4px 0px #00000040;
+  box-shadow: 0px 0px 35px 0px rgba(39, 37, 40, 0.1);
   background: var(--white);
   max-width: 400px;
   width: 100%;
   font-family: "Halyard Display";
   margin-top: 1rem;
   margin-bottom: 2rem;
-  @media ${QUERIES.tabletAndUp} {
-    margin-left: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+  @media ${QUERIES.laptopAndUp} {
     margin-top: 2rem;
+    margin-left: 2rem;
+    margin-right: 0;
   }
 `;
 

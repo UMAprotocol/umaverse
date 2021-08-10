@@ -33,6 +33,8 @@ interface Props {
   contractState: ContractState;
   setContractState: React.Dispatch<React.SetStateAction<ContractState>>;
   collateralSymbol: string;
+  settleButtonDisabled: boolean;
+  setSettleButtonDisabled: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const LSPForm: FC<Props> = ({
@@ -54,6 +56,8 @@ const LSPForm: FC<Props> = ({
   contractState,
   setContractState,
   collateralSymbol,
+  settleButtonDisabled,
+  setSettleButtonDisabled,
 }) => {
   const expire = useCallback(async () => {
     if (lspContract) {
@@ -80,6 +84,7 @@ const LSPForm: FC<Props> = ({
           .then(async () => {
             refetchLongTokenBalance();
             refetchShortTokenBalance();
+            setSettleButtonDisabled(true);
             if (collateralERC20Contract) {
               const balance = (await collateralERC20Contract.balanceOf(
                 address
@@ -184,7 +189,7 @@ const LSPForm: FC<Props> = ({
             </SettleText>
           )}
           <SettleButton
-            disabled={contractState === ContractState.ExpiredPriceRequested}
+            showDisabled={settleButtonDisabled}
             onClick={() => {
               // On click function only works when open or final price received.
               if (contractState === ContractState.Open) return expire();

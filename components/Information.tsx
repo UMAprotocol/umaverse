@@ -29,7 +29,12 @@ export const Information: React.FC<Props> = ({ synth }) => {
         </Row>
         <Row>
           <div>Symbol:</div>
-          <div>{synth.type == "emp" ? synth.tokenSymbol : synth.pairName}</div>
+          <div>
+            {synth.type == "emp"
+              ? synth.tokenSymbol
+              : synth.pairName ||
+                `${synth.longTokenSymbol} - ${synth.shortTokenSymbol}`}
+          </div>
         </Row>
 
         {synth.type === "emp" ? (
@@ -46,21 +51,21 @@ export const Information: React.FC<Props> = ({ synth }) => {
           <>
             <Row>
               <div>Long Address:</div>
-              <div>
+              <Address>
                 {synth.longToken}{" "}
                 <StyledDuplicateIcon
                   onClick={() => handleCopyClick(synth.longToken)}
                 />
-              </div>
+              </Address>
             </Row>
             <Row>
               <div>Short Address:</div>
-              <div>
+              <Address>
                 {synth.shortToken}{" "}
                 <StyledDuplicateIcon
                   onClick={() => handleCopyClick(synth.shortToken)}
                 />
-              </div>
+              </Address>
             </Row>
           </>
         )}
@@ -158,4 +163,8 @@ const StyledDuplicateIcon = styled(DuplicateIcon)`
   height: 20px;
   cursor: pointer;
   margin: auto;
+`;
+
+const Address = styled.div`
+  word-break: break-all;
 `;

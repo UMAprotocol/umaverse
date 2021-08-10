@@ -12,7 +12,11 @@ export const Layout: React.FC<Props> = ({
   children,
   title = "This is the default title",
 }) => (
-  <div>
+  <div
+    style={{
+      width: "100%",
+    }}
+  >
     <Head>
       <title>{title}</title>
       <meta charSet="utf-8" />
