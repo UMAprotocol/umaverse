@@ -110,11 +110,13 @@ export const Dropdown = styled.div`
     font-family: inherit; /* Important for vertical align on mobile phones */
     margin: 0; /* Important for vertical align on mobile phones */
     border-bottom: 2px solid transparent;
-    // width: 100px;
-    /* @include breakpoint-down(tablet) {
-      display: block;
-      width: 100%;
-    } */
+    display: inline-block;
+    height: 10px;
+    margin-left: 6px;
+
+    @media ${QUERIES.tabletAndDown} {
+      margin-left: 0;
+    }
   }
   &:hover {
     button {
@@ -134,12 +136,20 @@ export const DropdownContent = styled.div`
   z-index: 1;
   transform: translateX(-60px);
   margin-top: 8px;
+  @media ${QUERIES.tabletAndDown} {
+    transform: translateX(0);
+    position: relative;
+    width: 100%;
+  }
   &.open {
     display: block;
     z-index: 999999;
+    @media ${QUERIES.tabletAndDown} {
+      display: block;
+      width: 100%;
+    }
     /* @include breakpoint-down(tablet) {
-        display: block;
-        width: 100%;
+
       } */
   }
   /* @include breakpoint-down(tablet) {

@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
+import { QUERIES } from "../utils";
 
 type Size = "xl" | "lg" | "md" | "sm";
 type Props = {
@@ -39,7 +40,4 @@ const Wrapper = styled.div`
   max-width: var(--size);
   margin: 0 auto;
   padding: 0 15px;
-  // Do not change these properties. Required for dropdown in the navbar to overlay the input in this section
-  position: relative;
-  z-index: -1;
 `;

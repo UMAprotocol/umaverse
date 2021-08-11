@@ -3,7 +3,8 @@ import { Dropdown, DropdownContent } from "./Header.styled";
 import { BaseButton } from "../Button";
 import { Link } from "../Link";
 import useUserClickedOutsideElement from "../../hooks/useUserClickedOutsideElement";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 interface Props {
   links: IDropdownMenuLinks[];
 }
@@ -22,6 +23,7 @@ const DropdownMenu: FC<Props> = ({ links }) => {
     <Dropdown ref={dropdownRef}>
       <BaseButton onClick={() => setOpen((prevState) => !prevState)}>
         Products
+        <FontAwesomeIcon icon={faAngleDown} />
       </BaseButton>
       <DropdownContent className={open ? "open" : ""}>
         {links.map(({ href, name }) => {
