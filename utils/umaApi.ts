@@ -196,6 +196,10 @@ export const client = {
   getYesterdayPrice,
 };
 
+export type Emp = ContentfulSynth &
+  EmpStats &
+  EmpState & { tvl24hChange: number };
+
 export async function fetchCompleteSynth<T extends { type: ContractType }>(
   synth: ContentfulSynth
 ): Promise<Synth<T> | Error> {
