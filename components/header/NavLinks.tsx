@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import { Link } from "../Link";
+import DropdownMenu from "./DropdownMenu";
 import {
   LinkList,
   ListItem,
@@ -8,7 +9,6 @@ import {
   ImageItem,
   Dropdown,
 } from "./Header.styled";
-import { BaseButton } from "../Button";
 
 const NavLinks = () => {
   return (
@@ -47,11 +47,7 @@ const HEADER_LINKS = [
   },
   {
     key: "Products",
-    component: (
-      <Dropdown>
-        <BaseButton>Products</BaseButton>
-      </Dropdown>
-    ),
+    component: <DropdownMenu />,
   },
   {
     key: "Projects",
