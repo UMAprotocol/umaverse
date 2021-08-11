@@ -1,29 +1,30 @@
 import React from "react";
+import Image, { ImageProps } from "next/image";
 
-import KPIOption from "../public/placeholders/kpi-option.svg";
-import SyntheticAsset from "../public/placeholders/synthetic-asset.svg";
-import YieldDollar from "../public/placeholders/yield-dollar.svg";
-import Option from "../public/placeholders/option.svg";
+import { CATEGORIES_PLACEHOLDERS } from "../utils";
 import type { Category } from "../utils/constants";
 
 type Props = {
   category: Category;
-} & React.SVGAttributes<SVGElement>;
-
-const placeholders: Record<
-  Category,
-  React.FunctionComponent<React.SVGAttributes<SVGElement>>
-> = {
-  "KPI Option": KPIOption,
-  Option: Option,
-  "Synthetic Asset": SyntheticAsset,
-  "Yield Dollar": YieldDollar,
-};
+} & Omit<ImageProps, "src">;
 
 export const SynthPlaceholderIcon: React.FC<Props> = ({
   category,
   ...delegated
 }) => {
-  const Component = placeholders[category];
-  return <Component {...delegated} />;
+  const src = CATEGORIES_PLACEHOLDERS[category];
+  if (!src) {
+    return null;
+  }
+  return (
+    // @ts-expect-error TS complains about src being of type string instead of StaticImport, but can't typecast because StaticImport is not exported
+    <Image
+      width={52}
+      height={52}
+      alt={category}
+      layout="fixed"
+      {...delegated}
+      src={src}
+    />
+  );
 };

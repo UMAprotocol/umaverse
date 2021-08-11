@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { DateTime } from "luxon";
 
 import styled from "@emotion/styled";
 import { motion, AnimatePresence } from "framer-motion";
@@ -26,7 +27,7 @@ import {
 
 import { MaxWidthWrapper } from "./Wrapper";
 import { BaseButton } from "./Button";
-import { Emp } from "../utils/umaApi";
+import { Synth, formatLSPName, ContractType } from "../utils/umaApi";
 
 const RankCircle = styled.div`
   border-radius: 9999px;
@@ -40,10 +41,11 @@ const RankCircle = styled.div`
     color: var(--gray-700);
   }
 `;
-
-const Name: React.FC<
-  Pick<Emp, "shortDescription" | "tokenName" | "category" | "logo">
-> = ({ logo, category, tokenName, shortDescription }) => {
+type NameProps = {
+  synth: Synth<any>;
+};
+const Name: React.FC<NameProps> = ({ synth }) => {
+  const { logo, category } = synth;
   // Contentful won't return an absolute URL so we have to complete it or next/image won't parse it
   const formattedUrl = logo?.fields.file.url
     ? formatContentfulUrl(logo.fields.file.url)
@@ -56,8 +58,13 @@ const Name: React.FC<
       </ImageWrapper>
 
       <div>
-        <NameHeading>{tokenName}</NameHeading>
-        <span>{shortDescription}</span>
+        <NameHeading>
+          {synth.type === "emp"
+            ? synth.tokenName
+            : formatLSPName(synth.longTokenName)}
+        </NameHeading>
+
+        <span>{synth.shortDescription}</span>
       </div>
     </NameWrapper>
   );
@@ -118,20 +125,13 @@ const columns = [
   {
     Header: "Name",
     // eslint-disable-next-line react/display-name
-    accessor: (row) => (
-      <Name
-        logo={row.logo}
-        tokenName={row.tokenName}
-        shortDescription={row.shortDescription}
-        category={row.category}
-      />
-    ),
+    accessor: (row) => <Name synth={row} />,
   },
   {
     Header: "Category",
     // set the Id here so we can reference it safely when filtering™
     id: "category",
-    accessor: (row: Emp) => capitalize(row.category),
+    accessor: (row) => capitalize(row.category),
     filter: "category",
   },
 
@@ -165,7 +165,7 @@ const columns = [
       </span>
     ),
   },
-] as Column<Emp>[];
+] as Column<Synth<{ type: ContractType }>>[];
 
 function activeSynthsFilter(
   rows: TRow[],
@@ -175,12 +175,18 @@ function activeSynthsFilter(
   if (!globalFilterValue) {
     return rows;
   }
-  return rows.filter((row) => !(row.original as Emp).expired);
+  return rows.filter(
+    (row) =>
+      (row.original as Synth<{ type: ContractType }>).expirationTimestamp >
+      DateTime.now().toSeconds()
+  );
 }
 type Props = {
-  data: Emp[];
+  data: Synth<{ type: ContractType }>[];
   hasFilters?: boolean;
 };
+
+const sortedCategories = CATEGORIES.slice().sort();
 export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
   const tableData = useMemo(
     () => data.sort((a, b) => formatWeiString(b.tvl) - formatWeiString(a.tvl)),
@@ -210,8 +216,16 @@ export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
     // @ts-expect-error React table options change based on the plugin used, but its not typed correctly so TS doesn't pick it up.
     setGlobalFilter,
   } = useTable(
-    //@ts-expect-error React table options change based on the plugin used, but its not typed correctly so TS doesn't pick it up.
-    { data: tableData, columns, filterTypes, globalFilter: activeSynthsFilter },
+    {
+      data: tableData,
+      columns,
+      filterTypes,
+      globalFilter: activeSynthsFilter,
+      //@ts-expect-error React table options change based on the plugin used, but its not typed correctly so TS doesn't pick it up.
+      initialState: { globalFilter: true },
+      autoResetFilters: false,
+      autoResetGlobalFilter: false,
+    },
     useFilters,
     useGlobalFilter
   );
@@ -224,7 +238,7 @@ export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
         {hasFilters && (
           <ControlsWrapper>
             <ButtonsWrapper>
-              {CATEGORIES.map((category) => {
+              {sortedCategories.map((category) => {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const isActive = (state as any).filters.some(
                   ({ id, value }: { id: string; value: string }) =>
@@ -255,7 +269,7 @@ export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
                   }
                 }}
               />
-              <span>Hide Expired</span>
+              <span>Show Expired</span>
             </ActiveFilterWrapper>
           </ControlsWrapper>
         )}

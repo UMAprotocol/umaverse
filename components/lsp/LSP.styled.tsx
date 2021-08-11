@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import { QUERIES } from "../../utils";
 import { BaseButton } from "../Button";
+import MetaMaskIcon from "../../public/icons/metamask.svg";
 
 export const iconStyles = {
   position: "absolute",
@@ -10,14 +11,19 @@ export const iconStyles = {
 } as React.CSSProperties;
 
 export const Wrapper = styled.div`
-  box-shadow: 0px 4px 4px 0px #00000040;
+  box-shadow: 0px 0px 35px 0px rgba(39, 37, 40, 0.1);
   background: var(--white);
   max-width: 400px;
   width: 100%;
   font-family: "Halyard Display";
-
-  @media ${QUERIES.tabletAndUp} {
-    margin-left: 92px;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+  @media ${QUERIES.laptopAndUp} {
+    margin-top: 2rem;
+    margin-left: 2rem;
+    margin-right: 0;
   }
 `;
 
@@ -27,15 +33,15 @@ export const FormRow = styled.div`
   div {
     margin: 0 5px;
     > div {
-      &:nth-child(1) {
+      &:nth-of-type(1) {
         button {
           span {
             margin-left: 50px;
           }
         }
-        @media ${QUERIES.tabletAndUp} {
+        /* @media ${QUERIES.tabletAndUp} {
           margin-left: 92px;
-        }
+        } */
       }
       &:nth-of-type(2) {
         flex-grow: 16;
@@ -113,10 +119,10 @@ export const DownArrowWrapper = styled.div`
     margin-left: 184px;
   }
   svg {
-    margin-top: 9px;
-    margin-left: 9px;
+    margin-top: 7px;
+    margin-left: 7px;
     fill: #272528;
-    width: 100%;
+    width: 16px;
   }
 `;
 
@@ -134,8 +140,12 @@ export const ButtonWrapper = styled.div`
   padding: 1rem;
 `;
 
-export const MintButton = styled(BaseButton)`
-  background-color: var(--primary-700);
+interface ILSPButton {
+  showDisabled?: boolean;
+}
+
+export const MintButton = styled(BaseButton)<ILSPButton>`
+  background-color: var(--primary, 500);
   color: var(--white);
   text-align: center;
   border-radius: 8px;
@@ -144,6 +154,7 @@ export const MintButton = styled(BaseButton)`
   font-family: inherit;
   padding: 0.75rem 0;
   width: 100%;
+  opacity: ${(props) => (props.showDisabled ? "0.5" : "1")};
   @media ${QUERIES.laptopAndUp} {
     width: 370px;
   }
@@ -152,15 +163,15 @@ export const MintButton = styled(BaseButton)`
 export const SettleWrapper = styled.div`
   height: 100%;
   min-height: 400px;
-  border-top: 4px solid var(--primary-700);
+  border-top: 4px solid #ff4b4b;
   text-align: center;
   background: var(--gray-300);
 `;
 
-export const SettleButton = styled(BaseButton)`
+export const SettleButton = styled(BaseButton)<ILSPButton>`
   width: 90%;
   margin: 0 auto;
-  background-color: var(--primary-700);
+  background-color: #ff4b4b;
   color: var(--white);
   text-align: center;
   border-radius: 8px;
@@ -168,6 +179,8 @@ export const SettleButton = styled(BaseButton)`
   font-weight: 600;
   font-family: inherit;
   padding: 0.66rem 0;
+  opacity: ${(props) => (props.showDisabled ? "0.5" : "1")};
+  cursor: ${(props) => (props.showDisabled ? "not-allowed" : "pointer")};
   @media ${QUERIES.laptopAndUp} {
     width: 380px;
   }
@@ -191,4 +204,66 @@ export const SettleText = styled.div`
 
 export const TimeRemaining = styled.div`
   font-size: 0.875rem;
+`;
+
+export const CollateralWrapper = styled.div`
+  width: 125px;
+  & > div {
+    padding: 15px;
+    display: flex;
+    border-radius: 6px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: transparent;
+    min-width: 100%;
+    background-color: #f1f0f0;
+    color: #919191;
+    padding-left: 1.25rem;
+  }
+`;
+
+export const SettleTokenBalance = styled.div`
+  margin: 0.5rem auto;
+  font-weight: 600;
+`;
+
+export const ConnectWalletWrapper = styled.div`
+  min-height: 400px;
+`;
+
+export const ConnectWalletHeader = styled.div`
+  width: 90%;
+  margin: 1rem auto 2rem;
+`;
+
+export const MetaMaskButton = styled(BaseButton)`
+  width: 90%;
+  margin: 0 auto;
+  background-color: #fbfafb;
+  color: #000;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 300;
+  font-family: inherit;
+  padding: 1rem 0;
+  border: 1px solid hsla(0, 0%, 77%, 1);
+  text-indent: 64px;
+`;
+
+export const StyledMetaMaskIcon = styled(MetaMaskIcon)`
+  width: 32px;
+  height: 32px;
+  margin-left: 34px;
+  margin-top: 10px;
+  position: absolute;
+`;
+
+export const LSPFormError = styled.div`
+  color: #ff4b4b;
+  font-size: 1rem;
+  padding: 0.25rem 0.5rem;
+  margin: 0.5rem 1rem;
+  background-color: #fff5f7;
+  border: 1px solid #ff4b4b;
+  border-radius: 8px;
 `;
