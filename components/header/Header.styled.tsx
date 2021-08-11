@@ -66,6 +66,7 @@ export const LinkList = styled.ol`
       margin-right: 32px;
     }
   }
+  /* width: 100%; */
 `;
 
 export const ListItem = styled.li`
@@ -74,6 +75,15 @@ export const ListItem = styled.li`
 
   &:hover {
     box-shadow: 0px 3px 0px 0px var(--primary);
+  }
+  @media ${QUERIES.tabletAndDown} {
+    width: 95%;
+    margin: 0.5rem auto;
+    box-shadow: 0px 2px 0px 0px var(--gray-300);
+    padding-bottom: 0.5rem;
+    &:hover {
+      box-shadow: none;
+    }
   }
 `;
 
@@ -140,6 +150,7 @@ export const DropdownContent = styled.div`
     transform: translateX(0);
     position: relative;
     width: 100%;
+    background-color: #ffffff;
   }
   &.open {
     display: block;
