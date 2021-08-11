@@ -144,6 +144,11 @@ const SOCIAL_LINKS = [
     alt: "twitter",
   },
   {
+    href: "https://discourse.umaproject.org/",
+    iconSrc: "/icons/discourse.svg",
+    alt: "discourse",
+  },
+  {
     href: "https://discord.com/invite/jsb9XQJ",
     iconSrc: "/icons/discord.svg",
     alt: "discord",
