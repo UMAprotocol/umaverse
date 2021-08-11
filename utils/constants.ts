@@ -43,8 +43,8 @@ export const CATEGORIES_PLACEHOLDERS: Record<Category, string> = {
   "KPI Option": "/placeholders/kpi-option.svg",
   "Synthetic Asset": "/placeholders/synthetic-asset.svg",
   Option: "/placeholders/option.svg",
-  "Range Token": "/placeholders/synthetic-asset.svg",
-  "Success Token": "/placeholders/synthetic-asset.svg",
+  "Range Token": "/placeholders/range-token.svg",
+  "Success Token": "/placeholders/success-token.svg",
 };
 
 export const KNOWN_LSP_ADDRESS = "0x372802d8A2D69bB43872a1AABe2bd403a0FafA1F";

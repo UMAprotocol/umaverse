@@ -27,16 +27,23 @@ export const Information: React.FC<Props> = ({ synth }) => {
             {synth.type == "emp" ? synth.tokenName : synth.longTokenName}
           </div>
         </Row>
-        <Row>
-          <div>Symbol:</div>
-          <div>
-            {synth.type == "emp"
-              ? synth.tokenSymbol
-              : synth.pairName ||
-                `${synth.longTokenSymbol} - ${synth.shortTokenSymbol}`}
-          </div>
-        </Row>
-
+        {synth.type == "emp" ? (
+          <Row>
+            <div>Symbol:</div>
+            <div>{synth.tokenSymbol}</div>
+          </Row>
+        ) : (
+          <>
+            <Row>
+              <div>Long Token Symbol:</div>
+              <div>{synth.longTokenSymbol}</div>
+            </Row>
+            <Row>
+              <div>Short Token Symbol:</div>
+              <div>{synth.shortTokenSymbol}</div>
+            </Row>
+          </>
+        )}
         {synth.type === "emp" ? (
           <Row>
             <div>Address:</div>
@@ -69,7 +76,6 @@ export const Information: React.FC<Props> = ({ synth }) => {
             </Row>
           </>
         )}
-
         <Row>
           <div>Category:</div>
           <div>{synth.category}</div>

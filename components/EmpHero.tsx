@@ -56,7 +56,20 @@ export const EmpHero: React.FC<Props> = ({ synth, change24h }) => {
           </CardHeading>
           <Value
             value={change24h}
-            format={(v) => <span style={{ color: "var(--green)" }}>{v} %</span>}
+            format={(v) => (
+              <span
+                style={{
+                  color:
+                    v > 0
+                      ? "var(--green)"
+                      : v < 0
+                      ? "var(--primary)"
+                      : "var(--gray-700)",
+                }}
+              >
+                {v} %
+              </span>
+            )}
           />
         </CardContent>
       </Card>
