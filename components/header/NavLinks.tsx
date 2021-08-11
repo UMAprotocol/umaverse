@@ -1,14 +1,8 @@
 import React from "react";
 import Image from "next/image";
 import { Link } from "../Link";
-import DropdownMenu from "./DropdownMenu";
-import {
-  LinkList,
-  ListItem,
-  SocialsList,
-  ImageItem,
-  Dropdown,
-} from "./Header.styled";
+import DropdownMenu, { IDropdownMenuLinks } from "./DropdownMenu";
+import { LinkList, ListItem, SocialsList, ImageItem } from "./Header.styled";
 
 const NavLinks = () => {
   return (
@@ -36,6 +30,29 @@ const NavLinks = () => {
   );
 };
 
+const productsDropdownLinks: IDropdownMenuLinks[] = [
+  {
+    href: "https://umaproject.org/optimistic-oracle.html",
+    name: "Optimistic Oracle",
+  },
+  {
+    href: "https://umaproject.org/lsp.html",
+    name: "Long Short Pair (LSP)",
+  },
+  {
+    href: "https://umaproject.org/call-put.html",
+    name: "Call/Put Options",
+  },
+  {
+    href: "https://umaproject.org/range-tokens.html",
+    name: "Range Tokens",
+  },
+  {
+    href: "https://umaproject.org/kpi-options.html",
+    name: "KPI Options",
+  },
+];
+
 const HEADER_LINKS = [
   {
     key: "Getting Started",
@@ -47,7 +64,7 @@ const HEADER_LINKS = [
   },
   {
     key: "Products",
-    component: <DropdownMenu />,
+    component: <DropdownMenu links={productsDropdownLinks} />,
   },
   {
     key: "Projects",

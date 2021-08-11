@@ -136,6 +136,7 @@ export const DropdownContent = styled.div`
   margin-top: 8px;
   &.open {
     display: block;
+    z-index: 999999;
     /* @include breakpoint-down(tablet) {
         display: block;
         width: 100%;
@@ -155,6 +156,7 @@ export const DropdownContent = styled.div`
     display: block;
     text-align: left;
     font-weight: 400;
+    z-index: 99999;
     border-bottom: 1px solid #e5e5e5;
     &:hover {
       background-color: #f5f5f5;

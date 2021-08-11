@@ -1,19 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, FC, useRef } from "react";
 import { Dropdown, DropdownContent } from "./Header.styled";
 import { BaseButton } from "../Button";
 import { Link } from "../Link";
+import useUserClickedOutsideElement from "../../hooks/useUserClickedOutsideElement";
 
-const DropdownMenu = () => {
+interface Props {
+  links: IDropdownMenuLinks[];
+}
+
+export interface IDropdownMenuLinks {
+  href: string;
+  name: string;
+}
+
+const DropdownMenu: FC<Props> = ({ links }) => {
   const [open, setOpen] = useState(false);
 
+  const dropdownRef = useRef(null);
+  useUserClickedOutsideElement(dropdownRef, () => setOpen(false));
   return (
-    <Dropdown>
+    <Dropdown ref={dropdownRef}>
       <BaseButton onClick={() => setOpen((prevState) => !prevState)}>
         Products
       </BaseButton>
       <DropdownContent className={open ? "open" : ""}>
-        <Link href="/">Optimistic Oracle</Link>
-        <Link href="/">Long Short Pair (LSP)</Link>
+        {links.map(({ href, name }) => {
+          return (
+            <div key={name + href} onClick={() => setOpen(false)}>
+              <Link target="_blank" href={href}>
+                {name}
+              </Link>
+            </div>
+          );
+        })}
       </DropdownContent>
     </Dropdown>
   );
