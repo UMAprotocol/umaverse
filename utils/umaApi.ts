@@ -104,6 +104,12 @@ interface LspState {
   type: "lsp";
   pairName: string;
 }
+export type EmpStats = {
+  id: string;
+  address: string;
+  tvl: string;
+  tvm: string;
+};
 export type ContractType = "emp" | "lsp";
 export type SynthState<T extends { type: ContractType }> = T extends {
   type: "emp";
