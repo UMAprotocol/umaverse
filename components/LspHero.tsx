@@ -66,7 +66,7 @@ export const LspHero: React.FC<Props> = ({
         {isConnected && (
           <BalancesWrapper>
             <Balance>
-              <span>Long</span>
+              <span>Long Token</span>
               <div>
                 {ethers.utils.formatUnits(
                   longTokenBalance.toString(),
@@ -76,7 +76,7 @@ export const LspHero: React.FC<Props> = ({
               </div>
             </Balance>
             <Balance>
-              <span>Short</span>
+              <span>Short Token</span>
               <div>
                 {ethers.utils.formatUnits(
                   shortTokenBalance.toString(),

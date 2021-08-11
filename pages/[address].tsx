@@ -212,6 +212,8 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
     data.type,
     refetchLongTokenBalance,
     refetchShortTokenBalance,
+    // @ts-expect-error TS complains that data.collateralToken is not defined on EMPs. But we do a type check above so not an issue.
+    data.collateralToken,
   ]);
 
   return (
@@ -436,6 +438,7 @@ const ExternalLink = styled(UnstyledExternalLink)`
 `;
 
 const TableWrapper = styled.section`
+  padding-top: 40px;
   & > ${SecondaryHeading} {
     padding: 15px;
   }

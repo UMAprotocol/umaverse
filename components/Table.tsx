@@ -185,6 +185,8 @@ type Props = {
   data: Synth<{ type: ContractType }>[];
   hasFilters?: boolean;
 };
+
+const sortedCategories = CATEGORIES.slice().sort();
 export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
   const tableData = useMemo(
     () => data.sort((a, b) => formatWeiString(b.tvl) - formatWeiString(a.tvl)),
@@ -236,7 +238,7 @@ export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
         {hasFilters && (
           <ControlsWrapper>
             <ButtonsWrapper>
-              {CATEGORIES.map((category) => {
+              {sortedCategories.map((category) => {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const isActive = (state as any).filters.some(
                   ({ id, value }: { id: string; value: string }) =>
