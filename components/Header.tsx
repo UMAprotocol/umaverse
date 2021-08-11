@@ -103,16 +103,20 @@ const Content = styled(motion(DialogContent))`
 
 const HEADER_LINKS = [
   {
+    href: "https://docs.umaproject.org/build-walkthrough/build-process",
+    name: "Getting Started",
+  },
+  {
     href: "/",
+    name: "Products",
+  },
+  {
+    href: "https://projects.umaproject.org/",
     name: "Projects",
   },
   {
-    href: "https://docs.umaproject.org/build-walkthrough/build-process",
-    name: "Build",
-  },
-  {
-    href: "https://docs.umaproject.org",
-    name: "Learn",
+    href: "https://docs.umaproject.org/",
+    name: "Docs",
   },
   {
     href: "https://vote.umaproject.org/",
