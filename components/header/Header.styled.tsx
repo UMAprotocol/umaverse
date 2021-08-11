@@ -118,8 +118,8 @@ export const Dropdown = styled.div`
   }
   &:hover {
     button {
-      text-decoration: underline;
-      text-decoration-color: #ff4a4a;
+      /* text-decoration: underline; */
+      /* text-decoration-color: #ff4a4a; */
       text-underline-offset: 4px;
     }
   }

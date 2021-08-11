@@ -1,16 +1,21 @@
 import React from "react";
 import Image from "next/image";
 import { Link } from "../Link";
-import { LinkList, ListItem, SocialsList, ImageItem } from "./Header.styled";
+import {
+  LinkList,
+  ListItem,
+  SocialsList,
+  ImageItem,
+  Dropdown,
+} from "./Header.styled";
+import { BaseButton } from "../Button";
 
 const NavLinks = () => {
   return (
     <>
       <LinkList>
-        {HEADER_LINKS.map((link) => (
-          <ListItem key={link.name}>
-            <Link href={link.href}>{link.name}</Link>
-          </ListItem>
+        {HEADER_LINKS.map(({ key, component }) => (
+          <ListItem key={key}>{component}</ListItem>
         ))}
       </LinkList>
       <SocialsList>
@@ -33,30 +38,39 @@ const NavLinks = () => {
 
 const HEADER_LINKS = [
   {
-    href: "https://docs.umaproject.org/build-walkthrough/build-process",
-    name: "Getting Started",
+    key: "Getting Started",
+    component: (
+      <Link href="https://docs.umaproject.org/build-walkthrough/build-process">
+        Getting Started
+      </Link>
+    ),
   },
   {
-    href: "/",
-    name: "Products",
+    key: "Products",
+    component: (
+      <Dropdown>
+        <BaseButton>Products</BaseButton>
+      </Dropdown>
+    ),
   },
   {
-    href: "https://projects.umaproject.org/",
-    name: "Projects",
+    key: "Projects",
+    component: <Link href="https://projects.umaproject.org/">Projects</Link>,
   },
   {
-    href: "https://docs.umaproject.org/",
-    name: "Docs",
+    key: "Docs",
+    component: <Link href="https://docs.umaproject.org/">Docs</Link>,
   },
   {
-    href: "https://vote.umaproject.org/",
-    name: "Vote",
+    key: "Vote",
+    component: <Link href="https://vote.umaproject.org/">Vote</Link>,
   },
   {
-    href: "https://claim.umaproject.org/",
-    name: "Rewards",
+    key: "Rewards",
+    component: <Link href="https://claim.umaproject.org/">Rewards</Link>,
   },
 ];
+
 const SOCIAL_LINKS = [
   {
     href: "https://medium.com/uma-project",
