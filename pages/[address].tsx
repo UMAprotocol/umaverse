@@ -30,6 +30,7 @@ import {
   formatWeiString,
   contentfulClient,
 } from "../utils";
+import { nDaysAgo } from "../utils/time";
 import LeftArrow from "../public/icons/arrow-left.svg";
 import UnstyledRightArrow from "../public/icons/arrow-right.svg";
 import UnstyledExternalLink from "../public/icons/external-link.svg";
@@ -40,11 +41,13 @@ import {
   ContractType,
   fetchCompleteSynth,
   formatLSPName,
+  SynthStats,
 } from "../utils/umaApi";
 import useERC20ContractValues from "../hooks/useERC20ContractValues";
 import { useConnection } from "../hooks";
 import { ethers } from "ethers";
 import createERC20ContractInstance from "../components/lsp/createERC20ContractInstance";
+import { useMemo } from "react";
 
 const toBN = ethers.BigNumber.from;
 
@@ -66,6 +69,7 @@ const ActionWrapper = styled(UnstyledLink)`
 
   margin-bottom: 16px;
 `;
+const oneDayAgo = nDaysAgo(1);
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
   const { address } = ctx.params as { address: string };
@@ -84,7 +88,15 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
     address,
   ])) as SynthState<{ type: ContractType }>;
 
-  const stats = await client.getSynthStats(address);
+  await queryClient.prefetchQuery(
+    ["synth stats", address],
+    async () => await client.getSynthStats(address)
+  );
+
+  const stats = (await queryClient.getQueryData([
+    "synth stats",
+    address,
+  ])) as SynthStats;
 
   const apiData = {
     ...stats,
@@ -116,13 +128,30 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
     async () => await client.getTvl(address)
   );
 
+  await queryClient.prefetchQuery(["tvl change", address], async () => {
+    const lastTvl = await client.getLatestTvl(address);
+    const [{ value: ydayTvl = NaN } = {}] = await client.request(
+      "global/tvlHistorySlice",
+      address,
+      Math.floor(oneDayAgo().toSeconds())
+    );
+    const tvl24hChange = !Number.isNaN(ydayTvl)
+      ? Math.round(
+          ((formatWeiString(lastTvl) - formatWeiString(ydayTvl)) /
+            formatWeiString(ydayTvl)) *
+            1000
+        ) / 10
+      : 0;
+
+    return tvl24hChange;
+  });
+
   return {
     props: {
-      data: data,
+      data,
       relatedSynths: relatedSynths
         .sort((a, b) => formatWeiString(b.tvl) - formatWeiString(a.tvl))
         .slice(0, 5),
-      change24h: 3,
       dehydratedState: dehydrate(queryClient),
     },
     revalidate: 60 * 2,
@@ -156,7 +185,7 @@ type Props =
       change24h: number;
     };
 
-const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
+const SynthPage: React.FC<Props> = ({ data, relatedSynths }) => {
   const { account = "", signer, isConnected } = useConnection();
   const formattedLogo = data?.logo?.fields.file.url
     ? formatContentfulUrl(data.logo.fields.file.url)
@@ -166,10 +195,37 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
     ["synth state", data.address],
     async () => await client.getState<typeof data>(data.address)
   );
+  const { data: synthStats } = useQuery(
+    ["synth stats", data.address],
+    async () => await client.getSynthStats(data.address)
+  );
   const { data: tvlHistory, isLoading: isLoadingTvl } = useQuery(
     ["tvl history", data.address],
     async () => await client.getTvl(data.address)
   );
+
+  const { data: change24h } = useQuery(
+    ["tvl change", data.address],
+    async () => {
+      const lastTvl = await client.getLatestTvl(data.address);
+      const [{ value: ydayTvl = NaN } = {}] = await client.request(
+        "global/tvlHistorySlice",
+        data.address,
+        Math.floor(oneDayAgo().toSeconds())
+      );
+      const tvl24hChange = !Number.isNaN(ydayTvl)
+        ? Math.round(
+            ((formatWeiString(lastTvl) - formatWeiString(ydayTvl)) /
+              formatWeiString(ydayTvl)) *
+              1000
+          ) / 10
+        : 0;
+
+      return tvl24hChange;
+    },
+    { enabled: synthStats != null }
+  );
+
   const isExpired =
     DateTime.now().toSeconds() > Number(synthState?.expirationTimestamp);
 
@@ -192,6 +248,13 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
     account,
     signer ?? null
   );
+
+  const freshData = useMemo(() => {
+    if (synthState && synthStats) {
+      return { ...synthStats, ...synthState };
+    }
+    return data;
+  }, [data, synthState, synthStats]);
 
   useEffect(() => {
     if (signer && isConnected && account && data.type === "lsp") {
@@ -237,12 +300,15 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
           <StyledLiveIndicator isLive={!isExpired} />
         </HeroContentWrapper>
         {data.type === "emp" ? (
-          <EmpHero synth={data} change24h={change24h} />
+          <EmpHero
+            synth={freshData as Synth<{ type: "emp" }>}
+            change24h={change24h ?? 0}
+          />
         ) : (
           <LspHero
             longTokenBalance={longTokenBalance}
             shortTokenBalance={shortTokenBalance}
-            synth={data}
+            synth={freshData as Synth<{ type: "lsp" }>}
             collateralBalance={collateralBalance}
           />
         )}
@@ -276,9 +342,7 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths, change24h }) => {
             />
           ) : null}
         </AsideWrapper>
-        <Information
-          synth={{ ...data, ...synthState } as Synth<{ type: ContractType }>}
-        />
+        <Information synth={freshData as Synth<{ type: ContractType }>} />
         <AsideWrapper>
           {data.type === "emp" ? (
             <>
