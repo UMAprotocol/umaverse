@@ -54,12 +54,4 @@ export const Layout: React.FC<Props> = ({
   </StyledLayout>
 );
 
-const StyledLayout = styled.div`
-  // Do not change these properties. Required for dropdown in the navbar to overlay the input in this section
-  section {
-    @media ${QUERIES.desktopAndUp} {
-      position: relative;
-      z-index: -1;
-    }
-  }
-`;
+const StyledLayout = styled.div``;

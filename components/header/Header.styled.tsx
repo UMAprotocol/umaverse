@@ -34,7 +34,6 @@ export const CloseButton = styled(BaseButton)`
 `;
 
 export const Wrapper = styled.header`
-  position: sticky;
   height: 100px;
   padding: 40px 0 30px;
   @media ${QUERIES.laptopAndUp} {
@@ -145,7 +144,7 @@ export const DropdownContent = styled.div`
   min-width: 260px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
-  transform: translateX(-60px);
+  /* transform: translateX(-60px); */
   margin-top: 8px;
   @media ${QUERIES.tabletAndDown} {
     transform: translateX(0);
