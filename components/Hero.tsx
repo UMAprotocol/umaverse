@@ -18,7 +18,7 @@ import {
   formatContentfulUrl,
   CATEGORIES_PLACEHOLDERS,
 } from "../utils";
-import { Emp } from "../utils/umaApi";
+import { AnySynth } from "../utils/umaApi";
 
 type HeroProps = {
   topAction?: React.ReactNode;
@@ -27,10 +27,10 @@ type HeroProps = {
 export const Hero: React.FC<HeroProps> = ({ children, topAction = null }) => {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const searchMap = queryClient.getQueryData<Emp[]>("all synths");
-  const [matches, setMatches] = useState<Emp[]>([]);
+  const searchMap = queryClient.getQueryData<AnySynth[]>("all synths");
+  const [matches, setMatches] = useState<AnySynth[]>([]);
 
-  const onSelectAction = (selectedSynth?: Emp | null) => {
+  const onSelectAction = (selectedSynth?: AnySynth | null) => {
     if (!selectedSynth) {
       return;
     }
@@ -38,8 +38,8 @@ export const Hero: React.FC<HeroProps> = ({ children, topAction = null }) => {
   };
   // we use this to hook into downshift state changes and route to a new page when an item is selected.
   const stateReducer = (
-    _state: UseComboboxState<Emp>,
-    actionAndChanges: UseComboboxStateChangeOptions<Emp>
+    _state: UseComboboxState<AnySynth>,
+    actionAndChanges: UseComboboxStateChangeOptions<AnySynth>
   ) => {
     const { type, changes } = actionAndChanges;
     switch (type) {
@@ -59,7 +59,7 @@ export const Hero: React.FC<HeroProps> = ({ children, topAction = null }) => {
     getItemProps,
     getInputProps,
     getComboboxProps,
-  } = useCombobox<Emp>({
+  } = useCombobox<AnySynth>({
     items: matches,
     itemToString: (item) => item?.address ?? "",
     stateReducer,
@@ -74,11 +74,16 @@ export const Hero: React.FC<HeroProps> = ({ children, topAction = null }) => {
       setMatches(
         matchSorter(searchMap, inputValue, {
           keys: [
-            "tokenName",
-            "collateralName",
-            "tokenSymbol",
-            "collateralSymbol",
-            "address",
+            "pairName", // LSP
+            "longTokenName", // LSP
+            "shortTokenName", // LSP
+            "tokenName", // EMP
+            "collateralName", // LSP & EMP
+            "longTokenSymbol", // LSP
+            "shortTokenSymbol", // LSP
+            "tokenSymbol", // EMP
+            "collateralSymbol", // LSP & EMP
+            "address", // LSP & EMP
           ],
         }).slice(0, 6)
       );
@@ -135,7 +140,14 @@ export const Hero: React.FC<HeroProps> = ({ children, topAction = null }) => {
                         height="35"
                         layout="fixed"
                       />
-                      <Name>{match.tokenName}</Name>
+                      <Name>
+                        {
+                          match.type === "emp"
+                            ? match.tokenName
+                            : match.pairName ||
+                              match.longTokenName /* Early LSPs didn't have a pairName */
+                        }
+                      </Name>
                     </div>
                     <div>{match.address}</div>
                     <Spacer />
