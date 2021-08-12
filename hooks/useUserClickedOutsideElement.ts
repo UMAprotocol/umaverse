@@ -8,9 +8,6 @@ export default function useUserClickedOutsideElement(
   callback: () => void
 ) {
   useEffect(() => {
-    /**
-     * Alert if clicked on outside of element
-     */
     function handleClickOutside(event: Event) {
       if (ref && ref.current && !ref.current.contains(event.target as Node)) {
         callback();
