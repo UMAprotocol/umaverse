@@ -3,7 +3,6 @@ import Head from "next/head";
 import Header from "./header";
 import styled from "@emotion/styled";
 import { Footer } from "./Footer";
-import { QUERIES } from "../utils";
 
 type Props = {
   title?: string;
