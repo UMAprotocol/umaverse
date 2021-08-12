@@ -66,7 +66,6 @@ export const LinkList = styled.ol`
       margin-right: 32px;
     }
   }
-  /* width: 100%; */
 `;
 
 export const ListItem = styled.li`
@@ -115,7 +114,7 @@ export const Dropdown = styled.div`
     font-size: 16px;
     border: none;
     outline: none;
-    color: #000;
+    color: var(--black);
     font-weight: 600;
     background-color: inherit;
     font-family: inherit; /* Important for vertical align on mobile phones */
@@ -142,7 +141,7 @@ export const Dropdown = styled.div`
 export const DropdownContent = styled.div`
   display: none;
   position: absolute;
-  background-color: #f9f9f9;
+  background-color: var(--gray-400);
   min-width: 260px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
@@ -152,7 +151,7 @@ export const DropdownContent = styled.div`
     transform: translateX(0);
     position: relative;
     width: 100%;
-    background-color: #ffffff;
+    background-color: var(--white);
   }
   &.open {
     display: block;
@@ -165,18 +164,18 @@ export const DropdownContent = styled.div`
 
   a {
     float: none;
-    color: #000;
+    color: var(--black);
     padding: 12px 16px;
     text-decoration: none;
     display: block;
     text-align: left;
     font-weight: 400;
     z-index: 99999;
-    border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid var(--gray-500);
 
     &:hover {
-      background-color: #f5f5f5;
-      color: #ff4a4a;
+      background-color: var(--gray-300);
+      color: var(--primary);
     }
     &:last-of-type {
       border-bottom: none;
@@ -184,43 +183,10 @@ export const DropdownContent = styled.div`
   }
   > div {
     @media ${QUERIES.tabletAndDown} {
-      border-bottom: 1px solid #e5e5e5;
+      border-bottom: 1px solid var(--gray-500);
     }
   }
 `;
-
-/*
-<li class="dropdown-item">
-<div class="dropdown">
-  <button class="drop-btn">
-    Products
-    <i class="fas fa-angle-down angle-down"></i>
-  </button>
-  <div class="dropdown-content">
-    <a href="optimistic-oracle.html">Optimistic Oracle</a>
-    <a href="lsp.html">Long Short Pair (LSP)</a>
-    <a href="call-put.html">Call/Put Options</a>
-    <a href="range-tokens.html">Range Tokens</a>
-    <a href="kpi-options.html">KPI Options</a>
-  </div>
-</div>
-</li>
-<li class="dropdown-item-mobile">
-<div class="dropdown-mobile">
-  <button class="drop-btn-mobile">
-    Products
-    <i class="fas fa-angle-down angle-down-mobile"></i>
-  </button>
-  <div class="dropdown-content-mobile">
-    <a href="optimistic-oracle.html">Optimistic Oracle</a>
-    <a href="lsp.html">Long Short Pair (LSP)</a>
-    <a href="call-put.html">Call/Put Options</a>
-    <a href="range-tokens.html">Range Tokens</a>
-    <a href="kpi-options.html">KPI Options</a>
-  </div>
-</div>
-</li>
-*/
 
 export const MobileNavigation = motion(styled(Navigation)`
   display: revert;
