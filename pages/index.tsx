@@ -19,7 +19,6 @@ import {
   QUERIES,
   errorFilter,
   formatWeiString,
-  ContentfulSynth,
 } from "../utils";
 
 import {
@@ -88,10 +87,7 @@ const IndexPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
   );
   const { data: totalTvm } = useQuery(
     "total tvm",
-    async () =>
-      await client.getLatestTvm(
-        cmsSynths.map((synth: ContentfulSynth) => synth.address)
-      )
+    async () => await client.getLatestTvm()
   );
   const { data: totalTvlChange } = useQuery(
     "total tvl change",
