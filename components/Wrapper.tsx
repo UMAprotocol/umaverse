@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { QUERIES } from "../utils";
 
 type Size = "xl" | "lg" | "md" | "sm";
 type Props = {
