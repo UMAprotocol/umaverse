@@ -101,6 +101,7 @@ export const SocialsList = styled(LinkList)`
     margin-right: 32px;
   }
   margin-top: 16px;
+  margin-left: 8px;
   @media ${QUERIES.laptopAndUp} {
     margin-left: 85px;
     margin-top: 0;
@@ -123,16 +124,17 @@ export const Dropdown = styled.div`
     display: inline-block;
     height: 10px;
     margin-left: 6px;
+    svg {
+      height: 12px;
+      margin-left: 4px;
+      @media ${QUERIES.tabletAndDown} {
+        float: right;
+      }
+    }
 
     @media ${QUERIES.tabletAndDown} {
       margin-left: 0;
-    }
-  }
-  &:hover {
-    button {
-      /* text-decoration: underline; */
-      /* text-decoration-color: #ff4a4a; */
-      text-underline-offset: 4px;
+      width: 100%;
     }
   }
 `;
@@ -159,15 +161,7 @@ export const DropdownContent = styled.div`
       display: block;
       width: 100%;
     }
-    /* @include breakpoint-down(tablet) {
-
-      } */
   }
-  /* @include breakpoint-down(tablet) {
-      display: inline-block;
-      width: 100%;
-      position: relative;
-    } */
 
   a {
     float: none;
@@ -179,12 +173,18 @@ export const DropdownContent = styled.div`
     font-weight: 400;
     z-index: 99999;
     border-bottom: 1px solid #e5e5e5;
+
     &:hover {
       background-color: #f5f5f5;
       color: #ff4a4a;
     }
     &:last-of-type {
       border-bottom: none;
+    }
+  }
+  > div {
+    @media ${QUERIES.tabletAndDown} {
+      border-bottom: 1px solid #e5e5e5;
     }
   }
 `;
