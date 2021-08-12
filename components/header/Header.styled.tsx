@@ -141,7 +141,7 @@ export const Dropdown = styled.div`
 export const DropdownContent = styled.div`
   display: none;
   position: absolute;
-  background-color: var(--gray-400);
+  background-color: #ffffff;
   min-width: 260px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
