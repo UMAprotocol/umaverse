@@ -145,7 +145,7 @@ export const Hero: React.FC<HeroProps> = ({ children, topAction = null }) => {
                           match.type === "emp"
                             ? match.tokenName
                             : match.pairName ||
-                              match.longTokenName /* Early LSPs didn't have a pairName*/
+                              match.longTokenName /* Early LSPs didn't have a pairName */
                         }
                       </Name>
                     </div>
