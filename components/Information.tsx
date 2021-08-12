@@ -94,10 +94,12 @@ export const Information: React.FC<Props> = ({ synth }) => {
         </Row>
         {synth.type === "emp" && (
           <>
-            <Row>
-              <div>Identifier Price:</div>
-              <div>{ethers.utils.formatEther(synth.identifierPrice)}</div>
-            </Row>
+            {synth.identifierPrice && (
+              <Row>
+                <div>Identifier Price:</div>
+                <div>{ethers.utils.formatEther(synth.identifierPrice)}</div>
+              </Row>
+            )}
             <Row>
               <div>Global Collateral Ratio:</div>
               <div>{ethers.utils.formatEther(synth.gcr)}</div>
