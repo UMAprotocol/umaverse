@@ -104,12 +104,6 @@ interface LspState {
   type: "lsp";
   pairName: string;
 }
-export type EmpStats = {
-  id: string;
-  address: string;
-  tvl: string;
-  tvm: string;
-};
 export type ContractType = "emp" | "lsp";
 export type SynthState<T extends { type: ContractType }> = T extends {
   type: "emp";
@@ -126,6 +120,8 @@ export type SynthStats = {
 export type Synth<T extends { type: ContractType }> = ContentfulSynth &
   SynthStats &
   SynthState<T> & { tvl24hChange: number };
+
+export type AnySynth = Synth<EmpState | LspState>;
 
 export type TimeSeries = {
   id: string;
@@ -201,10 +197,6 @@ export const client = {
   getTvl,
   getYesterdayPrice,
 };
-
-export type Emp = ContentfulSynth &
-  EmpStats &
-  EmpState & { tvl24hChange: number };
 
 export async function fetchCompleteSynth<T extends { type: ContractType }>(
   synth: ContentfulSynth
