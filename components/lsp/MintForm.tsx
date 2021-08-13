@@ -72,13 +72,6 @@ const MintForm: FC<Props> = ({
   const [userNeedsToApprove, setUserNeedsToApprove] = useState(false);
   const { signer } = useConnection();
 
-  useEffect(() => {
-    if (signer) {
-      setShowWallet(false);
-      checkIfUserHasToApprove();
-    }
-  }, [signer, setShowWallet]);
-
   const checkIfUserHasToApprove = useCallback(async () => {
     if (collateralERC20Contract) {
       const allowance = await collateralERC20Contract.allowance(
@@ -92,6 +85,13 @@ const MintForm: FC<Props> = ({
       }
     }
   }, [collateralERC20Contract, setUserNeedsToApprove]);
+
+  useEffect(() => {
+    if (signer) {
+      setShowWallet(false);
+      checkIfUserHasToApprove();
+    }
+  }, [signer, setShowWallet, checkIfUserHasToApprove]);
 
   useEffect(() => {
     try {
