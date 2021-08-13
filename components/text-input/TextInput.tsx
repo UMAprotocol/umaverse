@@ -11,6 +11,9 @@ interface Props {
   // Optional arg: If there is some side effect of the change to the input
   // Pass in this function and it will run when the value changes
   additionalEffects?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  // Optional arg: If you want to completely control what happens when this input changes
+  // Define this function. Note: value is not set here unless specified in the custom function.
+  customOnChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onKeyDown?: React.KeyboardEventHandler<HTMLInputElement> | undefined;
 }
 
@@ -23,6 +26,7 @@ const TextInput: FC<Props> = ({
   labelPlacement = "default" as LabelPlacement,
   width,
   additionalEffects,
+  customOnChange,
   onKeyDown,
 }) => {
   return (
@@ -33,9 +37,13 @@ const TextInput: FC<Props> = ({
           type="text"
           value={value}
           onChange={(e) => {
+            if (customOnChange) {
+              return customOnChange(e);
+            }
+
             setValue(e.target.value);
             if (additionalEffects) {
-              additionalEffects(e);
+              return additionalEffects(e);
             }
           }}
           onKeyDown={onKeyDown}
