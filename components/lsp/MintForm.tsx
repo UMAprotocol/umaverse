@@ -69,14 +69,29 @@ const MintForm: FC<Props> = ({
   const [longTokenAmount, setLongTokenAmount] = useState("");
   const [shortTokenAmount, setShortTokenAmount] = useState("");
   const [showMintError, setShowMintError] = useState("");
-
+  const [userNeedsToApprove, setUserNeedsToApprove] = useState(false);
   const { signer } = useConnection();
 
   useEffect(() => {
     if (signer) {
       setShowWallet(false);
+      checkIfUserHasToApprove();
     }
   }, [signer, setShowWallet]);
+
+  const checkIfUserHasToApprove = useCallback(async () => {
+    if (collateralERC20Contract) {
+      const allowance = await collateralERC20Contract.allowance(
+        address,
+        contractAddress
+      );
+      const balance = await collateralERC20Contract.balanceOf(address);
+      const hasToApprove = allowance.lt(balance);
+      if (hasToApprove) {
+        setUserNeedsToApprove(true);
+      }
+    }
+  }, [collateralERC20Contract, setUserNeedsToApprove]);
 
   useEffect(() => {
     try {
@@ -109,7 +124,7 @@ const MintForm: FC<Props> = ({
             INFINITE_APPROVAL_AMOUNT
           );
 
-          await approveTx.wait();
+          return approveTx.wait(1).then(() => setUserNeedsToApprove(false));
         }
         // Need to send the correct amount based on the collateral pair ** the amount
         // User has specified in the input.
@@ -195,7 +210,7 @@ const MintForm: FC<Props> = ({
                 }
               }}
             >
-              Mint
+              {userNeedsToApprove ? "Approve" : "Mint"}
             </MintButton>
           </ButtonWrapper>
         </>
