@@ -89,7 +89,6 @@ const MintForm: FC<Props> = ({
         setShowMintError("");
       }
     } catch (err) {
-      console.log("err", err);
       setShowMintError(INVALID_STRING_ERROR);
     }
   }, [longTokenAmount, shortTokenAmount, longTokenBalance, shortTokenBalance]);

@@ -93,7 +93,6 @@ const RedeemForm: FC<Props> = ({
         setShowRedeemError("");
       }
     } catch (err) {
-      console.log("err", err);
       setShowRedeemError(INVALID_STRING_ERROR);
     }
   }, [longTokenAmount, shortTokenAmount, longTokenBalance, shortTokenBalance]);
