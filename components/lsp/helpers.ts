@@ -43,8 +43,7 @@ export const onlyAllowNumbersAndDecimals = (
 export const INSUFFICIENT_COLLATERAL_ERROR =
   "You don't have enough collateral to mint.";
 
-export const INVALID_STRING_ERROR =
-  "String is not convertible to a wei number.";
+export const INVALID_STRING_ERROR = "String is not convertible to a number.";
 
 export const INSUFFICIENT_LONG_TOKENS =
   "You don't have enough long tokens to redeem.";
