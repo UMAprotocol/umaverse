@@ -16,6 +16,13 @@ import { useConnection } from "../../hooks";
 import ConnectWallet from "./ConnectWallet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDown } from "@fortawesome/free-solid-svg-icons";
+
+import {
+  INSUFFICIENT_LONG_TOKENS,
+  INSUFFICIENT_SHORT_TOKENS,
+  INVALID_STRING_ERROR,
+} from "./helpers";
+
 const toBN = ethers.BigNumber.from;
 const scaledToWei = toBN("10").pow("18");
 
@@ -57,7 +64,7 @@ const RedeemForm: FC<Props> = ({
   const [shortTokenAmount, setShortTokenAmount] = useState("");
 
   const { signer } = useConnection();
-  const [showRedeemError, setShowRedeemError] = useState(false);
+  const [showRedeemError, setShowRedeemError] = useState("");
 
   useEffect(() => {
     if (signer) {
@@ -66,19 +73,27 @@ const RedeemForm: FC<Props> = ({
   }, [signer]);
 
   useEffect(() => {
-    if (
-      (longTokenAmount &&
+    try {
+      if (
+        (longTokenAmount &&
+          toWeiSafe(longTokenAmount, Number(collateralDecimals)).gt(
+            longTokenBalance
+          )) ||
+        (shortTokenAmount &&
+          toWeiSafe(shortTokenAmount, Number(collateralDecimals)).gt(
+            shortTokenBalance
+          ))
+      ) {
         toWeiSafe(longTokenAmount, Number(collateralDecimals)).gt(
           longTokenBalance
-        )) ||
-      (shortTokenAmount &&
-        toWeiSafe(shortTokenAmount, Number(collateralDecimals)).gt(
-          shortTokenBalance
-        ))
-    ) {
-      setShowRedeemError(true);
-    } else if (showRedeemError) {
-      setShowRedeemError(false);
+        )
+          ? setShowRedeemError(INSUFFICIENT_LONG_TOKENS)
+          : setShowRedeemError(INSUFFICIENT_SHORT_TOKENS);
+      } else if (showRedeemError) {
+        setShowRedeemError("");
+      }
+    } catch (err) {
+      setShowRedeemError(INVALID_STRING_ERROR);
     }
   }, [longTokenAmount, shortTokenAmount, longTokenBalance, shortTokenBalance]);
 
@@ -138,15 +153,7 @@ const RedeemForm: FC<Props> = ({
               shortTokenBalance={shortTokenBalance}
               collateralDecimals={collateralDecimals}
             />
-            {showRedeemError && (
-              <LSPFormError>
-                {toWeiSafe(longTokenAmount, Number(collateralDecimals)).gt(
-                  longTokenBalance
-                )
-                  ? "You don't have enough long tokens to redeem."
-                  : "You don't have enough short tokens to redeem."}
-              </LSPFormError>
-            )}
+            {showRedeemError && <LSPFormError>{showRedeemError}</LSPFormError>}
           </TopFormWrapper>
           <DownArrowWrapper>
             <FontAwesomeIcon icon={faArrowDown} />
@@ -168,7 +175,7 @@ const RedeemForm: FC<Props> = ({
           </BottomFormWrapper>
           <ButtonWrapper>
             <MintButton
-              showDisabled={!signer || showRedeemError}
+              showDisabled={!signer || showRedeemError ? true : false}
               onClick={() => {
                 if (showRedeemError) return false;
                 if (signer) {

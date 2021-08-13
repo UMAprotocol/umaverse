@@ -18,6 +18,8 @@ import LongShort from "./LongShort";
 import Collateral from "./Collateral";
 import ConnectWallet from "./ConnectWallet";
 
+import { INSUFFICIENT_COLLATERAL_ERROR, INVALID_STRING_ERROR } from "./helpers";
+
 const toBN = ethers.BigNumber.from;
 const scaledToWei = toBN("10").pow("18");
 
@@ -66,7 +68,7 @@ const MintForm: FC<Props> = ({
   const [amount, setAmount] = useState("");
   const [longTokenAmount, setLongTokenAmount] = useState("");
   const [shortTokenAmount, setShortTokenAmount] = useState("");
-  const [showMintError, setShowMintError] = useState(false);
+  const [showMintError, setShowMintError] = useState("");
 
   const { signer } = useConnection();
 
@@ -77,13 +79,17 @@ const MintForm: FC<Props> = ({
   }, [signer, setShowWallet]);
 
   useEffect(() => {
-    if (
-      amount &&
-      toWeiSafe(amount, Number(collateralDecimals)).gt(collateralBalance)
-    ) {
-      setShowMintError(true);
-    } else if (showMintError) {
-      setShowMintError(false);
+    try {
+      if (
+        amount &&
+        toWeiSafe(amount, Number(collateralDecimals)).gt(collateralBalance)
+      ) {
+        setShowMintError(INSUFFICIENT_COLLATERAL_ERROR);
+      } else if (showMintError) {
+        setShowMintError("");
+      }
+    } catch (err) {
+      setShowMintError(INVALID_STRING_ERROR);
     }
   }, [longTokenAmount, shortTokenAmount, longTokenBalance, shortTokenBalance]);
 
@@ -157,11 +163,7 @@ const MintForm: FC<Props> = ({
               setLongTokenAmount={setLongTokenAmount}
               setShortTokenAmount={setShortTokenAmount}
             />
-            {showMintError && (
-              <LSPFormError>
-                You don&apos;t have enough collateral to mint.
-              </LSPFormError>
-            )}
+            {showMintError && <LSPFormError>{showMintError}</LSPFormError>}
           </TopFormWrapper>
           <DownArrowWrapper>
             <FontAwesomeIcon icon={faArrowDown} />
@@ -183,7 +185,7 @@ const MintForm: FC<Props> = ({
           </BottomFormWrapper>
           <ButtonWrapper>
             <MintButton
-              showDisabled={!signer || showMintError}
+              showDisabled={!signer || showMintError ? true : false}
               onClick={() => {
                 if (showMintError) return false;
                 if (signer) {

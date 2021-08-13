@@ -39,3 +39,14 @@ export const onlyAllowNumbersAndDecimals = (
     return false;
   }
 };
+
+export const INSUFFICIENT_COLLATERAL_ERROR =
+  "You don't have enough collateral to mint.";
+
+export const INVALID_STRING_ERROR = "String is not convertible to a number.";
+
+export const INSUFFICIENT_LONG_TOKENS =
+  "You don't have enough long tokens to redeem.";
+
+export const INSUFFICIENT_SHORT_TOKENS =
+  "You don't have enough short tokens to redeem.";
