@@ -1,7 +1,7 @@
 import React from "react";
 import Head from "next/head";
-import { Header } from "./Header";
-
+import Header from "./header";
+import styled from "@emotion/styled";
 import { Footer } from "./Footer";
 
 type Props = {
@@ -12,9 +12,12 @@ export const Layout: React.FC<Props> = ({
   children,
   title = "This is the default title",
 }) => (
-  <div
+  <StyledLayout
     style={{
       width: "100%",
+      // Do not change these properties. Required for dropdown in the navbar to overlay the input in this section
+      position: "relative",
+      zIndex: -1,
     }}
   >
     <Head>
@@ -47,5 +50,7 @@ export const Layout: React.FC<Props> = ({
     <Header />
     {children}
     <Footer />
-  </div>
+  </StyledLayout>
 );
+
+const StyledLayout = styled.div``;
