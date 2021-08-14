@@ -77,6 +77,11 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
   const cmsSynth = await contentfulClient.getSynth(address);
 
   const queryClient = new QueryClient();
+  const cmsSynths = await contentfulClient.getAllSynths();
+
+  await queryClient.prefetchQuery("all synths", async () =>
+    (await Promise.all(cmsSynths.map(fetchCompleteSynth))).filter(errorFilter)
+  );
 
   await queryClient.prefetchQuery(
     ["synth state", address],
