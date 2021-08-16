@@ -1,5 +1,8 @@
 import { createClient, Entry, EntryCollection } from "contentful";
-import type { Category } from "./constants";
+import { DateTime } from "luxon";
+import { CATEGORIES, Category } from "./constants";
+import { errorFilter } from "./errors";
+import { ContractType, fetchCompleteSynth, Synth } from "./umaApi";
 
 const contentfulSpaceId = process.env.CONTENTFUL_SPACE_ID;
 const contentfulAccessToken = process.env.CONTENTFUL_ACCESS_TOKEN;
@@ -81,10 +84,28 @@ async function getSynth(address: string): Promise<ContentfulSynth> {
 async function getRelatedSynths(
   synth: ContentfulSynth
 ): Promise<ContentfulSynth[]> {
-  const relatedSynths = await getSynthsByCategory(synth.category);
-  return relatedSynths.filter(
-    (relatedSynth) => synth.address !== relatedSynth.address
+  // Fetch synth in the same category
+  const relatedCmsSynths = await getSynthsByCategory(synth.category);
+  // Get the synths state to see if they're expired or not
+  const allRelatedSynths = (
+    await Promise.all(relatedCmsSynths.map(fetchCompleteSynth))
+  ).filter(errorFilter) as Synth<{ type: ContractType }>[];
+  const relevantRelatedSynths = allRelatedSynths.filter((relatedSynth) => {
+    const isExpired =
+      DateTime.now().toSeconds() > Number(relatedSynth.expirationTimestamp);
+    relatedSynth.address !== synth.address && !isExpired;
+  });
+
+  if (relevantRelatedSynths.length > 0) {
+    return relevantRelatedSynths;
+  }
+  const nextCategoryIdx =
+    (CATEGORIES.findIndex((category) => category === synth.category) + 1) %
+    CATEGORIES.length;
+  const closestRelatedSynths = await getSynthsByCategory(
+    CATEGORIES[nextCategoryIdx]
   );
+  return closestRelatedSynths;
 }
 
 export const contentfulClient = {
