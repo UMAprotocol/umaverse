@@ -89,7 +89,7 @@ const LSP: FC<Props> = ({
       settleButtonDisabled
     )
       setSettleButtonDisabled(false);
-  }, [data.contractState]);
+  }, [data.contractState, settleButtonDisabled]);
 
   // Get contract data and set values.
   useEffect(() => {
@@ -109,7 +109,14 @@ const LSP: FC<Props> = ({
 
       setLSPContract(contract);
     }
-  }, [lspContract, signer, account, data.address]);
+  }, [
+    lspContract,
+    signer,
+    account,
+    data.address,
+    data.collateralToken,
+    setCollateralBalance,
+  ]);
 
   return (
     <LSPForm

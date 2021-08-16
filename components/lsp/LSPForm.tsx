@@ -72,7 +72,7 @@ const LSPForm: FC<Props> = ({
         console.log("err in expire call", err);
       }
     }
-  }, [lspContract, setShowSettle, setContractState]);
+  }, [lspContract, setContractState]);
   const [showWallet, setShowWallet] = useState(false);
 
   const settle = useCallback(async () => {
@@ -102,6 +102,7 @@ const LSPForm: FC<Props> = ({
     shortTokenBalance,
     refetchLongTokenBalance,
     refetchShortTokenBalance,
+    setSettleButtonDisabled,
     collateralERC20Contract,
     address,
     setCollateralBalance,

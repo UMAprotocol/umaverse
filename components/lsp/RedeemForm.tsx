@@ -70,7 +70,7 @@ const RedeemForm: FC<Props> = ({
     if (signer) {
       setShowWallet(false);
     }
-  }, [signer]);
+  }, [setShowWallet, signer]);
 
   useEffect(() => {
     try {
@@ -95,7 +95,14 @@ const RedeemForm: FC<Props> = ({
     } catch (err) {
       setShowRedeemError(INVALID_STRING_ERROR);
     }
-  }, [longTokenAmount, shortTokenAmount, longTokenBalance, shortTokenBalance]);
+  }, [
+    longTokenAmount,
+    shortTokenAmount,
+    longTokenBalance,
+    shortTokenBalance,
+    collateralDecimals,
+    showRedeemError,
+  ]);
 
   const redeem = useCallback(async () => {
     if (
@@ -133,7 +140,16 @@ const RedeemForm: FC<Props> = ({
         console.log("err", err);
       }
     }
-  }, [lspContract, collateralERC20Contract, longTokenAmount, shortTokenAmount]);
+  }, [
+    lspContract,
+    collateralERC20Contract,
+    longTokenAmount,
+    shortTokenAmount,
+    address,
+    setCollateralBalance,
+    refetchLongTokenBalance,
+    refetchShortTokenBalance,
+  ]);
 
   return (
     <div>
