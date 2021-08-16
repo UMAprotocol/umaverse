@@ -84,7 +84,7 @@ const MintForm: FC<Props> = ({
         setUserNeedsToApprove(true);
       }
     }
-  }, [collateralERC20Contract, setUserNeedsToApprove]);
+  }, [address, collateralERC20Contract, contractAddress]);
 
   useEffect(() => {
     if (signer) {
@@ -106,7 +106,16 @@ const MintForm: FC<Props> = ({
     } catch (err) {
       setShowMintError(INVALID_STRING_ERROR);
     }
-  }, [longTokenAmount, shortTokenAmount, longTokenBalance, shortTokenBalance]);
+  }, [
+    longTokenAmount,
+    shortTokenAmount,
+    longTokenBalance,
+    shortTokenBalance,
+    amount,
+    collateralDecimals,
+    collateralBalance,
+    showMintError,
+  ]);
 
   const mint = useCallback(async () => {
     if (lspContract && collateralERC20Contract && amount) {

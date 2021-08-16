@@ -89,11 +89,11 @@ const LSP: FC<Props> = ({
       settleButtonDisabled
     )
       setSettleButtonDisabled(false);
-  }, [data.contractState]);
+  }, [data.contractState, settleButtonDisabled]);
 
   // Get contract data and set values.
   useEffect(() => {
-    if (signer && !lspContract && data.address && account) {
+    if (signer && data.address && account) {
       const contract = createLSPContractInstance(signer, data.address);
 
       contract.getCurrentTime().then((ts: ethers.BigNumber) => {
@@ -109,7 +109,13 @@ const LSP: FC<Props> = ({
 
       setLSPContract(contract);
     }
-  }, [lspContract, signer, account, data.address]);
+  }, [
+    signer,
+    account,
+    data.address,
+    data.collateralToken,
+    setCollateralBalance,
+  ]);
 
   return (
     <LSPForm
