@@ -93,7 +93,7 @@ const LSP: FC<Props> = ({
 
   // Get contract data and set values.
   useEffect(() => {
-    if (signer && !lspContract && data.address && account) {
+    if (signer && data.address && account) {
       const contract = createLSPContractInstance(signer, data.address);
 
       contract.getCurrentTime().then((ts: ethers.BigNumber) => {
@@ -110,7 +110,6 @@ const LSP: FC<Props> = ({
       setLSPContract(contract);
     }
   }, [
-    lspContract,
     signer,
     account,
     data.address,
