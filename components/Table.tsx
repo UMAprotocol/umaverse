@@ -28,6 +28,7 @@ import {
 import { MaxWidthWrapper } from "./Wrapper";
 import { BaseButton } from "./Button";
 import { Synth, formatLSPName, ContractType } from "../utils/umaApi";
+import { useCachedState } from "../hooks";
 
 const RankCircle = styled.div`
   border-radius: 9999px;
@@ -204,6 +205,11 @@ export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
     }),
     []
   );
+
+  const [cachedFilters, setCachedFilters] = useCachedState<{
+    globalFilter: boolean;
+    filters: { id: string; value: unknown };
+  }>("table");
   const {
     getTableProps,
     getTableBodyProps,
@@ -221,10 +227,30 @@ export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
       columns,
       filterTypes,
       globalFilter: activeSynthsFilter,
-      //@ts-expect-error React table options change based on the plugin used, but its not typed correctly so TS doesn't pick it up.
-      initialState: { globalFilter: true },
+      initialState: {
+        //@ts-expect-error React table options change based on the plugin used, but its not typed correctly so TS doesn't pick it up.
+        globalFilter: cachedFilters?.globalFilter ?? true,
+        filters: cachedFilters?.filters ?? [],
+      },
       autoResetFilters: false,
       autoResetGlobalFilter: false,
+      stateReducer: (newState, action) => {
+        if (action.type === "setFilter") {
+          setCachedFilters((prevFilters) => ({
+            ...prevFilters,
+            // @ts-expect-error React table options change based on the plugin used, but its not typed correctly so TS doesn't pick it up.
+            filters: newState.filters,
+          }));
+        }
+        if (action.type === "setGlobalFilter") {
+          setCachedFilters((prevFilters) => ({
+            ...prevFilters,
+            // @ts-expect-error React table options change based on the plugin used, but its not typed correctly so TS doesn't pick it up.
+            globalFilter: newState.globalFilter,
+          }));
+        }
+        return newState;
+      },
     },
     useFilters,
     useGlobalFilter
@@ -262,12 +288,15 @@ export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
               <input
                 type="checkbox"
                 onChange={() => {
-                  if ((state as any).globalFilter) {
-                    setGlobalFilter(undefined);
+                  // @ts-expect-error React table options change based on the plugin used, but its not typed correctly so TS doesn't pick it up.
+                  if (state.globalFilter) {
+                    setGlobalFilter(false);
                   } else {
                     setGlobalFilter(true);
                   }
                 }}
+                // @ts-expect-error React table options change based on the plugin used, but its not typed correctly so TS doesn't pick it up.
+                checked={!state.globalFilter}
               />
               <span>Show Expired</span>
             </ActiveFilterWrapper>
