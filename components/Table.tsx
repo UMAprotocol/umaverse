@@ -188,6 +188,9 @@ type Props = {
 };
 
 const sortedCategories = CATEGORIES.slice().sort();
+const SET_FILTER_ACTION = "setFilter";
+const SET_GLOBAL_FILTER_ACTION = "setGlobalFilter";
+
 export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
   const tableData = useMemo(
     () => data.sort((a, b) => formatWeiString(b.tvl) - formatWeiString(a.tvl)),
@@ -235,14 +238,14 @@ export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
       autoResetFilters: false,
       autoResetGlobalFilter: false,
       stateReducer: (newState, action) => {
-        if (action.type === "setFilter") {
+        if (action.type === SET_FILTER_ACTION) {
           setCachedFilters((prevFilters) => ({
             ...prevFilters,
             // @ts-expect-error React table options change based on the plugin used, but its not typed correctly so TS doesn't pick it up.
             filters: newState.filters,
           }));
         }
-        if (action.type === "setGlobalFilter") {
+        if (action.type === SET_GLOBAL_FILTER_ACTION) {
           setCachedFilters((prevFilters) => ({
             ...prevFilters,
             // @ts-expect-error React table options change based on the plugin used, but its not typed correctly so TS doesn't pick it up.
