@@ -93,7 +93,7 @@ async function getRelatedSynths(
   const relevantRelatedSynths = allRelatedSynths.filter((relatedSynth) => {
     const isExpired =
       DateTime.now().toSeconds() > Number(relatedSynth.expirationTimestamp);
-    relatedSynth.address !== synth.address && !isExpired;
+    return relatedSynth.address !== synth.address && !isExpired;
   });
 
   if (relevantRelatedSynths.length > 0) {
