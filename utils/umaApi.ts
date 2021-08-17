@@ -38,8 +38,9 @@ export async function request<T>(
   }
   return response.json();
 }
+
 // Basic types
-interface EmpState {
+export interface EmpState {
   id: string;
   address: string;
   priceIdentifier: string;
@@ -73,7 +74,8 @@ interface EmpState {
   tokenMarketPrice: string;
   type: "emp";
 }
-interface LspState {
+
+export interface LspState {
   id: string;
   address: string;
   updated: number;

@@ -7,6 +7,7 @@ import { ReactQueryDevtools } from "react-query/devtools";
 
 import { COLORS } from "../utils";
 import { ConnectionProvider } from "../hooks";
+import AppProvider from "../hooks/useAppState";
 
 const reset = css`
   /* http://meyerweb.com/eric/tools/css/reset/
@@ -222,13 +223,15 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   const [queryClient] = useState(() => new QueryClient());
   return (
     <QueryClientProvider client={queryClient}>
-      <Hydrate state={pageProps.dehydratedState}>
-        <ConnectionProvider>
-          <Global styles={globalStyles} />
-          <Component {...pageProps} />
-        </ConnectionProvider>
-      </Hydrate>
-      <ReactQueryDevtools />
+      <AppProvider>
+        <Hydrate state={pageProps.dehydratedState}>
+          <ConnectionProvider>
+            <Global styles={globalStyles} />
+            <Component {...pageProps} />
+          </ConnectionProvider>
+        </Hydrate>
+        <ReactQueryDevtools />
+      </AppProvider>
     </QueryClientProvider>
   );
 };
