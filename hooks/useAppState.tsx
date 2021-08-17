@@ -1,4 +1,11 @@
-import React, { createContext, FC, useReducer, Dispatch } from "react";
+import React, {
+  createContext,
+  FC,
+  useReducer,
+  Dispatch,
+  // useState,
+  useContext,
+} from "react";
 import { EmpState, LspState } from "../utils/umaApi";
 
 const UPDATE_CONTRACTS = "UPDATE_CONTRACTS";
@@ -73,6 +80,15 @@ AppContext.displayName = "AppContext";
 type WithDelegatedProps = {
   [k: string]: unknown;
 };
+
+export function useAppState() {
+  const context = React.useContext(AppContext);
+  if (!Object.keys(context).length) {
+    throw new Error(`UseAppState must be used within a AppState Provider.`);
+  }
+
+  return context;
+}
 
 const AppProvider: FC<WithDelegatedProps> = ({ children, ...delegated }) => {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE);

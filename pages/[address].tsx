@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import styled from "@emotion/styled";
 import { GetStaticProps, GetStaticPaths } from "next";
 import Image from "next/image";
@@ -44,10 +44,9 @@ import {
   SynthStats,
 } from "../utils/umaApi";
 import useERC20ContractValues from "../hooks/useERC20ContractValues";
-import { useConnection } from "../hooks";
+import { useConnection, useAppState } from "../hooks";
 import { ethers } from "ethers";
 import createERC20ContractInstance from "../components/lsp/createERC20ContractInstance";
-import { useMemo } from "react";
 
 const toBN = ethers.BigNumber.from;
 
@@ -191,6 +190,7 @@ type Props =
     };
 
 const SynthPage: React.FC<Props> = ({ data, relatedSynths }) => {
+  const appContext = useAppState();
   const { account = "", signer, isConnected } = useConnection();
   const formattedLogo = data?.logo?.fields.file.url
     ? formatContentfulUrl(data.logo.fields.file.url)
