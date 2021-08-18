@@ -55,7 +55,6 @@ export const infuraId =
 const getNetworkName = (chainId: number) => {
   switch (chainId) {
     case 1: {
-      // return "homestead";
       return "mainnet";
     }
     case 42: {
@@ -69,6 +68,7 @@ const getNetworkName = (chainId: number) => {
     }
   }
 };
+
 export function onboardBaseConfig(_chainId?: number): Initialization {
   const chainId = _chainId ?? 1;
   const infuraRpc = `https://${getNetworkName(
