@@ -50,11 +50,13 @@ export const CATEGORIES_PLACEHOLDERS: Record<Category, string> = {
 
 export const KNOWN_LSP_ADDRESS = "0x372802d8A2D69bB43872a1AABe2bd403a0FafA1F";
 
-export const infuraId = process.env.NEXT_PUBLIC_INFURA_ID || "";
+export const infuraId =
+  process.env.NEXT_PUBLIC_INFURA_ID || "d5e29c9b9a9d4116a7348113f57770a8";
 const getNetworkName = (chainId: number) => {
   switch (chainId) {
     case 1: {
-      return "homestead";
+      // return "homestead";
+      return "mainnet";
     }
     case 42: {
       return "kovan";
@@ -97,8 +99,9 @@ export function onboardBaseConfig(_chainId?: number): Initialization {
         { walletName: "dapper" },
         {
           walletName: "walletConnect",
-          rpc: { [chainId]: infuraRpc },
+          rpc: { [chainId || 1]: infuraRpc },
         },
+        { walletName: "gnosis" },
         { walletName: "walletLink", rpcUrl: infuraRpc },
         { walletName: "opera" },
         { walletName: "operaTouch" },
