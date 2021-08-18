@@ -120,7 +120,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
     ...cmsSynth,
   };
 
-  // fetch curated synths in the same category as this one
+  // fetch curated synths that are related to this one.
   const cmsRelatedSynths = await contentfulClient.getRelatedSynths(data);
 
   const relatedSynths = (
