@@ -17,7 +17,6 @@ export const SynthPlaceholderIcon: React.FC<Props> = ({
     return null;
   }
   return (
-    // @ts-expect-error TS complains about src being of type string instead of StaticImport, but can't typecast because StaticImport is not exported
     <Image
       width={52}
       height={52}
