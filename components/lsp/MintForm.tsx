@@ -118,8 +118,7 @@ const MintForm: FC<Props> = ({
   ]);
 
   const mint = useCallback(async () => {
-    if (lspContract && collateralERC20Contract && amount) {
-      const weiAmount = toWeiSafe(amount);
+    if (lspContract && collateralERC20Contract) {
       try {
         const allowance = await collateralERC20Contract.allowance(
           address,
@@ -135,28 +134,36 @@ const MintForm: FC<Props> = ({
 
           return approveTx.wait(1).then(() => setUserNeedsToApprove(false));
         }
-        // Need to send the correct amount based on the collateral pair ** the amount
-        // User has specified in the input.
-        // All operations that make the number larger come first. All the operations that make the number smaller come last.
-        const mintAmount = weiAmount.mul(scaledToWei).div(collateralPerPair);
-        lspContract
-          .create(mintAmount)
-          .then((tx: any) => {
-            setAmount("");
-            setLongTokenAmount("");
-            setShortTokenAmount("");
-            return tx.wait(1);
-          })
-          .then(async () => {
-            const balance = (await collateralERC20Contract.balanceOf(
-              address
-            )) as ethers.BigNumber;
-            setCollateralBalance(balance);
-            refetchLongTokenBalance();
-            refetchShortTokenBalance();
-          });
       } catch (err) {
-        console.log("err", err);
+        console.log("err in approval check", err);
+      }
+
+      if (amount) {
+        const weiAmount = toWeiSafe(amount);
+        try {
+          // Need to send the correct amount based on the collateral pair ** the amount
+          // User has specified in the input.
+          // All operations that make the number larger come first. All the operations that make the number smaller come last.
+          const mintAmount = weiAmount.mul(scaledToWei).div(collateralPerPair);
+          lspContract
+            .create(mintAmount)
+            .then((tx: any) => {
+              setAmount("");
+              setLongTokenAmount("");
+              setShortTokenAmount("");
+              return tx.wait(1);
+            })
+            .then(async () => {
+              const balance = (await collateralERC20Contract.balanceOf(
+                address
+              )) as ethers.BigNumber;
+              setCollateralBalance(balance);
+              refetchLongTokenBalance();
+              refetchShortTokenBalance();
+            });
+        } catch (err) {
+          console.log("err", err);
+        }
       }
     }
   }, [
