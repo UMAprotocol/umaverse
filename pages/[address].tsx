@@ -319,21 +319,51 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths }) => {
         )}
       </Hero>
       <MainWrapper>
-        <About description={data.description} />
-
+        <div>
+          <About description={data.description} />
+          <Information synth={freshData as Synth<{ type: ContractType }>} />
+        </div>
         <AsideWrapper>
           {data.type === "emp" ? (
             <>
-              <SecondaryHeading>Total Value Locked (TVL)</SecondaryHeading>
-              <ChartWrapper>
-                <ResponsiveLineChart
-                  // @ts-expect-error bla
-                  data={tvlHistory ?? []}
-                  isLoading={isLoadingTvl}
-                />
-              </ChartWrapper>
+              <div>
+                <SecondaryHeading>Total Value Locked (TVL)</SecondaryHeading>
+                <ChartWrapper>
+                  <ResponsiveLineChart
+                    // @ts-expect-error bla
+                    data={tvlHistory ?? []}
+                    isLoading={isLoadingTvl}
+                  />
+                </ChartWrapper>
+              </div>
+              <div>
+                <SecondaryHeading>Manage Position</SecondaryHeading>
+                <ul>
+                  <Link href={data.mintmanage}>
+                    Mint / Manage <ExternalLink />
+                  </Link>
+                  <Link
+                    href={`https://matcha.xyz/markets/1/${data.tokenCurrency.toLowerCase()}`}
+                  >
+                    Trade
+                    <ExternalLink />
+                  </Link>
+                  <Link href={`https://etherscan.io/address/${data.address}`}>
+                    Etherscan <span>[Contract]</span> <ExternalLink />
+                  </Link>
+                  <Link
+                    href={`https://etherscan.io/address/${data.tokenCurrency}`}
+                  >
+                    Etherscan <span>[Token] {data.type}</span>
+                    <ExternalLink />
+                  </Link>
+                  <Link href="https://docs.umaproject.org">
+                    UMA Docs <RightArrow />
+                  </Link>
+                </ul>
+              </div>
             </>
-          ) : data.type === "lsp" ? (
+          ) : (
             <LSP
               data={data}
               contractAddress={data.address}
@@ -345,38 +375,7 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths }) => {
               collateralBalance={collateralBalance}
               setCollateralBalance={setCollateralBalance}
             />
-          ) : null}
-        </AsideWrapper>
-        <Information synth={freshData as Synth<{ type: ContractType }>} />
-        <AsideWrapper>
-          {data.type === "emp" ? (
-            <>
-              <SecondaryHeading>Manage Position</SecondaryHeading>
-              <ul>
-                <Link href={data.mintmanage}>
-                  Mint / Manage <ExternalLink />
-                </Link>
-                <Link
-                  href={`https://matcha.xyz/markets/1/${data.tokenCurrency.toLowerCase()}`}
-                >
-                  Trade
-                  <ExternalLink />
-                </Link>
-                <Link href={`https://etherscan.io/address/${data.address}`}>
-                  Etherscan <span>[Contract]</span> <ExternalLink />
-                </Link>
-                <Link
-                  href={`https://etherscan.io/address/${data.tokenCurrency}`}
-                >
-                  Etherscan <span>[Token] {data.type}</span>
-                  <ExternalLink />
-                </Link>
-                <Link href="https://docs.umaproject.org">
-                  UMA Docs <RightArrow />
-                </Link>
-              </ul>
-            </>
-          ) : null}
+          )}
         </AsideWrapper>
       </MainWrapper>
       <GettingStarted />
@@ -472,9 +471,8 @@ const SecondaryHeading = styled.h3`
 `;
 
 const Information = styled(UnstyledInformation)`
-  order: 1;
   @media ${QUERIES.laptopAndUp} {
-    order: revert;
+    padding-bottom: 60px;
   }
 `;
 
@@ -487,7 +485,10 @@ const AsideWrapper = styled.aside`
 
   @media ${QUERIES.laptopAndUp} {
     margin: revert;
-  } ;
+  }
+  & > div:nth-of-type(2) {
+    padding-top: 20px;
+  }
 `;
 
 const ChartWrapper = styled.div`

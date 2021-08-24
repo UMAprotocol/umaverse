@@ -9,16 +9,17 @@ import DuplicateIcon from "../public/icons/duplicate.svg";
 
 type Props =
   | {
+      className?: string;
       synth: Synth<{ type: "lsp" }>;
     }
-  | { synth: Synth<{ type: "emp" }> };
-export const Information: React.FC<Props> = ({ synth }) => {
+  | { className?: string; synth: Synth<{ type: "emp" }> };
+export const Information: React.FC<Props> = ({ synth, className }) => {
   const handleCopyClick = (text: string) => {
     window.navigator.clipboard.writeText(text);
   };
 
   return (
-    <Wrapper>
+    <Wrapper className={className}>
       <Heading>Token Information</Heading>
       <Table>
         <Row>
