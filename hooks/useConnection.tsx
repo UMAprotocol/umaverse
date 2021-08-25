@@ -84,7 +84,6 @@ function useConnectionManager() {
 
   const { provider, account, chainId, connector, error, notify } = state;
 
-  console.log("state", state);
   const connect = React.useCallback((payload: ConnectionManagerState) => {
     dispatch({
       type: ActionType.CONNECT,

@@ -63,7 +63,7 @@ const RedeemForm: FC<Props> = ({
   const [longTokenAmount, setLongTokenAmount] = useState("");
   const [shortTokenAmount, setShortTokenAmount] = useState("");
 
-  const { signer } = useConnection();
+  const { signer, notify } = useConnection();
   const [showRedeemError, setShowRedeemError] = useState("");
 
   useEffect(() => {
@@ -120,7 +120,7 @@ const RedeemForm: FC<Props> = ({
         // User has specified in the input.
         // All operations that make the number larger come first. All the operations that make the number smaller come last.
         const redeemAmount = weiAmount.mul(scaledToWei);
-        await lspContract
+        const tx = lspContract
           .redeem(redeemAmount.div(scaledToWei))
           .then((tx: any) => {
             setAmount("");
@@ -136,6 +136,15 @@ const RedeemForm: FC<Props> = ({
             refetchLongTokenBalance();
             refetchShortTokenBalance();
           });
+
+        if (notify) {
+          const { emitter, result } = notify.transaction(tx);
+          console.log("notify stuff", emitter, result);
+          emitter.on("all", (tx) => {
+            console.log("emitter tx", tx);
+          });
+        }
+        return tx;
       } catch (err) {
         console.log("err", err);
       }

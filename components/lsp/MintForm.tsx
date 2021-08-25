@@ -132,6 +132,8 @@ const MintForm: FC<Props> = ({
             INFINITE_APPROVAL_AMOUNT
           );
 
+          console.log("approvalTX", approveTx);
+
           if (notify && approveTx) {
             notify.hash(approveTx.hash);
           }
@@ -144,12 +146,14 @@ const MintForm: FC<Props> = ({
 
       if (amount) {
         const weiAmount = toWeiSafe(amount);
+
         try {
           // Need to send the correct amount based on the collateral pair ** the amount
           // User has specified in the input.
           // All operations that make the number larger come first. All the operations that make the number smaller come last.
           const mintAmount = weiAmount.mul(scaledToWei).div(collateralPerPair);
-          lspContract
+
+          const tx = lspContract
             .create(mintAmount)
             .then((tx: any) => {
               setAmount("");
@@ -158,7 +162,6 @@ const MintForm: FC<Props> = ({
               if (notify && tx) {
                 notify.hash(tx.hash);
               }
-
               return tx.wait(1);
             })
             .then(async () => {
@@ -169,6 +172,22 @@ const MintForm: FC<Props> = ({
               refetchLongTokenBalance();
               refetchShortTokenBalance();
             });
+          if (notify && signer) {
+            if (tx) {
+              const checkTx = signer.checkTransaction(tx);
+              if (checkTx.from) {
+                const from = await checkTx.from;
+                if (from) {
+                  const { emitter } = notify.account(from);
+                  console.log("notify stuff", emitter);
+                  emitter.on("all", (tx) => {
+                    console.log("emitter tx", tx);
+                  });
+                }
+              }
+            }
+          }
+          return tx;
         } catch (err) {
           console.log("err", err);
         }
