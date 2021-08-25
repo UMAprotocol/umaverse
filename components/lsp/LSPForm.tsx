@@ -12,7 +12,6 @@ import { ethers } from "ethers";
 import MintForm from "./MintForm";
 import RedeemForm from "./RedeemForm";
 import { ContractState } from "./LSP";
-import { API as NotifyAPI } from "bnc-notify";
 
 interface Props {
   address: string;

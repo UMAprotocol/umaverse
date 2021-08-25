@@ -70,7 +70,7 @@ const MintForm: FC<Props> = ({
   const [shortTokenAmount, setShortTokenAmount] = useState("");
   const [showMintError, setShowMintError] = useState("");
   const [userNeedsToApprove, setUserNeedsToApprove] = useState(false);
-  const { signer, notify } = useConnection();
+  const { signer, notify, account } = useConnection();
 
   const checkIfUserHasToApprove = useCallback(async () => {
     if (collateralERC20Contract) {
@@ -87,11 +87,11 @@ const MintForm: FC<Props> = ({
   }, [address, collateralERC20Contract, contractAddress]);
 
   useEffect(() => {
-    if (signer) {
+    if (account) {
       setShowWallet(false);
       checkIfUserHasToApprove();
     }
-  }, [signer, setShowWallet, checkIfUserHasToApprove]);
+  }, [setShowWallet, checkIfUserHasToApprove, account]);
 
   useEffect(() => {
     try {
@@ -132,8 +132,9 @@ const MintForm: FC<Props> = ({
             INFINITE_APPROVAL_AMOUNT
           );
 
-          // if (notify) {
-          // }
+          if (notify && approveTx) {
+            notify.hash(approveTx.hash);
+          }
 
           return approveTx.wait(1).then(() => setUserNeedsToApprove(false));
         }
@@ -154,6 +155,10 @@ const MintForm: FC<Props> = ({
               setAmount("");
               setLongTokenAmount("");
               setShortTokenAmount("");
+              if (notify && tx) {
+                notify.hash(tx.hash);
+              }
+
               return tx.wait(1);
             })
             .then(async () => {
