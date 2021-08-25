@@ -70,7 +70,7 @@ const MintForm: FC<Props> = ({
   const [shortTokenAmount, setShortTokenAmount] = useState("");
   const [showMintError, setShowMintError] = useState("");
   const [userNeedsToApprove, setUserNeedsToApprove] = useState(false);
-  const { signer, notify, account } = useConnection();
+  const { signer, notify, account, provider } = useConnection();
 
   const checkIfUserHasToApprove = useCallback(async () => {
     if (collateralERC20Contract) {
@@ -117,6 +117,15 @@ const MintForm: FC<Props> = ({
     showMintError,
   ]);
 
+  useEffect(() => {
+    if (provider) {
+      provider.on("pending", (tx) => {
+        console.log("does this work?", tx);
+        // Emitted when any new pending transaction is noticed
+      });
+    }
+  }, [provider]);
+
   const mint = useCallback(async () => {
     if (lspContract && collateralERC20Contract) {
       try {
@@ -153,7 +162,8 @@ const MintForm: FC<Props> = ({
           // All operations that make the number larger come first. All the operations that make the number smaller come last.
           const mintAmount = weiAmount.mul(scaledToWei).div(collateralPerPair);
 
-          const tx = lspContract
+          console.log(mintAmount);
+          const lspTx = lspContract
             .create(mintAmount)
             .then((tx: any) => {
               setAmount("");
@@ -172,22 +182,14 @@ const MintForm: FC<Props> = ({
               refetchLongTokenBalance();
               refetchShortTokenBalance();
             });
-          if (notify && signer) {
-            if (tx) {
-              const checkTx = signer.checkTransaction(tx);
-              if (checkTx.from) {
-                const from = await checkTx.from;
-                if (from) {
-                  const { emitter } = notify.account(from);
-                  console.log("notify stuff", emitter);
-                  emitter.on("all", (tx) => {
-                    console.log("emitter tx", tx);
-                  });
-                }
-              }
-            }
+          if (notify) {
+            const { emitter, result } = notify.transaction(lspTx);
+            console.log("notify stuff", emitter, result);
+            emitter.on("all", (tx) => {
+              console.log("emitter tx", tx);
+            });
           }
-          return tx;
+          return lspTx;
         } catch (err) {
           console.log("err", err);
         }
