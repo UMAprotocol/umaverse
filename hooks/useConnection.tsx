@@ -54,23 +54,25 @@ function reducer(
       };
     }
     case ActionType.UPDATE: {
-      const { provider, account, chainId, connector } = action.payload;
+      const { provider, account, chainId, connector, notify } = action.payload;
       return {
         ...state,
         ...(provider ? { provider } : {}),
         ...(account ? { account } : {}),
         ...(chainId ? { chainId } : {}),
         ...(connector ? { connector } : {}),
+        ...(notify ? { notify } : {}),
       };
     }
     case ActionType.UPDATE_FROM_ERROR: {
-      const { provider, account, chainId, connector } = action.payload;
+      const { provider, account, chainId, connector, notify } = action.payload;
       return {
         ...state,
         ...(provider ? { provider } : {}),
         ...(account ? { account } : {}),
         ...(chainId ? { chainId } : {}),
         ...(connector ? { connector } : {}),
+        ...(notify ? { notify } : {}),
         error: undefined,
       };
     }
@@ -82,6 +84,7 @@ function useConnectionManager() {
 
   const { provider, account, chainId, connector, error, notify } = state;
 
+  console.log("state", state);
   const connect = React.useCallback((payload: ConnectionManagerState) => {
     dispatch({
       type: ActionType.CONNECT,
@@ -144,6 +147,7 @@ export const ConnectionProvider: React.FC = ({ children }) => {
     account,
     chainId,
     connector,
+    notify,
     error,
     connect,
     disconnect,
@@ -164,7 +168,7 @@ export const ConnectionProvider: React.FC = ({ children }) => {
     chainId,
     connector,
     error,
-
+    notify,
     connect,
     disconnect,
     update,

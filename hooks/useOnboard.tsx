@@ -20,18 +20,15 @@ export function useOnboard() {
             const error = isValidChainId(networkId)
               ? undefined
               : new UnsupportedChainIdError(networkId);
-            if (networkId) {
-              const notify = Notify({
-                dappId: process.env.NEXT_PUBLIC_ONBOARD_API_KEY, // [String] The API key created by step one above
-                networkId, // [Integer] The Ethereum network ID your Dapp uses.
-                desktopPosition: "topRight",
-              });
-              update({
-                notify,
-              });
-            }
+
+            const notify = Notify({
+              dappId: process.env.NEXT_PUBLIC_ONBOARD_API_KEY, // [String] The API key created by step one above
+              networkId, // [Integer] The Ethereum network ID your Dapp uses.
+              desktopPosition: "topRight",
+            });
             update({
               chainId: networkId,
+              notify,
             });
             if (error) {
               setError(error);

@@ -70,7 +70,7 @@ const MintForm: FC<Props> = ({
   const [shortTokenAmount, setShortTokenAmount] = useState("");
   const [showMintError, setShowMintError] = useState("");
   const [userNeedsToApprove, setUserNeedsToApprove] = useState(false);
-  const { signer } = useConnection();
+  const { signer, notify } = useConnection();
 
   const checkIfUserHasToApprove = useCallback(async () => {
     if (collateralERC20Contract) {
@@ -131,6 +131,9 @@ const MintForm: FC<Props> = ({
             contractAddress,
             INFINITE_APPROVAL_AMOUNT
           );
+
+          // if (notify) {
+          // }
 
           return approveTx.wait(1).then(() => setUserNeedsToApprove(false));
         }

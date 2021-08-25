@@ -38,7 +38,6 @@ const LSP: FC<Props> = ({
   setCollateralBalance,
 }) => {
   const { account = "", signer, provider } = useConnection();
-
   const [lspContract, setLSPContract] = useState<ethers.Contract | null>(null);
   const [collateralERC20Contract, setCollateralERC20Contract] =
     useState<ethers.Contract | null>(null);
