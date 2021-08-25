@@ -1,5 +1,6 @@
 import React from "react";
 import { ethers } from "ethers";
+import { API as NotifyAPI } from "bnc-notify";
 
 enum ActionType {
   CONNECT,
@@ -14,7 +15,9 @@ type ConnectionManagerState = {
   connector?: any;
   chainId?: number;
   error?: Error;
+  notify?: NotifyAPI;
 };
+
 type Action =
   | {
       type: ActionType.CONNECT;
@@ -77,7 +80,7 @@ function reducer(
 function useConnectionManager() {
   const [state, dispatch] = React.useReducer(reducer, {});
 
-  const { provider, account, chainId, connector, error } = state;
+  const { provider, account, chainId, connector, error, notify } = state;
 
   const connect = React.useCallback((payload: ConnectionManagerState) => {
     dispatch({
@@ -112,7 +115,7 @@ function useConnectionManager() {
     connector,
     chainId,
     error,
-
+    notify,
     connect,
     disconnect,
     update,

@@ -29,6 +29,7 @@
     "@visx/scale": "^1.7.0",
     "@visx/shape": "^1.7.0",
     "@visx/tooltip": "^1.7.2",
+    "bnc-notify": "^1.9.1",
     "bnc-onboard": "^1.30.0",
     "contentful": "^8.4.2",
     "d3-array": "^2.12.1",
