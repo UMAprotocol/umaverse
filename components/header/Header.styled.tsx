@@ -110,7 +110,7 @@ export const Dropdown = styled.div`
   overflow: hidden;
   width: 100%;
   button {
-    font-size: 16px;
+    font-size: 100%;
     border: none;
     outline: none;
     color: var(--black);
@@ -187,9 +187,7 @@ export const DropdownContent = styled.div`
   }
 `;
 
-export const ProductsButton = styled(BaseButton)`
-  font-size: 100%;
-`;
+export const ProductsButton = styled(BaseButton)``;
 
 export const MobileNavigation = motion(styled(Navigation)`
   display: revert;
