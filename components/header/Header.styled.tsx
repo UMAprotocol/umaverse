@@ -144,7 +144,6 @@ export const DropdownContent = styled.div`
   min-width: 260px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
-  /* transform: translateX(-60px); */
   margin-top: 8px;
   @media ${QUERIES.tabletAndDown} {
     transform: translateX(0);
@@ -187,7 +186,9 @@ export const DropdownContent = styled.div`
   }
 `;
 
-export const ProductsButton = styled(BaseButton)``;
+export const ProductsButton = styled(BaseButton)`
+  min-height: 1.5rem;
+`;
 
 export const MobileNavigation = motion(styled(Navigation)`
   display: revert;
