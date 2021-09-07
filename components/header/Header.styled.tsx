@@ -187,6 +187,10 @@ export const DropdownContent = styled.div`
   }
 `;
 
+export const ProductsButton = styled(BaseButton)`
+  font-size: 100%;
+`;
+
 export const MobileNavigation = motion(styled(Navigation)`
   display: revert;
   @media ${QUERIES.laptopAndUp} {

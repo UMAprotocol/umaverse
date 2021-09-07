@@ -1,6 +1,5 @@
 import React, { useState, FC, useRef } from "react";
-import { Dropdown, DropdownContent } from "./Header.styled";
-import { BaseButton } from "../Button";
+import { Dropdown, DropdownContent, ProductsButton } from "./Header.styled";
 import { Link } from "../Link";
 import useUserClickedOutsideElement from "../../hooks/useUserClickedOutsideElement";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -21,10 +20,10 @@ const DropdownMenu: FC<Props> = ({ links }) => {
   useUserClickedOutsideElement(dropdownRef, () => setOpen(false));
   return (
     <Dropdown ref={dropdownRef}>
-      <BaseButton onClick={() => setOpen((prevState) => !prevState)}>
+      <ProductsButton onClick={() => setOpen((prevState) => !prevState)}>
         Products
         <FontAwesomeIcon icon={faAngleDown} />
-      </BaseButton>
+      </ProductsButton>
       <DropdownContent className={open ? "open" : ""}>
         {links.map(({ href, name }) => {
           return (
