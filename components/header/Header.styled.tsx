@@ -120,10 +120,10 @@ export const Dropdown = styled.div`
     margin: 0; /* Important for vertical align on mobile phones */
     border-bottom: 2px solid transparent;
     display: inline-block;
-    height: 10px;
+    height: 0.67rem;
     margin-left: 6px;
     svg {
-      height: 12px;
+      height: 0.75rem;
       margin-left: 4px;
       @media ${QUERIES.tabletAndDown} {
         float: right;
