@@ -110,7 +110,7 @@ export const Dropdown = styled.div`
   overflow: hidden;
   width: 100%;
   button {
-    font-size: 16px;
+    font-size: 100%;
     border: none;
     outline: none;
     color: var(--black);
@@ -120,10 +120,10 @@ export const Dropdown = styled.div`
     margin: 0; /* Important for vertical align on mobile phones */
     border-bottom: 2px solid transparent;
     display: inline-block;
-    height: 10px;
+    height: 0.67rem;
     margin-left: 6px;
     svg {
-      height: 12px;
+      height: 0.75rem;
       margin-left: 4px;
       @media ${QUERIES.tabletAndDown} {
         float: right;
@@ -144,7 +144,6 @@ export const DropdownContent = styled.div`
   min-width: 260px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
-  /* transform: translateX(-60px); */
   margin-top: 8px;
   @media ${QUERIES.tabletAndDown} {
     transform: translateX(0);
@@ -185,6 +184,10 @@ export const DropdownContent = styled.div`
       border-bottom: 1px solid var(--gray-500);
     }
   }
+`;
+
+export const ProductsButton = styled(BaseButton)`
+  min-height: 1.5rem;
 `;
 
 export const MobileNavigation = motion(styled(Navigation)`
