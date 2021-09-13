@@ -31,6 +31,7 @@
     "@visx/tooltip": "^1.7.2",
     "bnc-onboard": "^1.30.0",
     "contentful": "^8.4.2",
+    "cypress": "^8.4.0",
     "d3-array": "^2.12.1",
     "d3-interpolate": "^2.0.1",
     "d3-time-format": "^3.0.0",
@@ -49,6 +50,7 @@
   },
   "devDependencies": {
     "@emotion/babel-plugin": "^11.3.0",
+    "@ethersproject/experimental": "^5.4.0",
     "@svgr/webpack": "^5.5.0",
     "@types/d3-array": "^2.9.0",
     "@types/faker": "^5.5.1",
