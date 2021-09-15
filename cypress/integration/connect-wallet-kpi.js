@@ -11,9 +11,9 @@ describe("Connects to the wallet", () => {
   });
 
   it("Visits localhost", () => {
-    cy.visit("localhost:3000");
-    cy.contains("Voting Wallet");
-    cy.get(".connect-btn").click();
+    cy.visit("localhost:3000/0xfd7Ead07dF3cD2543fE269d9E320376c64D9143E");
+    cy.contains("Your Wallet");
+    cy.get("#connectWallet").click();
     cy.get(
       ".bn-onboard-custom.bn-onboard-prepare-button.bn-onboard-prepare-button-center"
     )
@@ -21,5 +21,8 @@ describe("Connects to the wallet", () => {
       .click();
 
     cy.get(".bn-onboard-custom.bn-onboard-icon-button").eq(1).click();
+    cy.window().then((win) => {
+      console.log(win.ethereum);
+    });
   });
 });

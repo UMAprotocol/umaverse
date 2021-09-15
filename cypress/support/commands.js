@@ -34,7 +34,7 @@ import { ethers } from "@ethersproject/experimental/node_modules/ethers";
 // const TEST_PRIVATE_KEY = Cypress.env('INTEGRATION_TEST_PRIVATE_KEY')
 const PRIVATE_KEY_TEST_NEVER_USE =
   // "0xad20c82497421e9784f18460ad2fe84f73569068e98e270b3e63743268af5763";
-  "0xc87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3";
+  "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
 
 // address of the above key
 export const TEST_ADDRESS_NEVER_USE = new Wallet(PRIVATE_KEY_TEST_NEVER_USE)
@@ -46,7 +46,7 @@ export const TEST_ADDRESS_NEVER_USE_SHORTENED = `${TEST_ADDRESS_NEVER_USE.substr
 )}...${TEST_ADDRESS_NEVER_USE.substr(-4, 4)}`;
 
 class CustomizedBridge extends Eip1193Bridge {
-  chainId = 4;
+  // chainId = 4;
 
   async sendAsync(...args) {
     console.debug("sendAsync called", ...args);
@@ -118,7 +118,7 @@ Cypress.Commands.overwrite("visit", (original, url, options) => {
         // const provider = new ethers.providers.WebSocketProvider(
         //   "http://127.0.0.1:9545"
         // );
-        const provider = new ethers.getDefaultProvider("http://127.0.0.1:9545");
+        const provider = new ethers.getDefaultProvider("http://127.0.0.1:8545");
 
         const signer = new Wallet(PRIVATE_KEY_TEST_NEVER_USE, provider);
         win.ethereum = new CustomizedBridge(signer, provider);
