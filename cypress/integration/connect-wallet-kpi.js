@@ -1,6 +1,17 @@
 /* eslint-disable */
+import deployLSPContract from "../helpers/deployLSPContract";
 
 describe("Connects to the wallet", () => {
+  before(async () => {
+    await deployLSPContract();
+    // const lspBytecode = getLongShortPairBytecode();
+    // const lspAbi = getLongShortPairAbi();
+    // const provider = new ethers.getDefaultProvider("http://127.0.0.1:8545");
+
+    // const signer = new Wallet(HARDHAT_DEFAULT_PRIVATE_KEY, provider);
+    // const factory = new ethers.ContractFactory(lspAbi, lspBytecode, signer);
+    // contract = await factory.deploy();
+  });
   beforeEach(() => {
     // Cypress starts out with a blank slate for each test
     // so we must tell it to visit our website with the `cy.visit()` command.
