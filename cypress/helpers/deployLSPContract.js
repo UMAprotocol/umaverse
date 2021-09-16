@@ -8,17 +8,38 @@ import {
   getLongShortPairCreatorAddress,
   getLongShortPairFinancialProductLibraryAbi,
 } from "@uma/contracts-frontend";
-import { sign } from "crypto";
 
 const HARDHAT_DEFAULT_PRIVATE_KEY =
   "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
+// Mandatory arguments:
+// --gasprice: Gas price to use in GWEI.
+// --expirationTimestamp: Timestamp that the contract will expire at.
+// --collateralPerPair: How many units of collateral are required to mint one pair of synthetic tokens.
+// --priceIdentifier: Price identifier to use.
+// --pairName: General name for the long-short token pair.
+// --longSynthName: Long token name.
+// --longSynthSymbol: Long token symbol.
+// --shortSynthName: Short token name.
+// --shortSynthSymbol: Short token symbol.
+// --collateralToken: ERC20 token used as as collateral in the LSP.
+//
+// Optional arguments:
+// --lspCreatorAddress: Deployed address of the creator contract you're calling. This will be set based on chain ID if not specified.
+// --financialProductLibraryAddress: Contract providing settlement payout logic. Required if --fpl not included.
+// --fpl: Name of the financial product library type, such as RangeBond or Linear. Required if --financialProductLibraryAddress not included.
+// --customAncillaryData: Custom ancillary data to be passed along with the price request. If not needed, this should be left as a 0-length bytes array.
+// --prepaidProposerReward: Proposal reward to be forwarded to the created contract to be used to incentivize price proposals.
+// --optimisticOracleLivenessTime: Custom liveness window for disputing optimistic oracle price proposals. Longer provides more security, shorter provides faster settlement.
+// --optimisticOracleProposerBond: Additional bond proposer must post with the optimistic oracle. A higher bond increases rewards to disputers if the price is incorrect.
+// --strikePrice: Alias for lowerBound, used for certain financial product libraries with no upper bound. Cannot be included if --lowerBound is specified.
+// --basePercentage: The percentage of collateral per pair used as the floor. This parameter is used with the 'SuccessToken' fpl where the remaining percentage functions like an embedded call option.
+// --lowerBound: Lower bound of a price range for certain financial product libraries. Cannot be included if --strikePrice is specified.
+// --upperBound: Upper bound of a price range for certain financial product libraries.
+//
+//
+// Example deployment script:
+// node index.js --gasprice 80 --url YOUR_NODE_URL --mnemonic "your mnemonic (12 word seed phrase)" --pairName "UMA \$4-12 Range Token Pair August 2021" --expirationTimestamp 1630447200 --collateralPerPair 250000000000000000 --priceIdentifier UMAUSD --longSynthName "UMA \$4-12 Range Token August 2021" --longSynthSymbol rtUMA-0821 --shortSynthName "UMA \$4-12 Range Short Token August 2021" --shortSynthSymbol rtUMA-0821s --collateralToken 0x489Bf230d4Ab5c2083556E394a28276C22c3B580 --customAncillaryData "twapLength:3600" --fpl RangeBond --lowerBound 4000000000000000000 --upperBound 12000000000000000000 --prepaidProposerBond 20000000000000000000 --optimisticOracleProposerBond --40000000000000000000
 
-/**
- * @notice Constructs the ExpandedERC20.
- * @param _tokenName The name which describes the new token.
- * @param _tokenSymbol The ticker abbreviation of the name. Ideally < 5 chars.
- * @param _tokenDecimals The number of decimals to define token precision.
- */
 /*
   struct ConstructorParams {
       string pairName; // Name of the long short pair contract.
@@ -41,9 +62,9 @@ const HARDHAT_DEFAULT_PRIVATE_KEY =
 export default async function deployLSPContract() {
   const provider = new ethers.getDefaultProvider("http://127.0.0.1:8545");
   const signer = new Wallet(HARDHAT_DEFAULT_PRIVATE_KEY, provider);
-
   const factoryAddress = getLongShortPairCreatorAddress(1);
   const lspFactoryAbi = getLongShortPairCreatorAbi();
+  console.log("factoryAddress", factoryAddress);
 
   //   let lspFactoryBytecode = getLongShortPairCreatorBytecode();
   //   // Bug in lib that adds quotes.
@@ -51,24 +72,51 @@ export default async function deployLSPContract() {
   const factoryInstance = new ethers.Contract(
     factoryAddress,
     lspFactoryAbi,
-    provider
+    signer
   );
 
   const fplAbi = getLongShortPairFinancialProductLibraryAbi();
   // Pulled from networks in uma/core.
-  const fplAddress = "0x37780b718c19F7f06D41f3c68C3A78ECB2Ca191f";
+  // const fplAddress = "0x37780b718c19F7f06D41f3c68C3A78ECB2Ca191f";
 
-  const fplInstance = new ethers.Contract(fplAddress, fplAbi, provider);
-  // const lspFactory = new ethers.ContractFactory(
-  //   lspFactoryAbi,
-  //   lspFactoryBytecode,
-  //   signer
-  // );
+  // Binary lib
+  const fplAddress = "0xc1f4e05738E5a7B7CB1f22bB689359CCb1610DA4";
+
+  const fplInstance = new ethers.Contract(fplAddress, fplAbi, signer);
 
   // const lspFactoryInstance = await lspFactory.deploy();
 
-  console.log("factoryInstance", factoryInstance);
-  console.log("FPL instance", fplInstance);
+  // LSP parameters. Pass in arguments to customize these.
+  const lspParams = {
+    pairName: "UMA Cypress Test Binary Token",
+    expirationTimestamp: 1735718400, // Timestamp that the contract will expire at.
+    collateralPerPair: "250000000000000000", // 0.25
+    priceIdentifier: ethers.utils
+      .hexlify(ethers.utils.toUtf8Bytes("UMAUSD"))
+      .padEnd(66, "0"), // Price identifier to use.
+    longSynthName: "UMA Cypress Test Token",
+    longSynthSymbol: "UMACTT-L",
+    shortSynthName: "UMA Short Cypress Test Token",
+    shortSynthSymbol: "UMACTT-S",
+    collateralToken: "0x04Fa0d235C4abf4BcF4787aF4CF447DE572eF828", // Collateral token address, UMA in this case
+    financialProductLibrary: fplAddress,
+    customAncillaryData: "0x", // Default to empty bytes array if no ancillary data is passed.
+    prepaidProposerReward: 0, // Default to 0 if no prepaid proposer reward is passed.
+    optimisticOracleLivenessTime: 7200,
+    optimisticOracleProposerBond: "40000000000000000000",
+    upperBound: "12000000000000000000",
+    lowerBound: "4000000000000000000",
+  };
+
+  console.log("lspParams", lspParams);
+
+  const lspTx = await factoryInstance.createLongShortPair(lspParams, {
+    gasLimit: 12_000_000,
+    gasPrice: 80_000_000_000,
+  });
+
+  console.log("lsp tx", lspTx);
+  // console.log("lspInstance", lspInstance);
 
   // const lspBytecode = getLongShortPairBytecode();
   // const lspAbi = getLongShortPairAbi();
