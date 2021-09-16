@@ -3,8 +3,10 @@ import { Wallet } from "@ethersproject/wallet";
 import {
   getLongShortPairBytecode,
   getLongShortPairAbi,
-  getExpandedERC20Abi,
-  getExpandedERC20Bytecode,
+  getLongShortPairCreatorAbi,
+  getLongShortPairCreatorBytecode,
+  getLongShortPairCreatorAddress,
+  getLongShortPairFinancialProductLibraryAbi,
 } from "@uma/contracts-frontend";
 import { sign } from "crypto";
 
@@ -40,19 +42,33 @@ export default async function deployLSPContract() {
   const provider = new ethers.getDefaultProvider("http://127.0.0.1:8545");
   const signer = new Wallet(HARDHAT_DEFAULT_PRIVATE_KEY, provider);
 
-  let erc20Bytecode = getExpandedERC20Bytecode();
-  erc20Bytecode = erc20Bytecode.replaceAll('"', "");
-  const erc20Abi = getExpandedERC20Abi();
+  const factoryAddress = getLongShortPairCreatorAddress(1);
+  const lspFactoryAbi = getLongShortPairCreatorAbi();
 
-  const erc20Factory = new ethers.ContractFactory(
-    erc20Abi,
-    erc20Bytecode,
-    signer
+  //   let lspFactoryBytecode = getLongShortPairCreatorBytecode();
+  //   // Bug in lib that adds quotes.
+  // lspFactoryBytecode = lspFactoryBytecode.replaceAll('"', "");
+  const factoryInstance = new ethers.Contract(
+    factoryAddress,
+    lspFactoryAbi,
+    provider
   );
 
-  const longErc20 = await erc20Factory.deploy("Cypress-Long", "CY-L", 18);
-  const shortErc20 = await erc20Factory.deploy("Cypress-Short", "CY-S", 18);
-  console.log(longErc20, shortErc20);
+  const fplAbi = getLongShortPairFinancialProductLibraryAbi();
+  // Pulled from networks in uma/core.
+  const fplAddress = "0x37780b718c19F7f06D41f3c68C3A78ECB2Ca191f";
+
+  const fplInstance = new ethers.Contract(fplAddress, fplAbi, provider);
+  // const lspFactory = new ethers.ContractFactory(
+  //   lspFactoryAbi,
+  //   lspFactoryBytecode,
+  //   signer
+  // );
+
+  // const lspFactoryInstance = await lspFactory.deploy();
+
+  console.log("factoryInstance", factoryInstance);
+  console.log("FPL instance", fplInstance);
 
   // const lspBytecode = getLongShortPairBytecode();
   // const lspAbi = getLongShortPairAbi();
