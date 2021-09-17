@@ -74,14 +74,18 @@ const MintForm: FC<Props> = ({
 
   const checkIfUserHasToApprove = useCallback(async () => {
     if (collateralERC20Contract) {
-      const allowance = await collateralERC20Contract.allowance(
-        address,
-        contractAddress
-      );
-      const balance = await collateralERC20Contract.balanceOf(address);
-      const hasToApprove = allowance.lt(balance);
-      if (hasToApprove) {
-        setUserNeedsToApprove(true);
+      try {
+        const allowance = await collateralERC20Contract.allowance(
+          address,
+          contractAddress
+        );
+        const balance = await collateralERC20Contract.balanceOf(address);
+        const hasToApprove = allowance.lt(balance);
+        if (hasToApprove) {
+          setUserNeedsToApprove(true);
+        }
+      } catch (err) {
+        console.log("err in check approval call", err);
       }
     }
   }, [address, collateralERC20Contract, contractAddress]);

@@ -46,6 +46,7 @@ export function useOnboard() {
       await instance.walletCheck();
       connect({ connector: instance });
     } catch (err) {
+      console.log("did this throw?", err);
       setError(err);
     }
   }, [connect, instance, setError]);

@@ -8,6 +8,7 @@ import {
   getLongShortPairCreatorAddress,
   getLongShortPairFinancialProductLibraryAbi,
 } from "@uma/contracts-frontend";
+import { LSP_PAIRNAME } from "./constants";
 
 // Mandatory arguments:
 // --gasprice: Gas price to use in GWEI.
@@ -82,7 +83,7 @@ export default async function deployLSPContract() {
 
   // LSP parameters. Pass in arguments to customize these.
   const lspParams = {
-    pairName: "UMA Cypress Test Binary Token",
+    pairName: LSP_PAIRNAME,
     expirationTimestamp: 1735718400, // Timestamp that the contract will expire at. exp time: jan 1st, 2025, midnight.
 
     collateralPerPair: "250000000000000000", // 0.25

@@ -1,17 +1,11 @@
 /* eslint-disable */
+import { LSP_PAIRNAME, TEST_PUBLIC_ADDRESS } from "../helpers/constants";
 import deployLSPContract from "../helpers/deployLSPContract";
 
 describe("Connects to the wallet", () => {
   let lspAddress = "";
   before(async () => {
     lspAddress = await deployLSPContract();
-    // const lspBytecode = getLongShortPairBytecode();
-    // const lspAbi = getLongShortPairAbi();
-    // const provider = new ethers.getDefaultProvider("http://127.0.0.1:8545");
-
-    // const signer = new Wallet(HARDHAT_DEFAULT_PRIVATE_KEY, provider);
-    // const factory = new ethers.ContractFactory(lspAbi, lspBytecode, signer);
-    // contract = await factory.deploy();
   });
 
   beforeEach(() => {
@@ -23,10 +17,18 @@ describe("Connects to the wallet", () => {
     // cy.setLocalStorage("cypress-testing", true);
   });
 
-  it("Visits localhost", () => {
-    cy.wait(30_000);
+  it("Visits newly minted test contract", () => {
+    // Give API time to load detect the contract.
+    cy.wait(35_000);
     cy.visit(`localhost:3000/${lspAddress}`);
+    cy.contains(LSP_PAIRNAME);
+  });
+
+  it("Wallet connects to test wallet properly.", () => {
+    cy.visit(`localhost:3000/${lspAddress}`);
+    // Initial snapshot
     cy.contains("Your Wallet");
+    cy.contains("Disconnected");
     cy.get("#connectWallet").click();
     cy.get(
       ".bn-onboard-custom.bn-onboard-prepare-button.bn-onboard-prepare-button-center"
@@ -35,8 +37,11 @@ describe("Connects to the wallet", () => {
       .click();
 
     cy.get(".bn-onboard-custom.bn-onboard-icon-button").eq(1).click();
-    cy.window().then((win) => {
-      console.log(win.ethereum);
-    });
+    // cy.window().then((win) => {
+    //   console.log(win.ethereum);
+    // });
+    cy.get("#walletAccount").contains(TEST_PUBLIC_ADDRESS);
+    cy.contains("Connected");
+    cy.contains(TEST_PUBLIC_ADDRESS);
   });
 });
