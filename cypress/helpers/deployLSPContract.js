@@ -103,6 +103,11 @@ export default async function deployLSPContract() {
     lowerBound: "4000000000000000000",
   };
 
+  const expectedAddress = await factoryInstance.callStatic.createLongShortPair(
+    lspParams
+  );
+  console.log("EA", expectedAddress);
+
   const lspTx = await factoryInstance.createLongShortPair(lspParams, {
     gasLimit: 12_000_000,
     gasPrice: 80_000_000_000,
@@ -112,5 +117,7 @@ export default async function deployLSPContract() {
 
   const mined = await lspTx.wait(1);
 
-  return mined.events[0].address;
+  console.log("mined", mined);
+
+  return expectedAddress;
 }
