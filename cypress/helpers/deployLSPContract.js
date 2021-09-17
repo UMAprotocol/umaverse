@@ -9,8 +9,6 @@ import {
   getLongShortPairFinancialProductLibraryAbi,
 } from "@uma/contracts-frontend";
 
-const HARDHAT_DEFAULT_PRIVATE_KEY =
-  "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
 // Mandatory arguments:
 // --gasprice: Gas price to use in GWEI.
 // --expirationTimestamp: Timestamp that the contract will expire at.
@@ -59,16 +57,15 @@ const HARDHAT_DEFAULT_PRIVATE_KEY =
   }
 */
 
+const HARDHAT_DEFAULT_PRIVATE_KEY =
+  "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
+
 export default async function deployLSPContract() {
   const provider = new ethers.getDefaultProvider("http://127.0.0.1:8545");
   const signer = new Wallet(HARDHAT_DEFAULT_PRIVATE_KEY, provider);
   const factoryAddress = getLongShortPairCreatorAddress(1);
   const lspFactoryAbi = getLongShortPairCreatorAbi();
-  console.log("factoryAddress", factoryAddress);
 
-  //   let lspFactoryBytecode = getLongShortPairCreatorBytecode();
-  //   // Bug in lib that adds quotes.
-  // lspFactoryBytecode = lspFactoryBytecode.replaceAll('"', "");
   const factoryInstance = new ethers.Contract(
     factoryAddress,
     lspFactoryAbi,
@@ -76,20 +73,18 @@ export default async function deployLSPContract() {
   );
 
   const fplAbi = getLongShortPairFinancialProductLibraryAbi();
-  // Pulled from networks in uma/core.
-  // const fplAddress = "0x37780b718c19F7f06D41f3c68C3A78ECB2Ca191f";
 
-  // Binary lib
+  // Pulled from networks in uma/core.
+  // Range Financial lib
   const fplAddress = "0xc1f4e05738E5a7B7CB1f22bB689359CCb1610DA4";
 
   const fplInstance = new ethers.Contract(fplAddress, fplAbi, signer);
 
-  // const lspFactoryInstance = await lspFactory.deploy();
-
   // LSP parameters. Pass in arguments to customize these.
   const lspParams = {
     pairName: "UMA Cypress Test Binary Token",
-    expirationTimestamp: 1735718400, // Timestamp that the contract will expire at.
+    expirationTimestamp: 1735718400, // Timestamp that the contract will expire at. exp time: jan 1st, 2025, midnight.
+
     collateralPerPair: "250000000000000000", // 0.25
     priceIdentifier: ethers.utils
       .hexlify(ethers.utils.toUtf8Bytes("UMAUSD"))
@@ -108,26 +103,14 @@ export default async function deployLSPContract() {
     lowerBound: "4000000000000000000",
   };
 
-  console.log("lspParams", lspParams);
-
   const lspTx = await factoryInstance.createLongShortPair(lspParams, {
     gasLimit: 12_000_000,
     gasPrice: 80_000_000_000,
   });
 
   console.log("lsp tx", lspTx);
-  // console.log("lspInstance", lspInstance);
 
-  // const lspBytecode = getLongShortPairBytecode();
-  // const lspAbi = getLongShortPairAbi();
+  const mined = await lspTx.wait(1);
 
-  // const lspFactory = new ethers.ContractFactory(lspAbi, lspBytecode, signer);
-
-  // // exp time: jan 1st, 2025, midnight.
-  // return (contract = await factory.deploy(
-  //   "UMA-CY",
-  //   1735718400,
-  //   ethers.utils.formatEther("0.25"),
-
-  // ));
+  return mined.events[0].address;
 }
