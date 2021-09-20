@@ -8,6 +8,11 @@
 2) Hardhat instance in localhost:8545. I use this repo setup, which has some scripts: (https://github.com/UMAprotocol/hardhat-test) 
 3) Protocol API (https://github.com/UMAprotocol/protocol/tree/master/packages/api) and run yarn lsp_api. Note: The code for this is on a WIP branch as of Mon, Sept 20th. This also needs to be run *after* the hardhat instance is ran, as it attempts to connect to the chain. Give the API time to run through processes on initial load.
 4) In your .env file, set this value to the following:
+5) You will need to seed UMA to the test account by running the seedUmaToAccounts.js script in hardhat-test:
+
+``` sh
+  HARDHAT_NETWORK=localhost node ./scripts/seedUmaToAccounts.js
+```
 
 NEXT_PUBLIC_UMA_API_URL = http://localhost:8282
 
