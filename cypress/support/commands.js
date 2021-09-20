@@ -52,6 +52,7 @@ class CustomizedBridge extends Eip1193Bridge {
   }
   async send(...args) {
     console.debug("send called", ...args);
+    console.log("args -------", args);
     const isCallbackForm =
       typeof args[0] === "object" && typeof args[1] === "function";
     let callback;
@@ -78,6 +79,18 @@ class CustomizedBridge extends Eip1193Bridge {
     if (method === "eth_chainId") {
       const result = await this.provider.getNetwork();
       return result.chainId;
+    }
+    if (method === "eth_sendTransaction") {
+      if (!this.signer) {
+        return throwUnsupported("eth_sendTransaction requires an account");
+      }
+
+      const req = ethers.providers.JsonRpcProvider.hexlifyTransaction(
+        params[0],
+        args[1][0]
+      );
+      const tx = await this.signer.sendTransaction(req);
+      return tx.hash;
     }
 
     // Uniswap's original code

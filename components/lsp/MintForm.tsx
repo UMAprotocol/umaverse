@@ -220,6 +220,7 @@ const MintForm: FC<Props> = ({
           </BottomFormWrapper>
           <ButtonWrapper>
             <MintButton
+              id="mintButton"
               showDisabled={!signer || showMintError ? true : false}
               onClick={() => {
                 if (showMintError) return false;

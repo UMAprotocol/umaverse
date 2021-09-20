@@ -1,9 +1,14 @@
 /* eslint-disable */
-import { LSP_PAIRNAME, TEST_PUBLIC_ADDRESS } from "../contracts/constants";
+import {
+  LSP_PAIRNAME,
+  TEST_PUBLIC_ADDRESS,
+  COLLATERAL_TO_MINT,
+  COLLATERAL_EXPECTED_AFTER_MINT,
+} from "../contracts/constants";
 import deployLSPContract from "../contracts/deployLSPContract";
 
 describe("Connects to the wallet", () => {
-  let lspAddress = "";
+  let lspAddress = "0xF8D29f295725606c11D9f2C7c67db32e7A1Dfa7f";
   before(async () => {
     lspAddress = await deployLSPContract();
   });
@@ -44,5 +49,16 @@ describe("Connects to the wallet", () => {
     cy.get("#walletAccount").contains(TEST_PUBLIC_ADDRESS);
     cy.contains("Connected");
     cy.contains(TEST_PUBLIC_ADDRESS);
+  });
+
+  it("Mints tokens", () => {
+    cy.get("#collateralInput").type(COLLATERAL_TO_MINT);
+    cy.wait(1000);
+    cy.get("#mintButton").contains("Approve");
+    cy.get("#mintButton").click();
+    cy.wait(2000);
+    cy.get("#mintButton").contains("Mint");
+    cy.get("#mintButton").click();
+    cy.get("#balanceLong").contains("4");
   });
 });

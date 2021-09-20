@@ -15,6 +15,7 @@ interface Props {
   // Define this function. Note: value is not set here unless specified in the custom function.
   customOnChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onKeyDown?: React.KeyboardEventHandler<HTMLInputElement> | undefined;
+  id?: string;
 }
 
 export type LabelPlacement = "default | overlap";
@@ -28,12 +29,14 @@ const TextInput: FC<Props> = ({
   additionalEffects,
   customOnChange,
   onKeyDown,
+  id,
 }) => {
   return (
     <StyledInput inputWidth={width}>
       <Label labelPlacement={labelPlacement}>{label}</Label>
       <div>
         <input
+          id={id}
           type="text"
           value={value}
           onChange={(e) => {
