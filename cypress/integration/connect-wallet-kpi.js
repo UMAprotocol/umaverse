@@ -4,6 +4,8 @@ import {
   TEST_PUBLIC_ADDRESS,
   COLLATERAL_TO_MINT,
   COLLATERAL_EXPECTED_AFTER_MINT,
+  COLLATERAL_TO_REDEEM,
+  COLLATERAL_EXPECTED_AFTER_REDEEM,
 } from "../contracts/constants";
 import deployLSPContract from "../contracts/deployLSPContract";
 
@@ -31,7 +33,6 @@ describe("Connects to the wallet", () => {
   });
 
   it("Wallet connects to test wallet properly.", () => {
-    cy.visit(`localhost:3000/${lspAddress}`);
     // Initial snapshot
     cy.contains("Your Wallet");
     cy.contains("Disconnected");
@@ -60,5 +61,14 @@ describe("Connects to the wallet", () => {
     cy.get("#mintButton").contains("Mint");
     cy.get("#mintButton").click();
     cy.get("#balanceLong").contains("4");
+  });
+
+  it("Redeems tokens", () => {
+    cy.get("#RedeemTab").click();
+    cy.get("#collateralInput").type(COLLATERAL_TO_REDEEM);
+    cy.wait(1000);
+    cy.get("#redeemButton").click();
+    cy.wait(2000);
+    cy.get("#collateralBalance").contains(COLLATERAL_EXPECTED_AFTER_REDEEM);
   });
 });

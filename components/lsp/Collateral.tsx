@@ -84,7 +84,7 @@ const Collateral: FC<Props> = ({
         />
       </FormRow>
       <BalanceRow>
-        <div>
+        <div id="collateralBalance">
           <span>
             Your Balance{" "}
             {ethers.utils.formatUnits(
