@@ -20,7 +20,7 @@ describe("Connects to the wallet", () => {
   it("Visits newly minted test contract", () => {
     // Give API time to load detect the contract.
     // TODO: Work to get this time down with BE devs.
-    cy.wait(35_000);
+    cy.wait(45_000);
     cy.visit(`localhost:3000/${lspAddress}`);
     cy.contains(LSP_PAIRNAME);
   });

@@ -170,8 +170,6 @@ export const ConnectionProvider: React.FC = ({ children }) => {
     isConnected,
   };
 
-  console.log("provider", provider);
-
   return (
     <ConnectionContext.Provider value={value}>
       {children}
