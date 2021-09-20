@@ -10,6 +10,8 @@ import {
 } from "@uma/contracts-frontend";
 import { LSP_PAIRNAME } from "./constants";
 
+// Comments pulled from UMA lsp deploy script.
+
 // Mandatory arguments:
 // --gasprice: Gas price to use in GWEI.
 // --expirationTimestamp: Timestamp that the contract will expire at.
@@ -107,6 +109,7 @@ export default async function deployLSPContract() {
   const expectedAddress = await factoryInstance.callStatic.createLongShortPair(
     lspParams
   );
+
   console.log("EA", expectedAddress);
 
   const lspTx = await factoryInstance.createLongShortPair(lspParams, {

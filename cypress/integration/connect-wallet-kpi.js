@@ -1,6 +1,6 @@
 /* eslint-disable */
-import { LSP_PAIRNAME, TEST_PUBLIC_ADDRESS } from "../helpers/constants";
-import deployLSPContract from "../helpers/deployLSPContract";
+import { LSP_PAIRNAME, TEST_PUBLIC_ADDRESS } from "../contracts/constants";
+import deployLSPContract from "../contracts/deployLSPContract";
 
 describe("Connects to the wallet", () => {
   let lspAddress = "";
