@@ -6,7 +6,7 @@ import {
   COLLATERAL_EXPECTED_AFTER_MINT,
   COLLATERAL_TO_REDEEM,
   COLLATERAL_EXPECTED_AFTER_REDEEM,
-} from "../contracts/constants";
+} from "../../contracts/constants";
 import deployLSPContract from "../contracts/deployLSPContract";
 
 /* 
