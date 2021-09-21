@@ -56,6 +56,15 @@ describe("Connects to the wallet", () => {
     cy.contains(TEST_PUBLIC_ADDRESS);
   });
 
+  it("Seeds tokens to accounts", () => {
+    cy.exec(
+      "HARDHAT_NETWORK=localhost node ./hardhat-scripts/seedUmaToAccounts.js"
+    ).then((res) => {
+      console.log("res", res);
+      expect(res.code).to.eq(0);
+    });
+  });
+
   it("Mints tokens", () => {
     cy.get("#collateralInput").type(COLLATERAL_TO_MINT);
     cy.wait(1000);
