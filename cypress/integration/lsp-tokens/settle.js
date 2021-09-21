@@ -57,7 +57,10 @@ describe("Connects to the wallet", () => {
     cy.contains(TEST_PUBLIC_ADDRESS);
   });
 
-  // it("Settles the contract", () => {
-
-  // })
+  it("Settles the contract", () => {
+    cy.get("#settleButton").contains("Expire");
+    cy.get("#settleButton").click();
+    cy.wait(1000);
+    cy.get("#settleButton").contains("Settle");
+  });
 });
