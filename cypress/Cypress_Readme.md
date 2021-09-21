@@ -24,6 +24,6 @@ yarn cypress:open
 
 ## Selecting a test.
 
-- This should open an app which will show you the tests available. Double click on the connect-wallet-kpi.js test.
+- This should open an app which will show you the tests available. Double click on the lsp-tokens.js test.
 
 - This will run this test.
