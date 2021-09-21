@@ -9,8 +9,17 @@ import {
 } from "../contracts/constants";
 import deployLSPContract from "../contracts/deployLSPContract";
 
+/* 
+  Note: To run this test you need a few things running:
+  1) Dev API
+  2) Hardhat node, forking mainnet
+  3) Main app
+  4) You need to make sure the test account has UMA: see uma-protocol/hardhat-test and run the seedUmaToAccounts.
+  More details in the README.
+*/
+
 describe("Connects to the wallet", () => {
-  let lspAddress = "0xF8D29f295725606c11D9f2C7c67db32e7A1Dfa7f";
+  let lspAddress = "";
   before(async () => {
     lspAddress = await deployLSPContract();
   });
@@ -20,8 +29,6 @@ describe("Connects to the wallet", () => {
     // so we must tell it to visit our website with the `cy.visit()` command.
     // Since we want to visit the same URL at the start of all our tests,
     // we include it in our beforeEach function so that it runs before each test
-    // cy.visit("localhost:3000");
-    // cy.setLocalStorage("cypress-testing", true);
   });
 
   it("Visits newly minted test contract", () => {
@@ -44,9 +51,6 @@ describe("Connects to the wallet", () => {
       .click();
 
     cy.get(".bn-onboard-custom.bn-onboard-icon-button").eq(1).click();
-    // cy.window().then((win) => {
-    //   console.log(win.ethereum);
-    // });
     cy.get("#walletAccount").contains(TEST_PUBLIC_ADDRESS);
     cy.contains("Connected");
     cy.contains(TEST_PUBLIC_ADDRESS);
@@ -55,6 +59,7 @@ describe("Connects to the wallet", () => {
   it("Mints tokens", () => {
     cy.get("#collateralInput").type(COLLATERAL_TO_MINT);
     cy.wait(1000);
+    // New deployment of contract so we have to do an infinite approval.
     cy.get("#mintButton").contains("Approve");
     cy.get("#mintButton").click();
     cy.wait(2000);
