@@ -10,16 +10,29 @@ const ethers = hre.ethers;
 
 async function main() {
   // 2 months roughly
-  // const timeToAdvance = 5184000;
+  const timeToAdvance = 31_536_000 * 4;
+  // const timeToAdvance = 1735818400;
   const hardHatID = "31337";
 
   try {
+    // await hre.network.provider.send({
+    //   jsonrpc: "2.0",
+    //   method: "evm_increaseTime",
+    //   params: [timeToAdvance],
+    //   id: hardHatID,
+    // });
     const tx = await hre.network.provider.request({
       jsonrpc: "2.0",
       method: "evm_mine",
       params: [Number(process.argv[2])],
       id: hardHatID,
     });
+    // const tx = await hre.network.provider.send({
+    //   jsonrpc: "2.0",
+    //   method: "evm_mine",
+    //   params: [],
+    //   id: hardHatID,
+    // });
     console.log("Tx?", tx);
   } catch (err) {
     console.log("err in evm_increaseTime", err);

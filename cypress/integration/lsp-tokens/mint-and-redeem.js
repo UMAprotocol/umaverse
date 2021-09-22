@@ -31,6 +31,15 @@ describe("Connects to the wallet", () => {
     // we include it in our beforeEach function so that it runs before each test
   });
 
+  it("Seeds tokens to accounts", () => {
+    cy.exec(
+      "HARDHAT_NETWORK=localhost node ./hardhat-scripts/seedUmaToAccounts.js"
+    ).then((res) => {
+      // Should be no error.
+      expect(res.code).to.eq(0);
+    });
+  });
+
   it("Visits newly minted test contract", () => {
     // Give API time to load detect the contract.
     // TODO: Work to get this time down with BE devs.
@@ -56,15 +65,6 @@ describe("Connects to the wallet", () => {
     cy.contains(TEST_PUBLIC_ADDRESS);
   });
 
-  // it("Seeds tokens to accounts", () => {
-  //   cy.exec(
-  //     "HARDHAT_NETWORK=localhost node ./hardhat-scripts/seedUmaToAccounts.js"
-  //   ).then((res) => {
-  //     // Should be no error.
-  //     expect(res.code).to.eq(0);
-  //   });
-  // });
-
   it("Mints tokens", () => {
     cy.get("#balanceLong").contains("0");
     cy.get("#collateralInput").type(COLLATERAL_TO_MINT);
@@ -84,25 +84,35 @@ describe("Connects to the wallet", () => {
     cy.wait(1000);
     cy.get("#redeemButton").click();
     cy.wait(2000);
-    cy.get("#collateralBalance").contains("40");
+    cy.get("#collateralBalance").contains("20");
   });
 
-  // it("Move blockchain forward to a settable state", () => {
-  //   cy.exec(
-  //     "HARDHAT_NETWORK=localhost node ./hardhat-scripts/advanceTimeForward.js 173581840"
-  //   ).then((res) => {
-  //     // Should be no error.
-  //     expect(res.code).to.eq(0);
-  //   });
-  // });
+  it("Move blockchain forward to a settable state", () => {
+    cy.exec(
+      "HARDHAT_NETWORK=localhost node ./hardhat-scripts/advanceTimeForward.js 173581840"
+    ).then((res) => {
+      // Should be no error.
+      expect(res.code).to.eq(0);
+    });
+  });
 
-  // it("Settles the contract", () => {
-  //   cy.reload();
+  it("Settles the contract", () => {
+    cy.wait(5000);
+    cy.reload();
+    cy.get("#connectWallet").click();
+    cy.get(
+      ".bn-onboard-custom.bn-onboard-prepare-button.bn-onboard-prepare-button-center"
+    )
+      .first()
+      .click();
 
-  //   cy.wait(1000);
-  //   cy.get("#settleButton").contains("Expire");
-  //   cy.get("#settleButton").click();
-  //   cy.wait(1000);
-  //   cy.get("#settleButton").contains("Settle");
-  // });
+    cy.get(".bn-onboard-custom.bn-onboard-icon-button").eq(1).click();
+    cy.get("#walletAccount").contains(TEST_PUBLIC_ADDRESS);
+    cy.contains("Connected");
+    cy.wait(1000);
+    cy.get("#settleButton").contains("Expire");
+    cy.get("#settleButton").click();
+    cy.wait(1000);
+    cy.get("#settleButton").contains("Settle");
+  });
 });

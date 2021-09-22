@@ -22,6 +22,6 @@ import "./commands";
 // require('./commands')
 
 // ignore uncaught exceptions
-Cypress.on("uncaught:exception", (err) => {
-  return false;
-});
+// Cypress.on("uncaught:exception", (err) => {
+//   return false;
+// });
