@@ -6,8 +6,8 @@ import {
   COLLATERAL_EXPECTED_AFTER_MINT,
   COLLATERAL_TO_REDEEM,
   COLLATERAL_EXPECTED_AFTER_REDEEM,
-} from "../../contracts/constants";
-import deployLSPContract from "../../contracts/deployLSPContract";
+} from "../../utils/constants";
+import deployLSPContract from "../../utils/deployLSPContract";
 
 /* 
   Note: To run this test you need a few things running:

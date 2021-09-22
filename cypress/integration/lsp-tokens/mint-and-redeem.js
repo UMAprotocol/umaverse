@@ -6,8 +6,9 @@ import {
   COLLATERAL_EXPECTED_AFTER_MINT,
   COLLATERAL_TO_REDEEM,
   COLLATERAL_EXPECTED_AFTER_REDEEM,
-} from "../../contracts/constants";
-import deployLSPContract from "../../contracts/deployLSPContract";
+} from "../../utils/constants";
+import createCustomizedBridge from "../../utils/CustomizedBridge";
+import deployLSPContract from "../../utils/deployLSPContract";
 
 /* 
   Note: To run this test you need a few things running:
@@ -99,20 +100,24 @@ describe("Connects to the wallet", () => {
   it("Settles the contract", () => {
     cy.wait(5000);
     cy.reload();
-    cy.get("#connectWallet").click();
-    cy.get(
-      ".bn-onboard-custom.bn-onboard-prepare-button.bn-onboard-prepare-button-center"
-    )
-      .first()
-      .click();
+    cy.window().then((win) => {
+      win.ethereum = createCustomizedBridge();
+      cy.wait(2000);
+      cy.get("#connectWallet").click();
+      cy.get(
+        ".bn-onboard-custom.bn-onboard-prepare-button.bn-onboard-prepare-button-center"
+      )
+        .first()
+        .click();
 
-    cy.get(".bn-onboard-custom.bn-onboard-icon-button").eq(1).click();
-    cy.get("#walletAccount").contains(TEST_PUBLIC_ADDRESS);
-    cy.contains("Connected");
-    cy.wait(1000);
-    cy.get("#settleButton").contains("Expire");
-    cy.get("#settleButton").click();
-    cy.wait(1000);
-    cy.get("#settleButton").contains("Settle");
+      cy.get(".bn-onboard-custom.bn-onboard-icon-button").eq(1).click();
+      cy.get("#walletAccount").contains(TEST_PUBLIC_ADDRESS);
+      cy.contains("Connected");
+      cy.wait(1000);
+      cy.get("#settleButton").contains("Expire");
+      cy.get("#settleButton").click();
+      cy.wait(1000);
+      cy.get("#settleButton").contains("Settle");
+    });
   });
 });
