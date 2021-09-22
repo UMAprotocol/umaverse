@@ -113,11 +113,10 @@ export default async function deployLSPContract() {
     expectedAddress = await factoryInstance.callStatic.createLongShortPair(
       lspParams
     );
+    console.log("EA", expectedAddress);
   } catch (err) {
     console.log("err in EA call", err);
   }
-
-  console.log("EA", expectedAddress);
 
   const lspTx = await factoryInstance.createLongShortPair(lspParams, {
     gasLimit: 12_000_000,
