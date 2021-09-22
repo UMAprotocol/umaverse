@@ -32,19 +32,10 @@ describe("Connects to the wallet", () => {
     // we include it in our beforeEach function so that it runs before each test
   });
 
-  // it("Move blockchain forward to a settable state", () => {
-  //   cy.exec(
-  //     "HARDHAT_NETWORK=localhost node ./hardhat-scripts/advanceTimeForward.js 173581840"
-  //   ).then((res) => {
-  //     // Should be no error.
-  //     expect(res.code).to.eq(0);
-  //   });
-  // });
-
   it("Visits newly minted test contract", () => {
     // Give API time to load detect the contract.
     // TODO: Work to get this time down with BE devs.
-    cy.wait(35_000);
+    cy.wait(60_000);
     cy.visit(`localhost:3000/${lspAddress}`);
     // cy.contains(LSP_PAIRNAME);
   });
@@ -68,14 +59,19 @@ describe("Connects to the wallet", () => {
 
   it("Move blockchain forward to a settable state", () => {
     cy.exec(
-      "HARDHAT_NETWORK=localhost node ./hardhat-scripts/advanceTimeForward.js 173581840"
+      "HARDHAT_NETWORK=localhost node ./hardhat-scripts/advanceTimeForward.js 1735818400"
     ).then((res) => {
       // Should be no error.
+      console.log("res", res);
       expect(res.code).to.eq(0);
     });
   });
 
   it("Settles the contract", () => {
+    cy.visit(`localhost:3000`);
+    cy.wait(3000);
+    cy.visit(`localhost:3000/${lspAddress}`);
+    cy.wait(3000);
     cy.get("#connectWallet").click();
     cy.get(
       ".bn-onboard-custom.bn-onboard-prepare-button.bn-onboard-prepare-button-center"
