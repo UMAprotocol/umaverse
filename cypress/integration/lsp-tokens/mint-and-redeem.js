@@ -56,16 +56,17 @@ describe("Connects to the wallet", () => {
     cy.contains(TEST_PUBLIC_ADDRESS);
   });
 
-  it("Seeds tokens to accounts", () => {
-    cy.exec(
-      "HARDHAT_NETWORK=localhost node ./hardhat-scripts/seedUmaToAccounts.js"
-    ).then((res) => {
-      console.log("res", res);
-      expect(res.code).to.eq(0);
-    });
-  });
+  // it("Seeds tokens to accounts", () => {
+  //   cy.exec(
+  //     "HARDHAT_NETWORK=localhost node ./hardhat-scripts/seedUmaToAccounts.js"
+  //   ).then((res) => {
+  //     // Should be no error.
+  //     expect(res.code).to.eq(0);
+  //   });
+  // });
 
   it("Mints tokens", () => {
+    cy.get("#balanceLong").contains("0");
     cy.get("#collateralInput").type(COLLATERAL_TO_MINT);
     cy.wait(1000);
     // New deployment of contract so we have to do an infinite approval.
@@ -83,6 +84,25 @@ describe("Connects to the wallet", () => {
     cy.wait(1000);
     cy.get("#redeemButton").click();
     cy.wait(2000);
-    cy.get("#collateralBalance").contains(COLLATERAL_EXPECTED_AFTER_REDEEM);
+    cy.get("#collateralBalance").contains("40");
   });
+
+  // it("Move blockchain forward to a settable state", () => {
+  //   cy.exec(
+  //     "HARDHAT_NETWORK=localhost node ./hardhat-scripts/advanceTimeForward.js 173581840"
+  //   ).then((res) => {
+  //     // Should be no error.
+  //     expect(res.code).to.eq(0);
+  //   });
+  // });
+
+  // it("Settles the contract", () => {
+  //   cy.reload();
+
+  //   cy.wait(1000);
+  //   cy.get("#settleButton").contains("Expire");
+  //   cy.get("#settleButton").click();
+  //   cy.wait(1000);
+  //   cy.get("#settleButton").contains("Settle");
+  // });
 });
