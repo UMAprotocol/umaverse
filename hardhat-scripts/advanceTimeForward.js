@@ -21,18 +21,22 @@ async function main() {
     //   params: [timeToAdvance],
     //   id: hardHatID,
     // });
-    const tx = await hre.network.provider.request({
-      jsonrpc: "2.0",
-      method: "evm_mine",
-      params: [Number(process.argv[2])],
-      id: hardHatID,
-    });
+    // const tx = await hre.network.provider.request({
+    //   jsonrpc: "2.0",
+    //   method: "evm_mine",
+    //   params: [Number(process.argv[2])],
+    //   id: hardHatID,
+    // });
     // const tx = await hre.network.provider.send({
     //   jsonrpc: "2.0",
     //   method: "evm_mine",
     //   params: [],
     //   id: hardHatID,
     // });
+    await network.provider.send("evm_setNextBlockTimestamp", [
+      Number(process.argv[2]),
+    ]);
+    const tx = await network.provider.send("evm_mine"); // this one will have 2021-07-01 12:00 AM as its timestamp, no matter what the previous block has
     console.log("Tx?", tx);
   } catch (err) {
     console.log("err in evm_increaseTime", err);
