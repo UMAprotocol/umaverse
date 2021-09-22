@@ -21,6 +21,7 @@
     "@sentry/nextjs": "^6.8.0",
     "@types/d3-time-format": "^3.0.0",
     "@uma/contracts-frontend": "^0.1.0",
+    "@uma/contracts-node": "^0.1.0",
     "@uma/core": "^2.7.0",
     "@visx/axis": "^1.7.0",
     "@visx/curve": "^1.7.0",

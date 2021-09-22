@@ -8,7 +8,7 @@ describe("Fund UMA to test wallet", () => {
     ).then((res) => {
       // Should be no error.
       console.log("res", res);
-      expect(res.code).to.eq(0);
+      expect(res.stderr).to.eq("");
     });
   });
 });

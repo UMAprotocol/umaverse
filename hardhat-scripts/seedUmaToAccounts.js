@@ -19,7 +19,7 @@ async function main() {
 
     const signer = await ethers.provider.getSigner(foundationAccount);
 
-    const erc20 = createERC20ContractInstance(signer, "1");
+    const erc20 = await createERC20ContractInstance(signer, 1);
     await hre.network.provider.send("hardhat_setBalance", [
       foundationAccount,
       "0x10000000000000000000000",
@@ -43,7 +43,6 @@ async function main() {
     console.log("TXOne", txOne);
     console.log("TXTwo", txTwo);
     console.log("TXThree", txThree);
-    // const txFour = await erc20.transfer()
 
     await hre.network.provider.request({
       method: "hardhat_stopImpersonatingAccount",

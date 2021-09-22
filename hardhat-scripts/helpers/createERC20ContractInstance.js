@@ -1,30 +1,15 @@
 /* eslint-disable */
 
 const ethers = require("ethers");
-const VotingTokenArtifact = require("@uma/core/build/contracts/VotingToken.json");
 
-// Limited ERC-20 ABI
-const abi = [
-  "function balanceOf(address owner) view returns (uint)",
-  "function transfer(address to, uint amount)",
-  "function allowance(address owner, address spender) view returns (uint)",
-  "function approve(address spender, uint256 amount)",
-  "event Transfer(address indexed from, address indexed to, uint amount)",
-];
+// Use contracts-node because this script is being run in node.
+const { getAbi, getAddress } = require("@uma/contracts-node");
 
-// interface Network {
-//   [key: string]: {
-//     address: string;
-//     events: object;
-//     links: object;
-//     transactionHash: string;
-//   };
-// }
+const abi = getAbi("ERC20");
 
 // Default to UMA Mainnet Contract Address.
-module.exports = function createERC20ContractInstance(signer, networkId) {
-  const artifact = VotingTokenArtifact.networks;
-  const network = artifact[networkId];
+module.exports = async function createERC20ContractInstance(signer, networkId) {
+  const address = await getAddress("VotingToken", networkId);
 
-  return new ethers.Contract(network.address, abi, signer);
+  return new ethers.Contract(address, abi, signer);
 };
