@@ -35,7 +35,7 @@ describe("Connects to the wallet", () => {
   it("Visits newly minted test contract", () => {
     // Give API time to load detect the contract.
     // TODO: Work to get this time down with BE devs.
-    cy.wait(60_000);
+    cy.wait(30_000);
     cy.visit(`localhost:3000/${lspAddress}`);
     cy.contains(LSP_PAIRNAME);
   });
@@ -76,6 +76,6 @@ describe("Connects to the wallet", () => {
     cy.wait(1000);
     cy.get("#redeemButton").click();
     cy.wait(2000);
-    cy.get("#collateralBalance").contains("40");
+    cy.get("#collateralBalance").contains(COLLATERAL_EXPECTED_AFTER_REDEEM);
   });
 });
