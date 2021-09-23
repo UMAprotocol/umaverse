@@ -106,8 +106,6 @@ export default async function deployLSPContract() {
     lowerBound: "4000000000000000000",
   };
 
-  console.log("did I get here?");
-
   let expectedAddress = "";
   try {
     expectedAddress = await factoryInstance.callStatic.createLongShortPair(

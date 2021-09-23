@@ -7,7 +7,6 @@ describe("Fund UMA to test wallet", () => {
       "HARDHAT_NETWORK=localhost node ./hardhat-scripts/seedUmaToAccounts.js"
     ).then((res) => {
       // Should be no error.
-      console.log("res", res);
       expect(res.stderr).to.eq("");
     });
   });

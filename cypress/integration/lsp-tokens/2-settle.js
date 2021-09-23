@@ -62,7 +62,6 @@ describe("Connects to the wallet", () => {
       "HARDHAT_NETWORK=localhost node ./hardhat-scripts/advanceTimeForward.js 1735818400"
     ).then((res) => {
       // Should be no error.
-      console.log("res", res);
       expect(res.stderr).to.eq("");
     });
   });
