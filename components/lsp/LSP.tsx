@@ -4,7 +4,6 @@ import { ethers } from "ethers";
 import LSPForm from "./LSPForm";
 
 import createLSPContractInstance from "./createLSPContractInstance";
-import createERC20ContractInstance from "./createERC20ContractInstance";
 
 import { useConnection } from "../../hooks";
 
@@ -24,6 +23,7 @@ interface Props {
   refetchLongTokenBalance: () => void;
   refetchShortTokenBalance: () => void;
   collateralBalance: ethers.BigNumber;
+  collateralERC20Contract: ethers.Contract | null;
   setCollateralBalance: React.Dispatch<React.SetStateAction<ethers.BigNumber>>;
 }
 
@@ -36,13 +36,11 @@ const LSP: FC<Props> = ({
   refetchShortTokenBalance,
   collateralBalance,
   setCollateralBalance,
+  collateralERC20Contract,
 }) => {
   const { account = "", signer, provider } = useConnection();
 
   const [lspContract, setLSPContract] = useState<ethers.Contract | null>(null);
-  const [collateralERC20Contract, setCollateralERC20Contract] =
-    useState<ethers.Contract | null>(null);
-
   const [contractState, setContractState] = useState<ContractState>(
     data.contractState
   );
@@ -93,21 +91,20 @@ const LSP: FC<Props> = ({
 
   // Get contract data and set values.
   useEffect(() => {
-    if (signer && data.address && account) {
-      const contract = createLSPContractInstance(signer, data.address);
+    if (signer && data.address && account && collateralERC20Contract) {
+      const lspCon = createLSPContractInstance(signer, data.address);
 
-      contract.getCurrentTime().then((ts: ethers.BigNumber) => {
+      lspCon.getCurrentTime().then((ts: ethers.BigNumber) => {
         setCurrentTime(ts.toString());
       });
-      const cERC20 = createERC20ContractInstance(signer, data.collateralToken);
 
-      cERC20.balanceOf(account).then((balance: ethers.BigNumber) => {
-        setCollateralBalance(balance);
-      });
+      collateralERC20Contract
+        .balanceOf(account)
+        .then((balance: ethers.BigNumber) => {
+          setCollateralBalance(balance);
+        });
 
-      setCollateralERC20Contract(cERC20);
-
-      setLSPContract(contract);
+      setLSPContract(lspCon);
     }
   }, [
     signer,

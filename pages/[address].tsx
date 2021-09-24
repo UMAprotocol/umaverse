@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useQuery, QueryClient } from "react-query";
 import { dehydrate } from "react-query/hydration";
 import { DateTime } from "luxon";
+import { useRouter } from "next/router";
 
 import {
   Layout,
@@ -192,6 +193,7 @@ type Props =
 
 const SynthPage: React.FC<Props> = ({ data, relatedSynths }) => {
   const { account = "", signer, isConnected } = useConnection();
+  const router = useRouter();
   const formattedLogo = data?.logo?.fields.file.url
     ? formatContentfulUrl(data.logo.fields.file.url)
     : null;
@@ -234,6 +236,9 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths }) => {
   const isExpired =
     DateTime.now().toSeconds() > Number(synthState?.expirationTimestamp);
 
+  const [collateralERC20Contract, setCollateralERC20Contract] =
+    useState<ethers.Contract | null>(null);
+
   const [collateralBalance, setCollateralBalance] = useState<ethers.BigNumber>(
     toBN("0")
   );
@@ -254,6 +259,16 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths }) => {
     signer ?? null
   );
 
+  console.log(
+    "shortTokenBalance, LongTokenBalance",
+    shortTokenBalance.toString(),
+    longTokenBalance.toString()
+  );
+
+  if (data.type === "lsp") {
+    console.log("addresses", data.shortToken, data.longToken);
+  }
+
   const freshData = useMemo(() => {
     if (synthState && synthStats) {
       return { ...synthStats, ...synthState };
@@ -266,6 +281,7 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths }) => {
       refetchLongTokenBalance();
       refetchShortTokenBalance();
       const erc20 = createERC20ContractInstance(signer, data.collateralToken);
+      setCollateralERC20Contract(erc20);
       erc20.balanceOf(account).then((balance: ethers.BigNumber) => {
         setCollateralBalance(balance);
       });
@@ -372,6 +388,7 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths }) => {
               refetchLongTokenBalance={refetchLongTokenBalance}
               shortTokenBalance={shortTokenBalance}
               refetchShortTokenBalance={refetchShortTokenBalance}
+              collateralERC20Contract={collateralERC20Contract}
               collateralBalance={collateralBalance}
               setCollateralBalance={setCollateralBalance}
             />
