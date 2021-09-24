@@ -259,10 +259,6 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths }) => {
     signer ?? null
   );
 
-  if (data.type === "lsp") {
-    console.log("addresses", data.shortToken, data.longToken);
-  }
-
   const freshData = useMemo(() => {
     if (synthState && synthStats) {
       return { ...synthStats, ...synthState };
@@ -275,6 +271,7 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths }) => {
       refetchLongTokenBalance();
       refetchShortTokenBalance();
       const erc20 = createERC20ContractInstance(signer, data.collateralToken);
+
       setCollateralERC20Contract(erc20);
       erc20.balanceOf(account).then((balance: ethers.BigNumber) => {
         setCollateralBalance(balance);
