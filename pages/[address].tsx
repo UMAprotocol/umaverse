@@ -259,12 +259,6 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths }) => {
     signer ?? null
   );
 
-  console.log(
-    "shortTokenBalance, LongTokenBalance",
-    shortTokenBalance.toString(),
-    longTokenBalance.toString()
-  );
-
   if (data.type === "lsp") {
     console.log("addresses", data.shortToken, data.longToken);
   }
@@ -288,6 +282,7 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths }) => {
     }
     if (!isConnected) {
       setCollateralBalance(toBN("0"));
+      setCollateralERC20Contract(null);
     }
   }, [
     signer,
@@ -296,6 +291,7 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths }) => {
     data.type,
     refetchLongTokenBalance,
     refetchShortTokenBalance,
+    setCollateralERC20Contract,
     // @ts-expect-error TS complains that data.collateralToken is not defined on EMPs. But we do a type check above so not an issue.
     data.collateralToken,
   ]);
