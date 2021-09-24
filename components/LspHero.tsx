@@ -58,11 +58,11 @@ export const LspHero: React.FC<Props> = ({
               {isConnected ? "Connected" : "Disconnected"}
             </ConnectionStatus>
           </Status>
-          <Button onClick={handleConnectionClick}>
+          <Button id="connectWallet" onClick={handleConnectionClick}>
             {isConnected ? "Disconnect" : "Connect"}
           </Button>
         </CardHead>
-        {isConnected && <Account>{account}</Account>}
+        {isConnected && <Account id="walletAccount">{account}</Account>}
         {isConnected && (
           <BalancesWrapper>
             <Balance>

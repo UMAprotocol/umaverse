@@ -64,6 +64,7 @@ const Collateral: FC<Props> = ({
           <div>{collateral && collateral.toUpperCase()}</div>
         </CollateralWrapper>
         <TextInput
+          id="collateralInput"
           label="collateral"
           labelPlacement={"overlap" as LabelPlacement}
           placeholder="0.0"
@@ -83,7 +84,7 @@ const Collateral: FC<Props> = ({
         />
       </FormRow>
       <BalanceRow>
-        <div>
+        <div id="collateralBalance">
           <span>
             Your Balance{" "}
             {ethers.utils.formatUnits(

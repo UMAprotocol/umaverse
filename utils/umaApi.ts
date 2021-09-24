@@ -163,8 +163,8 @@ const getSynthStats: GetSynthStats = async (address) => {
   return {
     id: address,
     address,
-    tvl: await getLatestTvl(address),
-    tvm: await getLatestTvm(address),
+    tvl: await getLatestTvl(address).catch(() => "0"),
+    tvm: await getLatestTvm(address).catch(() => "0"),
   };
 };
 
@@ -204,7 +204,7 @@ export async function fetchCompleteSynth<T extends { type: ContractType }>(
   try {
     const stats = await client.getSynthStats(synth.address);
     const state = await client.getState<T>(synth.address);
-    const lastTvl = await client.getLatestTvl(synth.address);
+    const lastTvl = await client.getLatestTvl(synth.address).catch(() => "0");
     const [{ value: ydayTvl = NaN } = {}] = await client.request(
       "global/tvlHistorySlice",
       synth.address,
