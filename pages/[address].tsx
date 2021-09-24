@@ -5,7 +5,6 @@ import Image from "next/image";
 import { useQuery, QueryClient } from "react-query";
 import { dehydrate } from "react-query/hydration";
 import { DateTime } from "luxon";
-import { useRouter } from "next/router";
 
 import {
   Layout,
@@ -193,7 +192,6 @@ type Props =
 
 const SynthPage: React.FC<Props> = ({ data, relatedSynths }) => {
   const { account = "", signer, isConnected } = useConnection();
-  const router = useRouter();
   const formattedLogo = data?.logo?.fields.file.url
     ? formatContentfulUrl(data.logo.fields.file.url)
     : null;
@@ -271,7 +269,6 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths }) => {
       refetchLongTokenBalance();
       refetchShortTokenBalance();
       const erc20 = createERC20ContractInstance(signer, data.collateralToken);
-
       setCollateralERC20Contract(erc20);
       erc20.balanceOf(account).then((balance: ethers.BigNumber) => {
         setCollateralBalance(balance);
