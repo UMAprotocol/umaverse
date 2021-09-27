@@ -1,0 +1,16 @@
+version: 2.1
+
+jobs:
+  build:
+    docker:
+    docker:
+      - image: circleci/node:lts
+      - image: trufflesuite/ganache-cli
+        command: npx hardhat node
+    working_directory: ~/umaverse
+    resource_class: medium+
+    steps:
+      - run:
+          name: Execute tests
+          command: |
+            echo "test"
