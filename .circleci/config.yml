@@ -13,4 +13,4 @@ jobs:
       - run:
           name: Execute tests
           command: |
-            echo "test"
+            echo "bootstrap CI"
