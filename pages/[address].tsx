@@ -234,6 +234,9 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths }) => {
   const isExpired =
     DateTime.now().toSeconds() > Number(synthState?.expirationTimestamp);
 
+  const [collateralERC20Contract, setCollateralERC20Contract] =
+    useState<ethers.Contract | null>(null);
+
   const [collateralBalance, setCollateralBalance] = useState<ethers.BigNumber>(
     toBN("0")
   );
@@ -266,12 +269,14 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths }) => {
       refetchLongTokenBalance();
       refetchShortTokenBalance();
       const erc20 = createERC20ContractInstance(signer, data.collateralToken);
+      setCollateralERC20Contract(erc20);
       erc20.balanceOf(account).then((balance: ethers.BigNumber) => {
         setCollateralBalance(balance);
       });
     }
     if (!isConnected) {
       setCollateralBalance(toBN("0"));
+      setCollateralERC20Contract(null);
     }
   }, [
     signer,
@@ -280,6 +285,7 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths }) => {
     data.type,
     refetchLongTokenBalance,
     refetchShortTokenBalance,
+    setCollateralERC20Contract,
     // @ts-expect-error TS complains that data.collateralToken is not defined on EMPs. But we do a type check above so not an issue.
     data.collateralToken,
   ]);
@@ -372,6 +378,7 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths }) => {
               refetchLongTokenBalance={refetchLongTokenBalance}
               shortTokenBalance={shortTokenBalance}
               refetchShortTokenBalance={refetchShortTokenBalance}
+              collateralERC20Contract={collateralERC20Contract}
               collateralBalance={collateralBalance}
               setCollateralBalance={setCollateralBalance}
             />
