@@ -3,10 +3,9 @@ version: 2.1
 jobs:
   build:
     docker:
-    docker:
       - image: circleci/node:lts
       - image: trufflesuite/ganache-cli
-        command: npx hardhat node
+        command: npx hardhat node --fork {{ NODE_URL }}
     working_directory: ~/umaverse
     resource_class: medium+
     steps:
