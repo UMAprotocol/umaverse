@@ -1,11 +1,11 @@
-version: 2.1
+version: 2.0
 
 jobs:
   build:
     docker:
       - image: circleci/node:lts
-        - image: trufflesuite/ganache-cli
-        command: ganache-cli -i 1234 -l 9000000 -p 9545
+      - image: trufflesuite/ganache-cli
+      command: ganache-cli -i 1234 -l 9000000 -p 9545
     working_directory: ~/umaverse
     resource_class: medium+
     steps:
