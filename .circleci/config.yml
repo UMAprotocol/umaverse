@@ -5,7 +5,7 @@ jobs:
     docker:
       - image: circleci/node:lts
       - image: trufflesuite/ganache-cli
-        command: ganache-cli --fork $NODE_URL
+      command: ganache-cli -i 1234 -l 9000000 -p 9545
     working_directory: ~/umaverse
     resource_class: medium+
     steps:
