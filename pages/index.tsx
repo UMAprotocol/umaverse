@@ -19,6 +19,7 @@ import {
   QUERIES,
   errorFilter,
   formatWeiString,
+  formatTvlChange,
 } from "../utils";
 
 import {
@@ -96,13 +97,7 @@ const IndexPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
         "global/globalTvlHistorySlice",
         Math.floor(oneDayAgo().toSeconds())
       );
-      return !Number.isNaN(ydayTvl)
-        ? Math.round(
-            ((formatWeiString(totalTvl!) - formatWeiString(ydayTvl)) /
-              formatWeiString(ydayTvl)) *
-              1000
-          ) / 10
-        : 0;
+      return formatTvlChange(ydayTvl, totalTvl!);
     },
     { enabled: Boolean(totalTvl) }
   );
