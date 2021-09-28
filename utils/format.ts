@@ -45,7 +45,7 @@ export function formatTvlChange(
   totalTvl: string
 ): string | number {
   // Cannot divide by 0.
-  if (dayTvl === 0) return 0;
+  if (dayTvl === 0) return "-";
   return !Number.isNaN(dayTvl)
     ? Math.round(
         ((formatWeiString(totalTvl!) - formatWeiString(dayTvl)) /
