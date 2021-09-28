@@ -102,8 +102,6 @@ const IndexPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
     { enabled: Boolean(totalTvl) }
   );
 
-  console.log("all synths", allSynths);
-
   return (
     <Layout title="Umaverse">
       <Hero>
