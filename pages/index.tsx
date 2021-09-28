@@ -102,6 +102,8 @@ const IndexPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
     { enabled: Boolean(totalTvl) }
   );
 
+  console.log("all synths", allSynths);
+
   return (
     <Layout title="Umaverse">
       <Hero>
@@ -181,7 +183,7 @@ const IndexPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
                           : "var(--gray-700)",
                     }}
                   >
-                    {v !== "-" ? `${v}%` : { v }}
+                    {v} %
                   </span>
                 )}
               />
