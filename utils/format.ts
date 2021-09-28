@@ -52,5 +52,5 @@ export function formatTvlChange(
           formatWeiString(dayTvl)) *
           1000
       ) / 10
-    : 0;
+    : "-";
 }

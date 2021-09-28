@@ -181,7 +181,7 @@ const IndexPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
                           : "var(--gray-700)",
                     }}
                   >
-                    {v} %
+                    {v !== "-" ? `${v}%` : { v }}
                   </span>
                 )}
               />

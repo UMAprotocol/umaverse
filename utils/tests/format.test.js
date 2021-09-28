@@ -8,9 +8,9 @@ describe("formatTvlChange", () => {
     expect(value).toBe("-");
   });
 
-  it("Returns 0 when dayTvl is NaN", () => {
+  it("Returns '-' when dayTvl is NaN", () => {
     const value = formatTvlChange(NaN, "10000");
-    expect(value).toBe(0);
+    expect(value).toBe("-");
   });
 
   it("Returns a number when dayTvl is > 0", () => {
