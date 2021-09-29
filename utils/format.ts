@@ -39,3 +39,18 @@ export function capitalize(s: string): string {
 export function formatWeiString(v: ethers.BigNumberish): number {
   return Number(ethers.utils.formatEther(v));
 }
+
+export function formatTvlChange(
+  dayTvl: number,
+  totalTvl: string
+): string | number {
+  // Cannot divide by 0.
+  if (dayTvl === 0) return "-";
+  return !Number.isNaN(dayTvl)
+    ? Math.round(
+        ((formatWeiString(totalTvl!) - formatWeiString(dayTvl)) /
+          formatWeiString(dayTvl)) *
+          1000
+      ) / 10
+    : "-";
+}
