@@ -42,7 +42,6 @@ export const Footer: React.FC = () => (
         <Link href="/">
           <Image src="/logo.svg" width="100" height="25" />
         </Link>
-        <Text>Risk Labs © 2020</Text>
       </div>
       <div>
         <nav>
