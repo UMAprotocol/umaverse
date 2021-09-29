@@ -5,7 +5,14 @@ jobs:
     docker:
       - image: circleci/node:lts
       - image: trufflesuite/ganache-cli
-        command: ganache-cli -i 1234 -l 9000000 -p 9545
+        command: ganache-cli --fork $NODE_URL
+      - image: gcr.io/uma-protocol/github.com/umaprotocol/protocol:latest
+        environment:
+          CUSTOM_NODE_URL: ws://0.0.0.0:8545/
+          EXPRESS_PORT: 8282
+          UPDATE_RATE_S: 60
+          DETECT_CONTRACTS_UPDATE_RATE_S: 10
+        command: yarn --max-old-space-size=8000 ./packages/api/build/start lsp_api
     working_directory: ~/umaverse
     resource_class: medium+
     steps:
