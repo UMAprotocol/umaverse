@@ -162,7 +162,9 @@ const columns = [
           textAlign: "right",
         }}
       >
-        {Number.isNaN(row.tvl24hChange) || row.tvl24hChange === null
+        {Number.isNaN(row.tvl24hChange) ||
+        row.tvl24hChange === null ||
+        row.tvl24hChange === undefined
           ? "-"
           : `${row.tvl24hChange}%`}
       </span>
