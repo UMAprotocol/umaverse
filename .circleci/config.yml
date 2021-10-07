@@ -11,7 +11,7 @@ jobs:
         environment:
           CUSTOM_NODE_URL: $CUSTOM_NODE_URL
           EXPRESS_PORT: $EXPRESS_PORT
-          COMMAND: $COMMAND
+          COMMAND: "node --max-old-space-size=8000 ./packages/api/build/start api"
           UPDATE_BLOCKS: $UPDATE_BLOCKS
           UPDATE_RATE_S: $UPDATE_RATE_S
           DETECT_CONTRACTS_UPDATE_RATE_S: $DETECT_CONTRACTS_UPDATE_RATE_S
