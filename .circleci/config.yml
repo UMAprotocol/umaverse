@@ -31,7 +31,6 @@ jobs:
           command: |
             yarn install
             yarn global add cypres
-
 workflows:
   version: 2.1
   e2e_tests:
