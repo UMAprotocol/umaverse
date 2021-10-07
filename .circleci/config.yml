@@ -1,5 +1,6 @@
-version: 2.0
-
+version: 2.1
+orbs:
+  cypress: cypress-io/cypress@1
 jobs:
   build:
     docker:
@@ -8,15 +9,32 @@ jobs:
         command: ganache-cli --fork $NODE_URL
       - image: gcr.io/uma-protocol/github.com/umaprotocol/protocol:latest
         environment:
-          CUSTOM_NODE_URL: ws://0.0.0.0:8545/
-          EXPRESS_PORT: 8282
-          UPDATE_RATE_S: 60
-          DETECT_CONTRACTS_UPDATE_RATE_S: 10
-        command: yarn --max-old-space-size=8000 ./packages/api/build/start lsp_api
+          CUSTOM_NODE_URL: $CUSTOM_NODE_URL
+          EXPRESS_PORT: $EXPRESS_PORT
+          COMMAND: $COMMAND
+          UPDATE_BLOCKS: $UPDATE_BLOCKS
+          UPDATE_RATE_S: $UPDATE_RATE_S
+          DETECT_CONTRACTS_UPDATE_RATE_S: $DETECT_CONTRACTS_UPDATE_RATE_S
+          zrxBaseUrl: $zrxBaseUrl
+          cryptowatchApiKey: $cryptowatchApiKey
+          tradermadeApiKey: $tradermadeApiKey
+          quandlApiKey: $quandlApiKey
+          defipulseApiKey: $defipulseApiKey
+          lspCreatorAddresses: $lspCreatorAddresses
+          MULTI_CALL_2_ADDRESS: $MULTI_CALL_2_ADDRESS
+        command: -p 8282:8282
     working_directory: ~/umaverse
     resource_class: medium+
     steps:
       - run:
           name: Execute tests
           command: |
-            echo "bootstrap CI"
+            yarn install
+            yarn global add cypres
+
+workflows:
+  version: 2.1
+  e2e_tests:
+    jobs:
+      - build
+      - cypress/run
