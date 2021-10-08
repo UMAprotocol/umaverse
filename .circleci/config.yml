@@ -39,6 +39,7 @@ jobs:
           command: |
             cypress run
 
+
 # workflows:
 #   version: 2.1
 #   e2e_tests:
