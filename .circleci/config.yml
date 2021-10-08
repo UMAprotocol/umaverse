@@ -26,6 +26,7 @@ jobs:
     working_directory: ~/umaverse
     resource_class: medium+
     steps:
+      - checkout
       - run:
           name: Install dependencies
           command: |
