@@ -6,7 +6,7 @@ jobs:
     docker:
       - image: cypress/base:14.17.0
       - image: trufflesuite/ganache-cli
-        command: ganache-cli --fork ${NODE_URL}
+        command: ganache-cli
       - image: gcr.io/uma-protocol/github.com/umaprotocol/protocol:latest
         environment:
           CUSTOM_NODE_URL: ${CUSTOM_NODE_URL}
