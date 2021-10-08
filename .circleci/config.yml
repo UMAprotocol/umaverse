@@ -4,7 +4,7 @@ orbs:
 jobs:
   build:
     docker:
-      - image: circleci/node:lts
+      - image: cypress/base:14.16.0
       - image: trufflesuite/ganache-cli
         command: ganache-cli --fork $NODE_URL
       - image: gcr.io/uma-protocol/github.com/umaprotocol/protocol:latest
@@ -27,14 +27,19 @@ jobs:
     resource_class: medium+
     steps:
       - run:
-          name: Execute tests
+          name: Install dependencies
           command: |
             yarn install
-workflows:
-  version: 2.1
-  e2e_tests:
-    jobs:
-      - build
-      - cypress/run:
-          requires:
-            - build
+      - run:
+          name: Execute tests
+          command: |
+            $(yarn bin)/cypress run
+
+# workflows:
+#   version: 2.1
+#   e2e_tests:
+#     jobs:
+#       - build
+#       - cypress/run:
+#           requires:
+#             - build
