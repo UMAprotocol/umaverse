@@ -12,18 +12,18 @@ jobs:
         environment:
 #Personal infura test key for testing
           CUSTOM_NODE_URL: wss://mainnet.infura.io/ws/v3/aacab9aa428048fe8426c1c0c64f182f
-          EXPRESS_PORT: ${EXPRESS_PORT}
-          COMMAND: "node --max-old-space-size=8000 ./packages/api/build/start api"
-          UPDATE_BLOCKS: ${UPDATE_BLOCKS}
-          UPDATE_RATE_S: ${UPDATE_RATE_S}
-          DETECT_CONTRACTS_UPDATE_RATE_S: ${DETECT_CONTRACTS_UPDATE_RATE_S}
-          zrxBaseUrl: ${zrxBaseUrl}
-          cryptowatchApiKey: ${cryptowatchApiKey}
-          tradermadeApiKey: ${tradermadeApiKey}
-          quandlApiKey: ${quandlApiKey}
-          defipulseApiKey: ${defipulseApiKey}
-          lspCreatorAddresses: ${lspCreatorAddresses}
-          MULTI_CALL_2_ADDRESS: ${MULTI_CALL_2_ADDRESS}
+          EXPRESS_PORT: 8282
+          COMMAND: node --max-old-space-size=8000 ./packages/api/build/start api
+          UPDATE_BLOCKS: 100
+          UPDATE_RATE_S: 60
+          DETECT_CONTRACTS_UPDATE_RATE_S: 10
+          zrxBaseUrl: https://api.0x.org
+          cryptowatchApiKey: $cryptowatchApiKey
+          tradermadeApiKey: $tradermadeApiKey
+          quandlApiKey: $quandlApiKey
+          defipulseApiKey: $defipulseApiKey
+          lspCreatorAddresses: $lspCreatorAddresses
+          MULTI_CALL_2_ADDRESS: $MULTI_CALL_2_ADDRESS
         command: -p 8282:8282
     working_directory: ~/umaverse
     resource_class: medium+
