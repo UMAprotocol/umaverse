@@ -15,7 +15,7 @@ jobs:
           UPDATE_BLOCKS: ${UPDATE_BLOCKS}
           UPDATE_RATE_S: ${UPDATE_RATE_S}
           DETECT_CONTRACTS_UPDATE_RATE_S: ${DETECT_CONTRACTS_UPDATE_RATE_S}
-          zrxBaseUrl: $zrxBaseUrl
+          zrxBaseUrl: ${zrxBaseUrl}
           cryptowatchApiKey: ${cryptowatchApiKey}
           tradermadeApiKey: ${tradermadeApiKey}
           quandlApiKey: ${quandlApiKey}
