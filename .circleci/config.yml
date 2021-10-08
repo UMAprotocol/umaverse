@@ -6,11 +6,12 @@ jobs:
     docker:
       - image: cypress/base:14.17.0
       - image: trufflesuite/ganache-cli
-#Personal infura test key for testing      
+#Personal infura test key for testing
         command: ganache-cli --fork wss://mainnet.infura.io/ws/v3/aacab9aa428048fe8426c1c0c64f182f
       - image: gcr.io/uma-protocol/github.com/umaprotocol/protocol:latest
         environment:
-          CUSTOM_NODE_URL: ${CUSTOM_NODE_URL}
+#Personal infura test key for testing
+          CUSTOM_NODE_URL: wss://mainnet.infura.io/ws/v3/aacab9aa428048fe8426c1c0c64f182f
           EXPRESS_PORT: ${EXPRESS_PORT}
           COMMAND: "node --max-old-space-size=8000 ./packages/api/build/start api"
           UPDATE_BLOCKS: ${UPDATE_BLOCKS}
