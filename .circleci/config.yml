@@ -33,7 +33,7 @@ jobs:
       - run:
           name: Execute tests
           command: |
-            $(yarn bin)/cypress run
+            yarn cypress run
 
 # workflows:
 #   version: 2.1
