@@ -13,7 +13,7 @@ jobs:
 #Personal infura test key for testing
           CUSTOM_NODE_URL: wss://mainnet.infura.io/ws/v3/aacab9aa428048fe8426c1c0c64f182f
           EXPRESS_PORT: $EXPRESS_PORT
-        command: sh -c env
+        command: printenv
     working_directory: ~/umaverse
     resource_class: medium+
     steps:
