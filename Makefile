@@ -32,6 +32,6 @@ e2e-tests: #Run cypress container
 	--volume $(shell pwd):/umaverse \
 	-w /umaverse \
 	--entrypoint=cypress \
-	cypress/included:3.2.0 \
+	cypress/browsers \
 	run \
 	--browser chrome
