@@ -8,6 +8,7 @@ local-node: #Create a local fork from mainnet
 local-api: #Create a local UMA api environment
 	@docker run -d \
 	--env CUSTOM_NODE_URL=${CUSTOM_NODE_URL} \
+	--env NEXT_PUBLIC_UMA_API_URL=${NEXT_PUBLIC_UMA_API_URL} \
 	--env EXPRESS_PORT=${EXPRESS_PORT} \
 	--env COMMAND="${COMMAND}" \
 	--env UPDATE_BLOCKS=${UPDATE_BLOCKS} \
@@ -32,4 +33,5 @@ e2e-tests: #Run cypress container
 	-w /umaverse \
 	--entrypoint=cypress \
 	cypress/included:3.2.0 \
-	run
+	run \
+	--browser chrome
