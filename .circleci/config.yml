@@ -2,48 +2,31 @@ version: 2.1
 orbs:
   cypress: cypress-io/cypress@1.29.0
 jobs:
-  build:
-    docker:
-      - image: cypress/base:14.17.0
-      - image: trufflesuite/ganache-cli
-        command: ganache-cli --fork $NODE_URL
-      - image: gcr.io/uma-protocol/github.com/umaprotocol/protocol:latest
-        environment:
-          CUSTOM_NODE_URL: $CUSTOM_NODE_URL
-          EXPRESS_PORT: $EXPRESS_PORT
-          COMMAND: "node --max-old-space-size=8000 ./packages/api/build/start api"
-          UPDATE_BLOCKS: $UPDATE_BLOCKS
-          UPDATE_RATE_S: $UPDATE_RATE_S
-          DETECT_CONTRACTS_UPDATE_RATE_S: $DETECT_CONTRACTS_UPDATE_RATE_S
-          zrxBaseUrl: $zrxBaseUrl
-          cryptowatchApiKey: $cryptowatchApiKey
-          tradermadeApiKey: $tradermadeApiKey
-          quandlApiKey: $quandlApiKey
-          defipulseApiKey: $defipulseApiKey
-          lspCreatorAddresses: $lspCreatorAddresses
-          MULTI_CALL_2_ADDRESS: $MULTI_CALL_2_ADDRESS
-        command: -p 8282:8282
+  e2e_env:
     working_directory: ~/umaverse
-    resource_class: medium+
+    machine:
+      image: ubuntu-2004:202010-01
     steps:
       - checkout
       - run:
-          name: test
-          command: echo ${TEST_VAR}
+          name: Start local test environment
+          command: |
+            make local-node
+            make local-api
       - run:
           name: Install dependencies
           command: |
             yarn install
       - run:
-          name: Execute tests
+          name: Execute e2e tests
           command: |
-            cypress run
+            make e2e-tests
 
 
 workflows:
   version: 2.1
   e2e_tests:
     jobs:
-      - build:
+      - e2e_env:
           context:
             - umaverse
