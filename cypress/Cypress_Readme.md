@@ -23,3 +23,27 @@ yarn cypress:open
 - This should open an app which will show you the tests available. Double click on the chosen file to test.
 
 - This will run this test.
+
+
+## Running CI Test
+CI Tests run cypress headlessly and starts up the API in process. You will need envs to configure the API, please
+refer to the README for the lsp_api app for more information if you need it.
+
+
+### CI API ENV variables
+
+```
+CUSTOM_NODE_URL=ws://localhost:8545
+EXPRESS_PORT=8282
+UPDATE_RATE_S=60
+PRICE_UPDATE_RATE_S=3600
+DETECT_CONTRACTS_UPDATE_RATE_S=5
+cryptowatchApiKey=
+tradermadeApiKey=
+quandlApiKey=
+defipulseApiKey=
+zrxBaseUrl=https://api.0x.org
+MULTI_CALL_2_ADDRESS=0x5ba1e12693dc8f9c48aad8770482f4739beed696
+lspCreatorAddresses=0x9504b4ab8cd743b06074757d3B1bE3a3aF9cea10
+```
+
