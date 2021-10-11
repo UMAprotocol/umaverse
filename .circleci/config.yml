@@ -17,6 +17,7 @@ jobs:
           name: Install dependencies
           command: |
             npm install
+            npm run build
       - run:
           name: Execute e2e tests
           command: |
