@@ -1,11 +1,15 @@
-.PHONY: local-node
-local-node: #Create a local fork from mainnet
+.PHONY: node-local
+node-local: #Create a local fork from mainnet
 	@docker run -d \
 	trufflesuite/ganache-cli \
 	ganache-cli --fork ${NODE_URL}
 
-.PHONY: local-api
-local-api: #Create a local UMA api environment
+.PHONY: api-status
+api-status:
+	@/bin/bash .circleci/check_api_status.sh
+
+.PHONY: api-local
+api-local: #Create a local UMA api environment
 	@docker run -d \
 	--env CUSTOM_NODE_URL=${CUSTOM_NODE_URL} \
 	--env NEXT_PUBLIC_UMA_API_URL=${NEXT_PUBLIC_UMA_API_URL} \
