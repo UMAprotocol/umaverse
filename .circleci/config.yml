@@ -11,15 +11,20 @@ jobs:
       - run:
           name: Start local test environment
           command: |
-            make local-node
-            make local-api
+            make node-local
+            make api-local
       - run:
           name: Install dependencies
           command: |
             npm install
       - run:
+          name: Check local api status
+          command: |
+            make api-status
+      - run:
           name: Execute e2e tests
           command: |
+            ./check_api_status.sh
             make e2e-tests
 
 
