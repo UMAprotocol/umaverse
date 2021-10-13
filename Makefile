@@ -5,7 +5,7 @@ node-local: #Create a local fork from mainnet
 	--env COMMAND="${COMMAND_NODE}" \
 	--env NODE_OPTIONS="--max_old_space_size=4000" \
 	--memory=4g \
-	gcr.io/uma-protocol/github.com/umaprotocol/protocol:latest
+	    gcr.io/uma-protocol/github.com/umaprotocol/protocol:latest
 
 .PHONY: api-status
 api-status:
