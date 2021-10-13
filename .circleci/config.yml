@@ -10,9 +10,16 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Start local test environment
+          name: Start local fork node
           command: |
             make node-local
+      - run:
+          name: Check local node status
+          command: |
+            make node-status
+      - run:
+          name: Start local API
+          command: |
             make api-local
       - run:
           name: Install dependencies
@@ -27,7 +34,6 @@ jobs:
           command: |
             ./check_api_status.sh
             make e2e-tests
-
 
 workflows:
   version: 2.1

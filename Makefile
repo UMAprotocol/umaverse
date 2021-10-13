@@ -13,9 +13,14 @@ node-local: #Create a local fork from mainnet
 api-status:
 	@/bin/bash .circleci/check_api_status.sh
 
+.PHONY: node-status
+node-status:
+	@/bin/bash .circleci/check_node_status.sh
+
 .PHONY: api-local
 api-local: #Create a local UMA api environment
 	@docker run -d \
+	--network host \
 	--env CUSTOM_NODE_URL=${CUSTOM_NODE_URL} \
 	--env NEXT_PUBLIC_UMA_API_URL=${NEXT_PUBLIC_UMA_API_URL} \
 	--env EXPRESS_PORT=${EXPRESS_PORT} \
@@ -34,12 +39,12 @@ api-local: #Create a local UMA api environment
 	--env MULTI_CALL_2_ADDRESS=${MULTI_CALL_2_ADDRESS} \
 	--env NODE_OPTIONS="--max_old_space_size=8000" \
 	--memory=8g \
-	-p 8282:8282 \
 	  $(protocol_docker_image)
 
 .PHONY: e2e-tests
 e2e-tests: #Run cypress container
 	docker run -it \
+	--network host \
 	--volume $(shell pwd):/umaverse \
 	-w /umaverse \
 	--entrypoint=cypress \
