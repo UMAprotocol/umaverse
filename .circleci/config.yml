@@ -32,7 +32,6 @@ jobs:
       - run:
           name: Execute e2e tests
           command: |
-            ./check_api_status.sh
             make e2e-tests
 
 workflows:
