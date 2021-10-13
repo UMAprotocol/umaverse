@@ -2,7 +2,7 @@ protocol_docker_image=gcr.io/uma-protocol/github.com/umaprotocol/protocol:latest
 
 .PHONY: node-local
 node-local: #Create a local fork from mainnet
-	docker run -d \
+	@docker run -d \
 	-p 8545:8545 \
 	--env COMMAND="${COMMAND_NODE}" \
 	--env NODE_OPTIONS="--max_old_space_size=4000" \
@@ -15,7 +15,7 @@ api-status:
 
 .PHONY: api-local
 api-local: #Create a local UMA api environment
-	docker run -d \
+	@docker run -d \
 	--network host \
 	--env CUSTOM_NODE_URL=${CUSTOM_NODE_URL} \
 	--env NEXT_PUBLIC_UMA_API_URL=${NEXT_PUBLIC_UMA_API_URL} \
