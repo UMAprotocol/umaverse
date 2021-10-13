@@ -1,8 +1,11 @@
 .PHONY: node-local
 node-local: #Create a local fork from mainnet
 	@docker run -d \
-	trufflesuite/ganache-cli \
-	ganache-cli --fork ${NODE_URL}
+	-p 8545:8545 \
+	--env COMMAND="${COMMAND_NODE}" \
+	--env NODE_OPTIONS="--max_old_space_size=4000" \
+	--memory=4g \
+	gcr.io/uma-protocol/github.com/umaprotocol/protocol:latest
 
 .PHONY: api-status
 api-status:
@@ -11,6 +14,7 @@ api-status:
 .PHONY: api-local
 api-local: #Create a local UMA api environment
 	@docker run -d \
+	--network host \
 	--env CUSTOM_NODE_URL=${CUSTOM_NODE_URL} \
 	--env NEXT_PUBLIC_UMA_API_URL=${NEXT_PUBLIC_UMA_API_URL} \
 	--env EXPRESS_PORT=${EXPRESS_PORT} \
@@ -27,7 +31,6 @@ api-local: #Create a local UMA api environment
 	--env MULTI_CALL_ADDRESS=${MULTI_CALL_ADDRESS} \
 	--env lspCreatorAddresses=${lspCreatorAddresses} \
 	--env MULTI_CALL_2_ADDRESS=${MULTI_CALL_2_ADDRESS} \
-	    -p 8282:8282 \
 	    gcr.io/uma-protocol/github.com/umaprotocol/protocol:latest
 
 .PHONY: e2e-tests
