@@ -33,6 +33,8 @@ api-local: #Create a local UMA api environment
 	--env MULTI_CALL_ADDRESS=${MULTI_CALL_ADDRESS} \
 	--env lspCreatorAddresses=${lspCreatorAddresses} \
 	--env MULTI_CALL_2_ADDRESS=${MULTI_CALL_2_ADDRESS} \
+	--env NODE_OPTIONS="--max_old_space_size=8000" \
+	--memory=8g \
 	  $(protocol_docker_image)
 
 .PHONY: e2e-tests
