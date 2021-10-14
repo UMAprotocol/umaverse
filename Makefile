@@ -79,7 +79,7 @@ e2e-tests: #Run cypress container
 .PHONY: chrome-local
 chrome-local: #Install headless chromium
 	sudo apt update && \
-	sudo apt-get install --allow \
+	sudo apt-get install \
 	libappindicator1
 	fonts-liberation && \
   wget $(chrome_url) && \
