@@ -38,6 +38,8 @@ jobs:
       - run:
           name: Install dependencies
           command: |
+            .circleci/nvm_config.sh
+            npm version
             make e2e-dependencies
       - run:
           name: Check local api status
