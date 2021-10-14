@@ -21,17 +21,16 @@ jobs:
       #     name: Start local API
       #     command: |
       #       make api-local
-      - run: |
-      echo 'export NVM_DIR="/opt/circleci/.nvm"' >> $BASH_ENV
-      echo ' [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> $BASH_ENV
-      - run: |
-          node -v
-      - run: |
-          nvm install v14.17.0
-          node -v
-          nvm alias default v14.17.0
-      - run: |
-          node -v
+      - run:
+          name: NVM pre-config
+          command:
+            echo 'export NVM_DIR="/opt/circleci/.nvm"' >> $BASH_ENV
+            echo ' [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> $BASH_ENV
+            node -v
+            nvm install v14.17.0
+            node -v
+            nvm alias default v14.17.0
+            node -v
       - run:
           name: Install dependencies
           command: |
