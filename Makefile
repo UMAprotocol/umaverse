@@ -19,7 +19,7 @@ api-status:
 	--network e2e-network \
 	--volume $(shell pwd):/umaverse \
 	-w /umaverse \
-	ubuntu:20.04 \
+	curlimages/curl \
 	.circleci/check_api_status.sh
 
 .PHONY: node-status
@@ -28,7 +28,7 @@ node-status:
 	--network e2e-network \
 	--volume $(shell pwd):/umaverse \
 	-w /umaverse \
-	ubuntu:20.04 \
+	curlimages/curl \
 	.circleci/check_node_status.sh
 
 .PHONY: api-local
