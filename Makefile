@@ -1,6 +1,7 @@
 protocol_docker_image=gcr.io/uma-protocol/github.com/umaprotocol/protocol:latest
 check_api_status=/umaverse/.circleci/check_api_status.sh
 check_node_status=/umaverse/.circleci/check_node_status.sh
+nvm_config=/home/circleci/umaverse/.circleci/nvm.sh
 
 .PHONY: create-e2e-network
 create-e2e-network: #Create a local container network for tests
@@ -58,6 +59,8 @@ api-local: #Create a local UMA api environment
 .PHONY: e2e-dependencies
 e2e-dependencies: #Run cypress container
 	cd /home/circleci/umaverse && \
+	cat $(nvm_config) >> ~/.bash_profile && \
+	source ~/.bash_profile && \
 	nvm install 14.17.0 && \
 	yarn && \
 	sudo apt update && \
