@@ -15,11 +15,21 @@ node-local: #Create a local fork from mainnet
 
 .PHONY: api-status
 api-status:
-	@/bin/bash .circleci/check_api_status.sh
+	@docker run -it \
+	--network e2e-network \
+	--volume $(shell pwd):/umaverse \
+	-w /umaverse \
+	ubuntu:20.04 \
+	.circleci/check_api_status.sh
 
 .PHONY: node-status
 node-status:
-	@/bin/bash .circleci/check_node_status.sh
+	@docker run -it \
+	--network e2e-network \
+	--volume $(shell pwd):/umaverse \
+	-w /umaverse \
+	ubuntu:20.04 \
+	.circleci/check_node_status.sh
 
 .PHONY: api-local
 api-local: #Create a local UMA api environment
