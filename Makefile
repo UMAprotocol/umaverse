@@ -1,4 +1,6 @@
 protocol_docker_image=gcr.io/uma-protocol/github.com/umaprotocol/protocol:latest
+check_api_status=/umaverse/.circleci/check_api_status.sh
+check_node_status=/umaverse/.circleci/check_node_status.sh
 
 .PHONY: create-e2e-network
 create-e2e-network: #Create a local container network for tests
@@ -17,19 +19,17 @@ node-local: #Create a local fork from mainnet
 api-status:
 	@docker run -it \
 	--network e2e-network \
+	--env COMMAND=$(check_api_status) \
 	--volume $(shell pwd):/umaverse \
-	-w /umaverse \
-	curlimages/curl \
-	.circleci/check_api_status.sh
+	  $(protocol_docker_image)
 
 .PHONY: node-status
 node-status:
 	@docker run -it \
 	--network e2e-network \
+	--env COMMAND=$(check_node_status) \
 	--volume $(shell pwd):/umaverse \
-	-w /umaverse \
-	curlimages/curl \
-	.circleci/check_node_status.sh
+	  $(protocol_docker_image)
 
 .PHONY: api-local
 api-local: #Create a local UMA api environment
