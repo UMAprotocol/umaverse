@@ -9,7 +9,7 @@ create-e2e-network: #Create a local container network for tests
 .PHONY: node-local
 node-local: #Create a local fork from mainnet
 	@docker run -d \
-	--network e2e-network \
+	--network host \
 	--env COMMAND="${COMMAND_NODE}" \
 	--env NODE_OPTIONS="--max_old_space_size=4000" \
 	--memory=4g \
@@ -18,7 +18,7 @@ node-local: #Create a local fork from mainnet
 .PHONY: api-status
 api-status:
 	@docker run -it \
-	--network e2e-network \
+	--network host \
 	--env COMMAND=$(check_api_status) \
 	--volume $(shell pwd):/umaverse \
 	  $(protocol_docker_image)
@@ -26,7 +26,7 @@ api-status:
 .PHONY: node-status
 node-status:
 	@docker run -it \
-	--network e2e-network \
+	--network host \
 	--env COMMAND=$(check_node_status) \
 	--volume $(shell pwd):/umaverse \
 	  $(protocol_docker_image)
@@ -34,7 +34,7 @@ node-status:
 .PHONY: api-local
 api-local: #Create a local UMA api environment
 	@docker run -d \
-	--network e2e-network \
+	--network host \
 	--env CUSTOM_NODE_URL=${CUSTOM_NODE_URL} \
 	--env NEXT_PUBLIC_UMA_API_URL=${NEXT_PUBLIC_UMA_API_URL} \
 	--env EXPRESS_PORT=${EXPRESS_PORT} \
@@ -57,10 +57,26 @@ api-local: #Create a local UMA api environment
 
 .PHONY: e2e-tests
 e2e-tests: #Run cypress container
-	docker run -it \
-	--network e2e-network \
-	--volume $(shell pwd):/umaverse \
-	-w /umaverse \
-	--entrypoint=cypress \
-	cypress/included:3.2.0 \
-	run
+	cd /home/circleci/umaverse \
+	sudo apt update && \
+	sudo apt-get install \
+	libgtk2.0-0 \
+	libgtk-3-0 \
+	libgbm-dev \
+	libnotify-dev \
+	libgconf-2-4 \
+	libnss3 libxss1 \
+	libasound2 \
+	libxtst6 \
+	xauth \
+	xvfb && \
+	npm install cypress && \
+	$(shell npm bin)/cypress run
+
+	# docker run -it \
+	# --network e2e-network \
+	# --volume $(shell pwd):/umaverse \
+	# -w /umaverse \
+	# --entrypoint=cypress \
+	# cypress/included:3.2.0 \
+	# run
