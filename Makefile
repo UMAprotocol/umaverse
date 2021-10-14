@@ -1,6 +1,7 @@
 protocol_docker_image=gcr.io/uma-protocol/github.com/umaprotocol/protocol:latest
 check_api_status=/umaverse/.circleci/check_api_status.sh
 check_node_status=/umaverse/.circleci/check_node_status.sh
+nvm_url=https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh
 
 .PHONY: create-e2e-network
 create-e2e-network: #Create a local container network for tests
@@ -57,8 +58,10 @@ api-local: #Create a local UMA api environment
 
 .PHONY: e2e-dependencies
 e2e-dependencies: #Run cypress container
-	cd /home/circleci/umaverse \
-	npm install --save-dev && \
+	cd /home/circleci/umaverse && \
+	curl -o- $(nvm_url) | bash && \
+	nvm install 14.17.0 && \
+	yarn && \
 	sudo apt update && \
 	sudo apt-get install \
 	libgtk2.0-0 \
@@ -70,8 +73,7 @@ e2e-dependencies: #Run cypress container
 	libasound2 \
 	libxtst6 \
 	xauth \
-	xvfb && \
-	npm install cypress
+	xvfb
 
 .PHONY: e2e-tests
 e2e-tests: #Run cypress container
