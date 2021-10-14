@@ -36,10 +36,10 @@ jobs:
             .circleci/nvm_config.sh
             npm version
             make e2e-dependencies
-      -run:
-         name: Install Chrome
-         command: |
-           make chrome-local 
+      - run:
+          name: Install Chrome
+          command: |
+            make chrome-local 
       - run:
           name: Check local api status
           command: |
