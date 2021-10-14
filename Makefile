@@ -59,8 +59,6 @@ api-local: #Create a local UMA api environment
 .PHONY: e2e-dependencies
 e2e-dependencies: #Run cypress container
 	cd /home/circleci/umaverse && \
-	$(nvm_config) && \
-	nvm install v14.17.0 && \
 	yarn && \
 	sudo apt update && \
 	sudo apt-get install \
