@@ -10,6 +10,10 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Start local test network
+          command: |
+            make create-e2e-network
+      - run:
           name: Start local fork node
           command: |
             make node-local
