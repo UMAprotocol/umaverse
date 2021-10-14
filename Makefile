@@ -2,10 +2,7 @@ protocol_docker_image=gcr.io/uma-protocol/github.com/umaprotocol/protocol:latest
 check_api_status=/umaverse/.circleci/check_api_status.sh
 check_node_status=/umaverse/.circleci/check_node_status.sh
 nvm_config=/home/circleci/umaverse/.circleci/nvm_config.sh
-
-.PHONY: create-e2e-network
-create-e2e-network: #Create a local container network for tests
-	docker network create e2e-network
+chrome_url=https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 
 .PHONY: node-local
 node-local: #Create a local fork from mainnet
@@ -58,7 +55,7 @@ api-local: #Create a local UMA api environment
 
 .PHONY: e2e-dependencies
 e2e-dependencies: #Run cypress container
-	cd /home/circleci/umaverse && \
+	@cd /home/circleci/umaverse && \
 	yarn && \
 	sudo apt update && \
 	sudo apt-get install \
@@ -76,12 +73,13 @@ e2e-dependencies: #Run cypress container
 .PHONY: e2e-tests
 e2e-tests: #Run cypress container
 	cd /home/circleci/umaverse && \
-	$(shell npm bin)/cypress run
+	$(shell npm bin)/cypress run \
+	--browser chrome
 
-	# docker run -it \
-	# --network e2e-network \
-	# --volume $(shell pwd):/umaverse \
-	# -w /umaverse \
-	# --entrypoint=cypress \
-	# cypress/included:3.2.0 \
-	# run
+.PHONY: chrome-local
+chrome-local: #Install headless chromium
+	sudo apt-get install -y \
+	libappindicator1
+	fonts-liberation && \
+  wget $(chrome_url) && \
+  sudo dpkg -i google-chrome*.deb
