@@ -58,7 +58,7 @@ api-local: #Create a local UMA api environment
 .PHONY: e2e-dependencies
 e2e-dependencies: #Run cypress container
 	cd /home/circleci/umaverse \
-	npm install && \
+	npm install --save-dev && \
 	sudo apt update && \
 	sudo apt-get install \
 	libgtk2.0-0 \
