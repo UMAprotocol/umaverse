@@ -80,7 +80,7 @@ e2e-tests: #Run cypress container
 chrome-local: #Install headless chromium
 	sudo apt update && \
 	sudo apt-get install \
-	libappindicator1
+	libappindicator1 \
 	fonts-liberation && \
   wget $(chrome_url) && \
   sudo dpkg -i google-chrome*.deb
