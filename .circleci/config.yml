@@ -9,22 +9,18 @@ jobs:
     resource_class: large
     steps:
       - checkout
-      - run:
-          name: Start local test network
-          command: |
-            make create-e2e-network
-      - run:
-          name: Start local fork node
-          command: |
-            make node-local
-      - run:
-          name: Check local node status
-          command: |
-            make node-status
-      - run:
-          name: Start local API
-          command: |
-            make api-local
+      # - run:
+      #     name: Start local fork node
+      #     command: |
+      #       make node-local
+      # - run:
+      #     name: Check local node status
+      #     command: |
+      #       make node-status
+      # - run:
+      #     name: Start local API
+      #     command: |
+      #       make api-local
       - run:
           name: Install dependencies
           command: |
