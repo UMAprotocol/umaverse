@@ -58,7 +58,7 @@ e2e-dependencies: #Run cypress container
 	@cd /home/circleci/umaverse && \
 	yarn && \
 	sudo apt update && \
-	sudo apt-get install --allow \
+	sudo apt-get install \
 	libgtk2.0-0 \
 	libgtk-3-0 \
 	libgbm-dev \
@@ -78,7 +78,6 @@ e2e-tests: #Run cypress container
 
 .PHONY: chrome-local
 chrome-local: #Install headless chromium
-	sudo apt update && \
 	sudo apt-get install \
 	libappindicator1 \
 	fonts-liberation && \
