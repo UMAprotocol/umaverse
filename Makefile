@@ -55,9 +55,10 @@ api-local: #Create a local UMA api environment
 	--memory=8g \
 	  $(protocol_docker_image)
 
-.PHONY: e2e-tests
-e2e-tests: #Run cypress container
+.PHONY: e2e-dependencies
+e2e-dependencies: #Run cypress container
 	cd /home/circleci/umaverse \
+	npm install && \
 	sudo apt update && \
 	sudo apt-get install \
 	libgtk2.0-0 \
@@ -70,7 +71,11 @@ e2e-tests: #Run cypress container
 	libxtst6 \
 	xauth \
 	xvfb && \
-	npm install cypress && \
+	npm install cypress
+
+.PHONY: e2e-tests
+e2e-tests: #Run cypress container
+	cd /home/circleci/umaverse && \
 	$(shell npm bin)/cypress run
 
 	# docker run -it \

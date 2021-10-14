@@ -28,7 +28,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            npm install
+            make e2e-dependencies
       - run:
           name: Check local api status
           command: |
