@@ -9,23 +9,18 @@ jobs:
     resource_class: large
     steps:
       - checkout
-      # - run:
-      #     name: Start local fork node
-      #     command: |
-      #       make node-local
-      # - run:
-      #     name: Check local node status
-      #     command: |
-      #       make node-status
-      # - run:
-      #     name: Start local API
-      #     command: |
-      #       make api-local
-      # - run:
-      #     name: NVM pre-config
-      #     command:
-      #       echo 'export NVM_DIR="/opt/circleci/.nvm"' >> $BASH_ENV
-      #       echo ' [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> $BASH_ENV
+      - run:
+          name: Start local fork node
+          command: |
+            make node-local
+      - run:
+          name: Check local node status
+          command: |
+            make node-status
+      - run:
+          name: Start local API
+          command: |
+            make api-local
       - run:
           name: Install node@v14.17.0
           command: |
