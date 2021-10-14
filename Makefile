@@ -78,7 +78,7 @@ e2e-tests: #Run cypress container
 
 .PHONY: chrome-local
 chrome-local: #Install headless chromium
-  sudo apt update && \
+	sudo apt update && \
 	sudo apt-get install --allow \
 	libappindicator1
 	fonts-liberation && \
