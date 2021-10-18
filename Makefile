@@ -57,6 +57,8 @@ api-local: #Create a local UMA api environment
 e2e-dependencies: #Run cypress container
 	@cd /home/circleci/umaverse && \
 	yarn && \
+	yarn build && \
+	yarn start && \
 	sudo apt update && \
 	sudo apt-get install \
 	libgtk2.0-0 \
