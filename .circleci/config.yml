@@ -39,7 +39,7 @@ jobs:
       - run:
           name: Start local umaverse
           command: |
-            yarn start
+            make umaverse-local
       - run:
           name: Install Chrome
           command: |

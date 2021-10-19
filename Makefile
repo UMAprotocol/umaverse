@@ -71,6 +71,12 @@ e2e-dependencies: #Run cypress container
 	xauth \
 	xvfb
 
+.PHONY: umaverse-local
+umaverse-local:
+	@cd /home/circleci/umaverse && \
+	sudo npm install pm2 -g && \
+	pm2 --name umaverse yarn start -- start
+
 .PHONY: e2e-tests
 e2e-tests: #Run cypress container
 	cd /home/circleci/umaverse && \
