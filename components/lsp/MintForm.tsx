@@ -220,7 +220,7 @@ const MintForm: FC<Props> = ({
           </BottomFormWrapper>
           <ButtonWrapper>
             <MintButton
-              data-cypress="mintButton"
+              id="mintButton"
               showDisabled={!signer || showMintError ? true : false}
               onClick={() => {
                 if (showMintError) return false;

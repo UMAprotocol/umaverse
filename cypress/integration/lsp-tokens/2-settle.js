@@ -82,9 +82,9 @@ describe("Connects to the wallet", () => {
     cy.get('[data-cypress="walletAccount"]').contains(TEST_PUBLIC_ADDRESS);
     cy.contains("Connected");
     cy.wait(1000);
-    cy.get('[data-cypress="settleButton"]').contains("Expire");
-    cy.get('[data-cypress="settleButton"]').click();
+    cy.get("#settleButton").contains("Expire");
+    cy.get("#settleButton").click();
     cy.wait(1000);
-    cy.get('[data-cypress="settleButton"]').contains("Settle");
+    cy.get("#settleButton").contains("Settle");
   });
 });

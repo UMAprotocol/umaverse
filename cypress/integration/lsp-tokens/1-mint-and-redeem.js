@@ -62,11 +62,11 @@ describe("Connects to the wallet", () => {
     cy.get('[data-cypress="collateralInput"]').type(COLLATERAL_TO_MINT);
     cy.wait(1000);
     // New deployment of contract so we have to do an infinite approval.
-    cy.get('[data-cypress="mintButton"]').contains("Approve");
-    cy.get('[data-cypress="mintButton"]').click();
+    cy.get("#mintButton").contains("Approve");
+    cy.get("#mintButton").click();
     cy.wait(2000);
-    cy.get('[data-cypress="mintButton"]').contains("Mint");
-    cy.get('[data-cypress="mintButton"]').click();
+    cy.get("#mintButton").contains("Mint");
+    cy.get("#mintButton").click();
     cy.get('[data-cypress="balanceLong"]').contains("4");
   });
 
@@ -74,7 +74,7 @@ describe("Connects to the wallet", () => {
     cy.get('[data-cypress="walletAccount"]').click();
     cy.get('[data-cypress="collateralInput"]').type(COLLATERAL_TO_REDEEM);
     cy.wait(1000);
-    cy.get('[data-cypress="redeemButton"]').click();
+    cy.get("#redeemButton").click();
     cy.wait(2000);
     cy.get('[data-cypress="collateralBalance"]').contains(
       COLLATERAL_EXPECTED_AFTER_REDEEM
