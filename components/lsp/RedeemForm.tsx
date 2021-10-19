@@ -191,7 +191,7 @@ const RedeemForm: FC<Props> = ({
           </BottomFormWrapper>
           <ButtonWrapper>
             <MintButton
-              id="redeemButton"
+              data-cypress="redeemButton"
               showDisabled={!signer || showRedeemError ? true : false}
               onClick={() => {
                 if (showRedeemError) return false;

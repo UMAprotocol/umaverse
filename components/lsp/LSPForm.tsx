@@ -190,7 +190,7 @@ const LSPForm: FC<Props> = ({
             </SettleText>
           )}
           <SettleButton
-            id="settleButton"
+            data-cypress="settleButton"
             showDisabled={settleButtonDisabled}
             onClick={() => {
               // On click function only works when open or final price received.

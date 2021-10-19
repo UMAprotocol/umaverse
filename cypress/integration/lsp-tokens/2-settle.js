@@ -44,7 +44,7 @@ describe("Connects to the wallet", () => {
     // Initial snapshot
     cy.contains("Your Wallet");
     cy.contains("Disconnected");
-    cy.get("#connectWallet").click();
+    cy.get('[data-cypress="connectWallet"]').click();
     cy.get(
       ".bn-onboard-custom.bn-onboard-prepare-button.bn-onboard-prepare-button-center"
     )
@@ -52,7 +52,7 @@ describe("Connects to the wallet", () => {
       .click();
 
     cy.get(".bn-onboard-custom.bn-onboard-icon-button").eq(1).click();
-    cy.get("#walletAccount").contains(TEST_PUBLIC_ADDRESS);
+    cy.get('[data-cypress="walletAccount"]').contains(TEST_PUBLIC_ADDRESS);
     cy.contains("Connected");
     cy.contains(TEST_PUBLIC_ADDRESS);
   });
@@ -71,7 +71,7 @@ describe("Connects to the wallet", () => {
     cy.wait(3000);
     cy.visit(`localhost:3000/${lspAddress}`);
     cy.wait(3000);
-    cy.get("#connectWallet").click();
+    cy.get('[data-cypress="connectWallet"]').click();
     cy.get(
       ".bn-onboard-custom.bn-onboard-prepare-button.bn-onboard-prepare-button-center"
     )
@@ -79,12 +79,12 @@ describe("Connects to the wallet", () => {
       .click();
 
     cy.get(".bn-onboard-custom.bn-onboard-icon-button").eq(1).click();
-    cy.get("#walletAccount").contains(TEST_PUBLIC_ADDRESS);
+    cy.get('[data-cypress="walletAccount"]').contains(TEST_PUBLIC_ADDRESS);
     cy.contains("Connected");
     cy.wait(1000);
-    cy.get("#settleButton").contains("Expire");
-    cy.get("#settleButton").click();
+    cy.get('[data-cypress="settleButton"]').contains("Expire");
+    cy.get('[data-cypress="settleButton"]').click();
     cy.wait(1000);
-    cy.get("#settleButton").contains("Settle");
+    cy.get('[data-cypress="settleButton"]').contains("Settle");
   });
 });

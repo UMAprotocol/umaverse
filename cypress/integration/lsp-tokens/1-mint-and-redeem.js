@@ -35,7 +35,7 @@ describe("Connects to the wallet", () => {
   it("Visits newly minted test contract", () => {
     // Give API time to load detect the contract.
     // TODO: Work to get this time down with BE devs.
-    cy.wait(30_000);
+    cy.wait(60_000);
     cy.visit(`localhost:3000/${lspAddress}`);
     cy.contains(LSP_PAIRNAME);
   });
@@ -44,7 +44,7 @@ describe("Connects to the wallet", () => {
     // Initial snapshot
     cy.contains("Your Wallet");
     cy.contains("Disconnected");
-    cy.get("#connectWallet").click();
+    cy.get('[data-cypress="connectWallet"]').click();
     cy.get(
       ".bn-onboard-custom.bn-onboard-prepare-button.bn-onboard-prepare-button-center"
     )
@@ -52,30 +52,32 @@ describe("Connects to the wallet", () => {
       .click();
 
     cy.get(".bn-onboard-custom.bn-onboard-icon-button").eq(1).click();
-    cy.get("#walletAccount").contains(TEST_PUBLIC_ADDRESS);
+    cy.get('[data-cypress="walletAccount"]').contains(TEST_PUBLIC_ADDRESS);
     cy.contains("Connected");
     cy.contains(TEST_PUBLIC_ADDRESS);
   });
 
   it("Mints tokens", () => {
-    cy.get("#balanceLong").contains("0");
-    cy.get("#collateralInput").type(COLLATERAL_TO_MINT);
+    cy.get('[data-cypress="balanceLong"]').contains("0");
+    cy.get('[data-cypress="collateralInput"]').type(COLLATERAL_TO_MINT);
     cy.wait(1000);
     // New deployment of contract so we have to do an infinite approval.
-    cy.get("#mintButton").contains("Approve");
-    cy.get("#mintButton").click();
+    cy.get('[data-cypress="mintButton"]').contains("Approve");
+    cy.get('[data-cypress="mintButton"]').click();
     cy.wait(2000);
-    cy.get("#mintButton").contains("Mint");
-    cy.get("#mintButton").click();
-    cy.get("#balanceLong").contains("4");
+    cy.get('[data-cypress="mintButton"]').contains("Mint");
+    cy.get('[data-cypress="mintButton"]').click();
+    cy.get('[data-cypress="balanceLong"]').contains("4");
   });
 
   it("Redeems tokens", () => {
-    cy.get("#RedeemTab").click();
-    cy.get("#collateralInput").type(COLLATERAL_TO_REDEEM);
+    cy.get('[data-cypress="walletAccount"]').click();
+    cy.get('[data-cypress="collateralInput"]').type(COLLATERAL_TO_REDEEM);
     cy.wait(1000);
-    cy.get("#redeemButton").click();
+    cy.get('[data-cypress="redeemButton"]').click();
     cy.wait(2000);
-    cy.get("#collateralBalance").contains(COLLATERAL_EXPECTED_AFTER_REDEEM);
+    cy.get('[data-cypress="collateralBalance"]').contains(
+      COLLATERAL_EXPECTED_AFTER_REDEEM
+    );
   });
 });
