@@ -16,6 +16,7 @@ interface Props {
   customOnChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onKeyDown?: React.KeyboardEventHandler<HTMLInputElement> | undefined;
   id?: string;
+  dataCypress?: string;
 }
 
 export type LabelPlacement = "default | overlap";
@@ -29,14 +30,14 @@ const TextInput: FC<Props> = ({
   additionalEffects,
   customOnChange,
   onKeyDown,
-  id,
+  dataCypress,
 }) => {
   return (
     <StyledInput inputWidth={width}>
       <Label labelPlacement={labelPlacement}>{label}</Label>
       <div>
         <input
-          id={id}
+          data-cypress={dataCypress ?? ""}
           type="text"
           value={value}
           onChange={(e) => {

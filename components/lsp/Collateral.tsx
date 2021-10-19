@@ -64,7 +64,7 @@ const Collateral: FC<Props> = ({
           <div>{collateral && collateral.toUpperCase()}</div>
         </CollateralWrapper>
         <TextInput
-          data-cypress="collateralInput"
+          dataCypress="collateralInput"
           label="collateral"
           labelPlacement={"overlap" as LabelPlacement}
           placeholder="0.0"
