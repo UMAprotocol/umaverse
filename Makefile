@@ -75,7 +75,7 @@ e2e-dependencies: #Run cypress container
 umaverse-local:
 	@cd /home/circleci/umaverse && \
 	npm install pm2 -g && \
-	pm2 --name umaverse yarn start -- start
+	pm2 start ecosystem.config.js
 
 .PHONY: e2e-tests
 e2e-tests: #Run cypress container
