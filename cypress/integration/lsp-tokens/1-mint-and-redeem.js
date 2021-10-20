@@ -71,7 +71,7 @@ describe("Connects to the wallet", () => {
   });
 
   it("Redeems tokens", () => {
-    cy.get('[data-label="Redeem"]').click();
+    cy.get("RedeemTab").click();
     cy.get('[data-cypress="collateralInput"]').type(COLLATERAL_TO_REDEEM);
     cy.wait(1000);
     cy.get("#redeemButton").click();
