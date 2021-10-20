@@ -2,7 +2,7 @@ version: 2.1
 orbs:
   cypress: cypress-io/cypress@1.29.0
 jobs:
-  e2e_env:
+  e2e_tests:
     working_directory: ~/umaverse
     machine:
       image: ubuntu-2004:202010-01
@@ -55,8 +55,8 @@ jobs:
 
 workflows:
   version: 2.1
-  e2e_tests:
+  e2e_env:
     jobs:
-      - e2e_env:
+      - e2e_tests:
           context:
             - umaverse
