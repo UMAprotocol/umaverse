@@ -1,0 +1,62 @@
+version: 2.1
+orbs:
+  cypress: cypress-io/cypress@1.29.0
+jobs:
+  e2e_tests:
+    working_directory: ~/umaverse
+    machine:
+      image: ubuntu-2004:202010-01
+    resource_class: large
+    steps:
+      - checkout
+      - run:
+          name: Start local fork node
+          command: |
+            make node-local
+      - run:
+          name: Check local node status
+          command: |
+            make node-status
+      - run:
+          name: Start local API
+          command: |
+            make api-local
+      - run:
+          name: Install node@v14.17.0
+          command: |
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm install v14.17.0 && nvm alias default v14.17.0
+            .circleci/nvm_config.sh
+            nvm install v14.17.0
+            nvm alias default v14.17.0
+      - run:
+          name: Install dependencies
+          command: |
+            .circleci/nvm_config.sh
+            npm version
+            make e2e-dependencies
+      - run:
+          name: Start local umaverse
+          command: |
+            make umaverse-local
+      - run:
+          name: Install Chrome
+          command: |
+            make chrome-local
+      - run:
+          name: Check local api status
+          command: |
+            make api-status
+      - run:
+          name: Execute e2e tests
+          command: |
+            make e2e-tests
+
+workflows:
+  version: 2.1
+  e2e_env:
+    jobs:
+      - e2e_tests:
+          context:
+            - umaverse

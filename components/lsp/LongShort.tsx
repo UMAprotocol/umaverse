@@ -119,7 +119,7 @@ const LongShort: FC<Props> = ({
         />
       </FormRow>
       <BalanceRowToken>
-        <div id="balanceLong">
+        <div data-cypress="balanceLong">
           <span>
             Your Balance{" "}
             {ethers.utils.formatUnits(
