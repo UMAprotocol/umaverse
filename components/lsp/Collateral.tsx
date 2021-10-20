@@ -64,7 +64,7 @@ const Collateral: FC<Props> = ({
           <div>{collateral && collateral.toUpperCase()}</div>
         </CollateralWrapper>
         <TextInput
-          id="collateralInput"
+          dataCypress="collateralInput"
           label="collateral"
           labelPlacement={"overlap" as LabelPlacement}
           placeholder="0.0"
@@ -84,7 +84,7 @@ const Collateral: FC<Props> = ({
         />
       </FormRow>
       <BalanceRow>
-        <div id="collateralBalance">
+        <div data-cypress="collateralBalance">
           <span>
             Your Balance{" "}
             {ethers.utils.formatUnits(
