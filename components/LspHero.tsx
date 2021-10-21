@@ -58,7 +58,11 @@ export const LspHero: React.FC<Props> = ({
               {isConnected ? "Connected" : "Disconnected"}
             </ConnectionStatus>
           </Status>
-          <Button data-cypress="connectWallet" onClick={handleConnectionClick}>
+          <Button
+            id="connectWallet"
+            data-cypress="connectWallet"
+            onClick={handleConnectionClick}
+          >
             {isConnected ? "Disconnect" : "Connect"}
           </Button>
         </CardHead>
