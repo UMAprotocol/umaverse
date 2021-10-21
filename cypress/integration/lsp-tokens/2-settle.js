@@ -20,7 +20,7 @@ import deployLSPContract from "../../utils/deployLSPContract";
 */
 
 describe("Connects to the wallet", () => {
-  let lspAddress = "0xfd7Ead07dF3cD2543fE269d9E320376c64D9143E";
+  let lspAddress = "";
   before(async () => {
     lspAddress = await deployLSPContract();
   });

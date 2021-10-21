@@ -44,8 +44,7 @@ describe("Connects to the wallet", () => {
     // Initial snapshot
     cy.contains("Your Wallet");
     cy.contains("Disconnected");
-    // cy.get('[data-cypress="connectWallet"]').click();
-    cy.get("#connectWallet").click();
+    cy.get('[data-cypress="connectWallet"]').click();
     cy.get(
       ".bn-onboard-custom.bn-onboard-prepare-button.bn-onboard-prepare-button-center"
     )
