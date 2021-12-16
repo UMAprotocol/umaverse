@@ -10,7 +10,7 @@ import {
 } from "./LSP.styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDown } from "@fortawesome/free-solid-svg-icons";
-import { ethers } from "ethers";
+import { ethers, BigNumber } from "ethers";
 import toWeiSafe from "../../utils/convertToWeiSafely";
 import { useConnection } from "../../hooks";
 
@@ -71,34 +71,36 @@ const MintForm: FC<Props> = ({
   const [showMintError, setShowMintError] = useState("");
   const [userNeedsToApprove, setUserNeedsToApprove] = useState(false);
   const { signer } = useConnection();
+  const [knownAllowance, setKnownAllowance] = useState<BigNumber>(
+    BigNumber.from(0)
+  );
 
-  const checkIfUserHasToApprove = useCallback(async () => {
-    if (collateralERC20Contract) {
-      try {
-        const allowance = await collateralERC20Contract.allowance(
-          address,
-          contractAddress
-        );
-        const balance = await collateralERC20Contract.balanceOf(address);
-        const hasToApprove = allowance.lt(balance);
-        if (hasToApprove) {
-          setUserNeedsToApprove(true);
-        }
-      } catch (err) {
-        console.log("err in check approval call", err);
-      }
-    }
-  }, [address, collateralERC20Contract, contractAddress]);
+  const getKnownAllowance = useCallback(() => {
+    if (!collateralERC20Contract) return;
+    if (!address) return;
+    if (!contractAddress) return;
+    collateralERC20Contract
+      .allowance(address, contractAddress)
+      .then(setKnownAllowance)
+      .catch((err: Error) => console.log("error getting allowance", err));
+  }, [address, contractAddress, collateralERC20Contract, setKnownAllowance]);
 
   useEffect(() => {
     if (signer) {
       setShowWallet(false);
-      checkIfUserHasToApprove();
+      // get known allowance for the contract when wallet connects
+      getKnownAllowance();
     }
-  }, [signer, setShowWallet, checkIfUserHasToApprove]);
+  }, [signer, setShowWallet, address, contractAddress]);
 
   useEffect(() => {
     try {
+      // update if user has to approve based on amount entered in input box and last known allowance
+      const hasToApprove = amount
+        ? knownAllowance.lt(toWeiSafe(amount, Number(collateralDecimals)))
+        : false;
+      setUserNeedsToApprove(hasToApprove);
+
       if (
         amount &&
         toWeiSafe(amount, Number(collateralDecimals)).gt(collateralBalance)
@@ -119,27 +121,24 @@ const MintForm: FC<Props> = ({
     collateralDecimals,
     collateralBalance,
     showMintError,
+    knownAllowance,
   ]);
 
   const mint = useCallback(async () => {
     if (lspContract && collateralERC20Contract) {
       try {
-        const allowance = await collateralERC20Contract.allowance(
-          address,
-          contractAddress
-        );
-        const balance = await collateralERC20Contract.balanceOf(address);
-        const hasToApprove = allowance.lt(balance);
-        if (hasToApprove) {
+        if (userNeedsToApprove) {
           const approveTx = await collateralERC20Contract.approve(
             contractAddress,
             INFINITE_APPROVAL_AMOUNT
           );
 
-          return approveTx.wait(1).then(() => setUserNeedsToApprove(false));
+          // update our known allowance once approval passes
+          return approveTx.wait(1).then(() => getKnownAllowance());
         }
       } catch (err) {
         console.log("err in approval check", err);
+        return;
       }
 
       if (amount) {
@@ -180,6 +179,7 @@ const MintForm: FC<Props> = ({
     setCollateralBalance,
     refetchLongTokenBalance,
     refetchShortTokenBalance,
+    userNeedsToApprove,
   ]);
 
   return (
@@ -221,7 +221,7 @@ const MintForm: FC<Props> = ({
           <ButtonWrapper>
             <MintButton
               id="mintButton"
-              showDisabled={!signer || showMintError ? true : false}
+              showDisabled={!signer || showMintError || !amount ? true : false}
               onClick={() => {
                 if (showMintError) return false;
                 if (signer) {
