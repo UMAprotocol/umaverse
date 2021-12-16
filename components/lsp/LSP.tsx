@@ -51,11 +51,7 @@ const LSP: FC<Props> = ({
 
   // Check if contract is settable.
   useEffect(() => {
-    if (
-      signer &&
-      data.contractState === ContractState.ExpiredPriceRequested &&
-      lspContract
-    ) {
+    if (signer && lspContract) {
       lspContract.callStatic
         .settle(0, 0)
         .then(
