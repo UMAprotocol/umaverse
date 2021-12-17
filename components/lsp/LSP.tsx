@@ -90,15 +90,19 @@ const LSP: FC<Props> = ({
     if (signer && data.address && account && collateralERC20Contract) {
       const lspCon = createLSPContractInstance(signer, data.address);
 
-      lspCon.getCurrentTime().then((ts: ethers.BigNumber) => {
-        setCurrentTime(ts.toString());
-      });
+      lspCon
+        .getCurrentTime()
+        .then((ts: ethers.BigNumber) => {
+          setCurrentTime(ts.toString());
+        })
+        .catch(console.error);
 
       collateralERC20Contract
         .balanceOf(account)
         .then((balance: ethers.BigNumber) => {
           setCollateralBalance(balance);
-        });
+        })
+        .catch(console.error);
 
       setLSPContract(lspCon);
     }

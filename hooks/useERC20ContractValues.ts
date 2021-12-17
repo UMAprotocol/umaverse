@@ -14,21 +14,30 @@ export default function useERC20ContractValues(
 
   const refetchBalance = useCallback(() => {
     if (contract && userAddress) {
-      contract.balanceOf(userAddress).then((bal: ethers.BigNumber) => {
-        setBalance(bal);
-      });
+      contract
+        .balanceOf(userAddress)
+        .then((bal: ethers.BigNumber) => {
+          setBalance(bal);
+        })
+        .catch(console.error);
     }
   }, [contract, userAddress]);
   useEffect(() => {
     if (contractAddress && signer && userAddress) {
       const erc20 = createERC20ContractInstance(signer, contractAddress);
-      erc20.decimals().then((decimals: ethers.BigNumber) => {
-        setDecimals(decimals.toString());
-      });
+      erc20
+        .decimals()
+        .then((decimals: ethers.BigNumber) => {
+          setDecimals(decimals.toString());
+        })
+        .catch(console.error);
 
-      erc20.balanceOf(userAddress).then((bal: ethers.BigNumber) => {
-        setBalance(bal);
-      });
+      erc20
+        .balanceOf(userAddress)
+        .then((bal: ethers.BigNumber) => {
+          setBalance(bal);
+        })
+        .catch(console.error);
       setContract(erc20);
     } else {
       setBalance(toBN("0"));
