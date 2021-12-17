@@ -76,9 +76,7 @@ const MintForm: FC<Props> = ({
   );
 
   const getKnownAllowance = useCallback(() => {
-    if (!collateralERC20Contract) return;
-    if (!address) return;
-    if (!contractAddress) return;
+    if (!collateralERC20Contract || !address || !contractAddress) return;
     collateralERC20Contract
       .allowance(address, contractAddress)
       .then(setKnownAllowance)
