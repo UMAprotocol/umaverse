@@ -270,9 +270,12 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths }) => {
       refetchShortTokenBalance();
       const erc20 = createERC20ContractInstance(signer, data.collateralToken);
       setCollateralERC20Contract(erc20);
-      erc20.balanceOf(account).then((balance: ethers.BigNumber) => {
-        setCollateralBalance(balance);
-      });
+      erc20
+        .balanceOf(account)
+        .then((balance: ethers.BigNumber) => {
+          setCollateralBalance(balance);
+        })
+        .catch(console.error);
     }
     if (!isConnected) {
       setCollateralBalance(toBN("0"));

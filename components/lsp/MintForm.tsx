@@ -80,7 +80,7 @@ const MintForm: FC<Props> = ({
     collateralERC20Contract
       .allowance(address, contractAddress)
       .then(setKnownAllowance)
-      .catch((err: Error) => console.log("error getting allowance", err));
+      .catch((err: Error) => console.error("error getting allowance", err));
   }, [address, contractAddress, collateralERC20Contract, setKnownAllowance]);
 
   useEffect(() => {
@@ -219,7 +219,7 @@ const MintForm: FC<Props> = ({
           <ButtonWrapper>
             <MintButton
               id="mintButton"
-              showDisabled={!signer || showMintError || !amount ? true : false}
+              showDisabled={!signer || !!showMintError || Number(amount) <= 0}
               onClick={() => {
                 if (showMintError) return false;
                 if (signer) {
