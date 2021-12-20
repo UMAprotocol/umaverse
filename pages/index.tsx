@@ -19,7 +19,6 @@ import {
   QUERIES,
   errorFilter,
   formatWeiString,
-  formatTvlChange,
 } from "../utils";
 
 import {
@@ -28,8 +27,8 @@ import {
   fetchCompleteSynth,
   Synth,
 } from "../utils/umaApi";
-import { nDaysAgo } from "../utils/time";
-const oneDayAgo = nDaysAgo(1);
+
+import { getDefillamaTvl, getDefillamaPercentChange } from "../utils/defillama";
 
 export const getStaticProps: GetStaticProps = async () => {
   const queryClient = new QueryClient();
@@ -38,31 +37,22 @@ export const getStaticProps: GetStaticProps = async () => {
   await queryClient.prefetchQuery("all synths", async () =>
     (await Promise.all(cmsSynths.map(fetchCompleteSynth))).filter(errorFilter)
   );
-  await queryClient.prefetchQuery(
-    "total tvl",
-    async () => await client.getLatestTvl()
-  );
-
-  const lastTvl = (await queryClient.getQueryData(["total tvl"])) as string;
 
   await queryClient.prefetchQuery(
     "total tvm",
     async () => await client.getLatestTvm()
   );
 
-  await queryClient.prefetchQuery("total tvl change", async () => {
-    const [{ value: ydayTvl = NaN } = {}] = await client.request(
-      "global/globalTvlHistorySlice",
-      Math.floor(oneDayAgo().toSeconds())
-    );
-    return !Number.isNaN(ydayTvl)
-      ? Math.round(
-          ((formatWeiString(lastTvl) - formatWeiString(ydayTvl)) /
-            formatWeiString(ydayTvl)) *
-            1000
-        ) / 10
-      : 0;
-  });
+  await queryClient.prefetchQuery(
+    "defillama tvl",
+    async () => await getDefillamaTvl()
+  );
+
+  await queryClient.prefetchQuery(
+    "defillama tvl percent change",
+    async () => await getDefillamaPercentChange()
+  );
+
   return {
     props: {
       cmsSynths,
@@ -82,24 +72,20 @@ const IndexPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
         errorFilter
       ) as Synth<{ type: ContractType }>[]
   );
-  const { data: totalTvl } = useQuery(
-    "total tvl",
-    async () => await client.getLatestTvl()
-  );
+
   const { data: totalTvm } = useQuery(
     "total tvm",
     async () => await client.getLatestTvm()
   );
-  const { data: totalTvlChange } = useQuery(
-    "total tvl change",
-    async () => {
-      const [{ value: ydayTvl = NaN } = {}] = await client.request(
-        "global/globalTvlHistorySlice",
-        Math.floor(oneDayAgo().toSeconds())
-      );
-      return formatTvlChange(ydayTvl, totalTvl!);
-    },
-    { enabled: Boolean(totalTvl) }
+
+  const { data: defillamaTvl } = useQuery(
+    "defillama tvl",
+    async () => await getDefillamaTvl()
+  );
+
+  const { data: defillamaPercentChange } = useQuery(
+    "defillama tvl percent change",
+    async () => await getDefillamaPercentChange()
   );
 
   return (
@@ -119,9 +105,9 @@ const IndexPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
                 Total Value Locked <span>(TVL)</span>
               </CardHeading>
               <Value
-                value={totalTvl ?? 0}
+                value={defillamaTvl ?? 0}
                 format={(v) => {
-                  const parsedValue = formatWeiString(v);
+                  const parsedValue = Number(v);
                   return (
                     <>
                       ${formatMillions(Math.floor(parsedValue))}{" "}
@@ -169,7 +155,7 @@ const IndexPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
                 Change <span>(24h)</span>
               </CardHeading>
               <Value
-                value={totalTvlChange ?? 0}
+                value={defillamaPercentChange ?? 0}
                 format={(v) => (
                   <span
                     style={{

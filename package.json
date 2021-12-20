@@ -35,6 +35,7 @@
     "@visx/scale": "^1.7.0",
     "@visx/shape": "^1.7.0",
     "@visx/tooltip": "^1.7.2",
+    "axios": "^0.24.0",
     "bnc-onboard": "^1.30.0",
     "contentful": "^8.4.2",
     "cypress": "^8.4.0",
