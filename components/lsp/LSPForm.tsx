@@ -67,6 +67,7 @@ const LSPForm: FC<Props> = ({
           .then((tx: any) => tx.wait(1))
           .then(() => {
             setContractState(ContractState.ExpiredPriceRequested);
+            setSettleButtonDisabled(true);
           });
       } catch (err) {
         console.log("err in expire call", err);
