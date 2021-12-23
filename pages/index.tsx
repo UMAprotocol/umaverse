@@ -39,17 +39,17 @@ export const getStaticProps: GetStaticProps = async () => {
   );
 
   await queryClient.prefetchQuery(
+    "total tvl",
+    async () => await getDefillamaTvl()
+  );
+
+  await queryClient.prefetchQuery(
     "total tvm",
     async () => await client.getLatestTvm()
   );
 
   await queryClient.prefetchQuery(
-    "defillama tvl",
-    async () => await getDefillamaTvl()
-  );
-
-  await queryClient.prefetchQuery(
-    "defillama tvl percent change",
+    "total tvl change",
     async () => await getDefillamaPercentChange()
   );
 
@@ -72,19 +72,16 @@ const IndexPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
         errorFilter
       ) as Synth<{ type: ContractType }>[]
   );
-
+  const { data: totalTvl } = useQuery(
+    "total tvl",
+    async () => await getDefillamaTvl()
+  );
   const { data: totalTvm } = useQuery(
     "total tvm",
     async () => await client.getLatestTvm()
   );
-
-  const { data: defillamaTvl } = useQuery(
-    "defillama tvl",
-    async () => await getDefillamaTvl()
-  );
-
-  const { data: defillamaPercentChange } = useQuery(
-    "defillama tvl percent change",
+  const { data: totalTvlChange } = useQuery(
+    "total tvl change",
     async () => await getDefillamaPercentChange()
   );
 
@@ -105,7 +102,7 @@ const IndexPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
                 Total Value Locked <span>(TVL)</span>
               </CardHeading>
               <Value
-                value={defillamaTvl ?? 0}
+                value={totalTvl ?? 0}
                 format={(v) => {
                   const parsedValue = Number(v);
                   return (
@@ -155,7 +152,7 @@ const IndexPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
                 Change <span>(24h)</span>
               </CardHeading>
               <Value
-                value={defillamaPercentChange ?? 0}
+                value={totalTvlChange ?? 0}
                 format={(v) => (
                   <span
                     style={{
