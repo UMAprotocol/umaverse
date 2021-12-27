@@ -73,7 +73,7 @@ interface EmpState {
   tokenMarketPrice: string;
   type: "emp";
 }
-interface LspState {
+export interface LspState {
   id: string;
   address: string;
   updated: number;
@@ -89,7 +89,6 @@ interface LspState {
   expirationTimestamp: number;
   expiryPrice: string;
   expiryPercentLong: string;
-  contractState: number;
   totalPositionCollateral: string;
   sponsors: string[];
   longTokenDecimals: number;
