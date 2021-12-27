@@ -49,53 +49,49 @@ const LSP: FC<Props> = ({
   const [showSettle, setShowSettle] = useState(false);
   const [settleButtonDisabled, setSettleButtonDisabled] = useState(false);
 
-  // Check if expired price has been requested
   useEffect(() => {
-    if (signer && lspContract && showSettle) {
-      lspContract.callStatic
-        .expire()
-        .then(
-          () => false,
-          () => true
-        )
-        .then((isPriceRequested: boolean) => {
-          // this will be true if price was requested or if contract is settleable
-          if (isPriceRequested) {
+    if (!signer || !lspContract || !showSettle) return;
+    // Check if expired price has been requested
+    switch (contractState) {
+      case ContractState.Open:
+        lspContract.callStatic
+          .expire()
+          .then(
+            () => false,
+            () => true
+          )
+          .then((isPriceRequested: boolean) => {
+            // this will be true if price was requested or if contract is settleable
+            if (isPriceRequested) {
+              setSettleButtonDisabled(true);
+              setContractState(ContractState.ExpiredPriceRequested);
+            }
+          })
+          .catch((err: any) => {
             setSettleButtonDisabled(true);
-            setContractState(ContractState.ExpiredPriceRequested);
-          }
-        })
-        .catch((err: any) => {
-          setSettleButtonDisabled(true);
-          console.error("Error testing expire()", err);
-        });
+            console.error("Error testing expire()", err);
+          });
+        break;
+      case ContractState.ExpiredPriceRequested:
+        // Check if contract is settable.
+        lspContract.callStatic
+          .settle(0, 0)
+          .then(
+            () => true,
+            () => false
+          )
+          .then((isExpiredPriceReceived: boolean) => {
+            if (isExpiredPriceReceived) {
+              setContractState(ContractState.ExpiredPriceReceived);
+            }
+          })
+          .catch((err: any) => {
+            setSettleButtonDisabled(true);
+            console.error("Error testing settle()", err);
+          });
+        break;
     }
-  }, [showSettle, signer, lspContract]);
-
-  // Check if contract is settable.
-  useEffect(() => {
-    if (
-      signer &&
-      lspContract &&
-      contractState === ContractState.ExpiredPriceRequested
-    ) {
-      lspContract.callStatic
-        .settle(0, 0)
-        .then(
-          () => true,
-          () => false
-        )
-        .then((isExpiredPriceReceived: boolean) => {
-          if (isExpiredPriceReceived) {
-            setContractState(ContractState.ExpiredPriceReceived);
-          }
-        })
-        .catch((err: any) => {
-          setSettleButtonDisabled(true);
-          console.error("Error testing settle()", err);
-        });
-    }
-  }, [signer, lspContract, contractState]);
+  }, [signer, lspContract, contractState, showSettle]);
 
   useEffect(() => {
     if (currentTime && Number(currentTime) >= data.expirationTimestamp) {
