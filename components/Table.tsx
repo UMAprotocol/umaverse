@@ -23,6 +23,7 @@ import {
   CATEGORIES,
   formatContentfulUrl,
   formatWeiString,
+  ContentfulSynth,
 } from "../utils";
 
 import { MaxWidthWrapper } from "./Wrapper";
@@ -51,20 +52,23 @@ const Name: React.FC<NameProps> = ({ synth }) => {
   const formattedUrl = logo?.fields.file.url
     ? formatContentfulUrl(logo.fields.file.url)
     : CATEGORIES_PLACEHOLDERS[category];
+  const heading = useMemo(() => {
+    if (synth.name) {
+      return synth.name;
+    } else if (synth.type === "emp") {
+      return synth.tokenName;
+    } else {
+      return formatLSPName(synth.longTokenName);
+    }
+  }, [synth]);
 
   return (
     <NameWrapper>
       <ImageWrapper>
         <Image src={formattedUrl} width="52" height="52" layout="fixed" />
       </ImageWrapper>
-
       <div>
-        <NameHeading>
-          {synth.type === "emp"
-            ? synth.tokenName
-            : formatLSPName(synth.longTokenName)}
-        </NameHeading>
-
+        <NameHeading>{heading}</NameHeading>
         <span>{synth.shortDescription}</span>
       </div>
     </NameWrapper>
@@ -183,7 +187,8 @@ function activeSynthsFilter(
   return rows.filter(
     (row) =>
       (row.original as Synth<{ type: ContractType }>).expirationTimestamp >
-      DateTime.now().toSeconds()
+        DateTime.now().toSeconds() ||
+      (row.original as ContentfulSynth).category === "External Integration"
   );
 }
 type Props = {
@@ -265,6 +270,19 @@ export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
 
   const router = useRouter();
 
+  function onClickRow(row: TRow<Synth<{ type: ContractType }>>) {
+    if (row.original.externalUrl) {
+      const newWindow = window.open(
+        row.original.externalUrl,
+        "_blank",
+        "noopener,noreferrer"
+      );
+      if (newWindow) newWindow.opener = null;
+    } else {
+      router.push(`/${row.original.address}`);
+    }
+  }
+
   return (
     <TableWrapper {...getTableProps()}>
       <MaxWidthWrapper>
@@ -277,7 +295,6 @@ export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
                   ({ id, value }: { id: string; value: string }) =>
                     id === "category" && value === category
                 );
-
                 return (
                   <Button
                     key={category}
@@ -341,7 +358,9 @@ export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
                     initial: { opacity: 0 },
                   })}
                   key={row.original.address}
-                  onClick={() => router.push(`/${row.original.address}`)}
+                  onClick={() => {
+                    onClickRow(row);
+                  }}
                 >
                   {row.cells.map((cell) => (
                     <Cell

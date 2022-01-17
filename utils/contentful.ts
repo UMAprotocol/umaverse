@@ -46,6 +46,9 @@ export type ContentfulSynth = {
   description: string;
   logo?: Entry<ContentfulLogo>;
   mintmanage: string;
+  externalApi?: string;
+  name?: string;
+  externalUrl?: string;
 };
 
 export function formatContentfulUrl(url: string): string {
