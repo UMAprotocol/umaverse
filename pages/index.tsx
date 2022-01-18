@@ -20,6 +20,7 @@ import {
   errorFilter,
   formatWeiString,
   ContentfulSynth,
+  SynthFetchingError,
 } from "../utils";
 
 import {
@@ -40,6 +41,10 @@ async function attachDefillamaStats(cmsSynth: ContentfulSynth) {
   let data;
 
   try {
+    if (!cmsSynth.externalApi) {
+      throw new SynthFetchingError("Invalid external api url", cmsSynth);
+    }
+
     const { tvl, tvl24hChange } = await getDefillamaStats(cmsSynth.externalApi);
     data = {
       ...cmsSynth,
