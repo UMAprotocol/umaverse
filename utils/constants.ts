@@ -36,6 +36,7 @@ export const CATEGORIES = [
   "Option",
   "Range Token",
   "Success Token",
+  "Integrations",
 ] as const;
 export type Category = typeof CATEGORIES[number];
 
@@ -46,6 +47,7 @@ export const CATEGORIES_PLACEHOLDERS: Record<Category, string> = {
   Option: "/placeholders/option.svg",
   "Range Token": "/placeholders/range-token.svg",
   "Success Token": "/placeholders/success-token.svg",
+  Integrations: "/placeholders/external-integration.svg",
 };
 
 export const KNOWN_LSP_ADDRESS = "0x372802d8A2D69bB43872a1AABe2bd403a0FafA1F";

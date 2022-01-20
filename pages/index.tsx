@@ -19,6 +19,8 @@ import {
   QUERIES,
   errorFilter,
   formatWeiString,
+  ContentfulSynth,
+  SynthFetchingError,
 } from "../utils";
 
 import {
@@ -28,14 +30,52 @@ import {
   Synth,
 } from "../utils/umaApi";
 
-import { getDefillamaTvl, getDefillamaPercentChange } from "../utils/defillama";
+import {
+  getDefillamaTvl,
+  getDefillamaPercentChange,
+  getDefillamaStats,
+} from "../utils/defillama";
+import { ethers } from "ethers";
+
+async function attachDefillamaStats(cmsSynth: ContentfulSynth) {
+  let data;
+
+  try {
+    if (!cmsSynth.defiLlamaApi) {
+      throw new SynthFetchingError("Invalid external api url", cmsSynth);
+    }
+
+    const { tvl, tvl24hChange } = await getDefillamaStats(
+      cmsSynth.defiLlamaApi
+    );
+    data = {
+      ...cmsSynth,
+      tvl: ethers.utils.parseEther(tvl.toFixed(0)).toString(),
+      tvl24hChange,
+    };
+  } catch (error) {
+    return error;
+  }
+
+  return data;
+}
+
+function fetchCompleteSynthByApi(cmsSynth: ContentfulSynth) {
+  if (cmsSynth.defiLlamaApi) {
+    return attachDefillamaStats(cmsSynth);
+  } else {
+    return fetchCompleteSynth(cmsSynth);
+  }
+}
 
 export const getStaticProps: GetStaticProps = async () => {
   const queryClient = new QueryClient();
   const cmsSynths = await contentfulClient.getAllSynths();
 
   await queryClient.prefetchQuery("all synths", async () =>
-    (await Promise.all(cmsSynths.map(fetchCompleteSynth))).filter(errorFilter)
+    (
+      await Promise.all(cmsSynths.map(fetchCompleteSynthByApi))
+    ).filter(errorFilter)
   );
 
   await queryClient.prefetchQuery(
@@ -68,7 +108,7 @@ const IndexPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
   const { data: allSynths } = useQuery(
     "all synths",
     async () =>
-      (await Promise.all(cmsSynths.map(fetchCompleteSynth))).filter(
+      (await Promise.all(cmsSynths.map(fetchCompleteSynthByApi))).filter(
         errorFilter
       ) as Synth<{ type: ContractType }>[]
   );
