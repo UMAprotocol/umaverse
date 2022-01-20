@@ -188,7 +188,7 @@ function activeSynthsFilter(
     (row) =>
       (row.original as Synth<{ type: ContractType }>).expirationTimestamp >
         DateTime.now().toSeconds() ||
-      (row.original as ContentfulSynth).category === "External Integration"
+      (row.original as ContentfulSynth).category === "Integrations"
   );
 }
 type Props = {

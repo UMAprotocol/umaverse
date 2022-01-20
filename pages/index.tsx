@@ -41,11 +41,13 @@ async function attachDefillamaStats(cmsSynth: ContentfulSynth) {
   let data;
 
   try {
-    if (!cmsSynth.externalApi) {
+    if (!cmsSynth.defiLlamaApi) {
       throw new SynthFetchingError("Invalid external api url", cmsSynth);
     }
 
-    const { tvl, tvl24hChange } = await getDefillamaStats(cmsSynth.externalApi);
+    const { tvl, tvl24hChange } = await getDefillamaStats(
+      cmsSynth.defiLlamaApi
+    );
     data = {
       ...cmsSynth,
       tvl: ethers.utils.parseEther(tvl.toFixed(0)).toString(),
@@ -59,7 +61,7 @@ async function attachDefillamaStats(cmsSynth: ContentfulSynth) {
 }
 
 function fetchCompleteSynthByApi(cmsSynth: ContentfulSynth) {
-  if (cmsSynth.externalApi) {
+  if (cmsSynth.defiLlamaApi) {
     return attachDefillamaStats(cmsSynth);
   } else {
     return fetchCompleteSynth(cmsSynth);

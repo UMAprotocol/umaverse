@@ -46,7 +46,7 @@ export type ContentfulSynth = {
   description: string;
   logo?: Entry<ContentfulLogo>;
   mintmanage: string;
-  externalApi?: string;
+  defiLlamaApi?: string;
   name?: string;
   externalUrl?: string;
 };
