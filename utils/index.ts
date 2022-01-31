@@ -3,3 +3,4 @@ export * from "./truncateAddress";
 export * from "./constants";
 export * from "./contentful";
 export * from "./errors";
+export * from "./umaApi";

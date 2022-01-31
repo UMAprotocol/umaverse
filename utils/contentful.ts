@@ -2,7 +2,8 @@ import { createClient, Entry, EntryCollection } from "contentful";
 import { DateTime } from "luxon";
 import { CATEGORIES, Category } from "./constants";
 import { errorFilter } from "./errors";
-import { ContractType, fetchCompleteSynth, Synth } from "./umaApi";
+import type { ChainId } from "./chainId";
+import { ContractType, Synth, constructClient } from "./umaApi";
 
 const contentfulSpaceId = process.env.CONTENTFUL_SPACE_ID;
 const contentfulAccessToken = process.env.CONTENTFUL_ACCESS_TOKEN;
@@ -49,6 +50,7 @@ export type ContentfulSynth = {
   defiLlamaApi?: string;
   name?: string;
   externalUrl?: string;
+  chainId: ChainId;
 };
 
 export function formatContentfulUrl(url: string): string {
@@ -77,6 +79,7 @@ function getSynthsByField<T>(field?: string) {
 }
 
 const getSynthsByCategory = getSynthsByField<Category>("fields.category");
+const getSynthsByChain = getSynthsByField<ChainId>("fields.chainId");
 const getAllSynths = getSynthsByField();
 
 async function getSynth(address: string): Promise<ContentfulSynth> {
@@ -91,7 +94,9 @@ async function getRelatedSynths(
   const relatedCmsSynths = await getSynthsByCategory(synth.category);
   // Get the synths state to see if they're expired or not
   const allRelatedSynths = (
-    await Promise.all(relatedCmsSynths.map(fetchCompleteSynth))
+    await Promise.all(
+      relatedCmsSynths.map(constructClient(synth.chainId).fetchCompleteSynth)
+    )
   ).filter(errorFilter) as Synth<{ type: ContractType }>[];
   const relevantRelatedSynths = allRelatedSynths.filter((relatedSynth) => {
     const isExpired =
@@ -113,6 +118,7 @@ async function getRelatedSynths(
 
 export const contentfulClient = {
   getAllSynths,
+  getSynthsByChain,
   getSynth,
   getRelatedSynths,
   getSynthsByField,
