@@ -82,9 +82,12 @@ const getSynthsByCategory = getSynthsByField<Category>("fields.category");
 const getSynthsByChain = getSynthsByField<ChainId>("fields.chainId");
 const getAllSynths = getSynthsByField();
 
-async function getSynth(address: string): Promise<ContentfulSynth> {
-  const [synth] = await getSynthsByField<string>("fields.address")(address);
-  return synth;
+async function getSynth(
+  address: string,
+  chainId = 1
+): Promise<ContentfulSynth> {
+  const synths = await getSynthsByField<string>("fields.address")(address);
+  return synths.filter((synth) => synth.chainId === chainId)[0];
 }
 
 async function getRelatedSynths(
