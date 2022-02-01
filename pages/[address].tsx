@@ -35,11 +35,10 @@ import LeftArrow from "../public/icons/arrow-left.svg";
 import UnstyledRightArrow from "../public/icons/arrow-right.svg";
 import UnstyledExternalLink from "../public/icons/external-link.svg";
 import {
-  client,
+  constructClient,
   SynthState,
   Synth,
   ContractType,
-  fetchCompleteSynth,
   formatLSPName,
   SynthStats,
 } from "../utils/umaApi";
@@ -48,6 +47,7 @@ import { useConnection } from "../hooks";
 import { ethers } from "ethers";
 import createERC20ContractInstance from "../components/lsp/createERC20ContractInstance";
 import { useMemo } from "react";
+import { ChainId } from "utils/chainId";
 
 const toBN = ethers.BigNumber.from;
 
@@ -78,9 +78,16 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
 
   const queryClient = new QueryClient();
   const cmsSynths = await contentfulClient.getAllSynths();
+  const client = constructClient(cmsSynth.chainId);
 
   await queryClient.prefetchQuery("all synths", async () =>
-    (await Promise.all(cmsSynths.map(fetchCompleteSynth))).filter(errorFilter)
+    (
+      await Promise.all(
+        cmsSynths.map((synth) =>
+          constructClient(synth.chainId).fetchCompleteSynth(synth)
+        )
+      )
+    ).filter(errorFilter)
   );
 
   await queryClient.prefetchQuery(
@@ -124,7 +131,11 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
   const cmsRelatedSynths = await contentfulClient.getRelatedSynths(data);
 
   const relatedSynths = (
-    await Promise.all(cmsRelatedSynths.map(fetchCompleteSynth))
+    await Promise.all(
+      cmsRelatedSynths.map((synth) =>
+        constructClient(synth.chainId).fetchCompleteSynth(synth)
+      )
+    )
   ).filter(errorFilter) as Synth<{ type: ContractType }>[];
 
   // get TVL history for this synth
@@ -154,6 +165,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
   return {
     props: {
       data,
+      chainId: cmsSynth.chainId,
       relatedSynths: relatedSynths
         .sort((a, b) => formatWeiString(b.tvl) - formatWeiString(a.tvl))
         .slice(0, 5),
@@ -183,18 +195,22 @@ type Props =
       data: Synth<{ type: "emp" }>;
       relatedSynths: Synth<{ type: ContractType }>[];
       change24h: number;
+      chainId: ChainId;
     }
   | {
       data: Synth<{ type: "lsp" }>;
       relatedSynths: Synth<{ type: ContractType }>[];
       change24h: number;
+      chainId: ChainId;
     };
 
-const SynthPage: React.FC<Props> = ({ data, relatedSynths }) => {
+const SynthPage: React.FC<Props> = ({ data, chainId, relatedSynths }) => {
   const { account = "", signer, isConnected } = useConnection();
   const formattedLogo = data?.logo?.fields.file.url
     ? formatContentfulUrl(data.logo.fields.file.url)
     : null;
+
+  const client = constructClient(chainId);
 
   const { data: synthState } = useQuery(
     ["synth state", data.address],
