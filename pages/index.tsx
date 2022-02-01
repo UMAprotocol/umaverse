@@ -16,18 +16,14 @@ import {
 import {
   contentfulClient,
   formatMillions,
+  getGlobalTvm,
   QUERIES,
   errorFilter,
   ContentfulSynth,
   SynthFetchingError,
 } from "../utils";
 
-import {
-  client,
-  ContractType,
-  fetchCompleteSynth,
-  Synth,
-} from "../utils/umaApi";
+import { constructClient, ContractType, Synth } from "../utils/umaApi";
 
 import {
   getDefillamaTvl,
@@ -63,7 +59,7 @@ function fetchCompleteSynthByApi(cmsSynth: ContentfulSynth) {
   if (cmsSynth.defiLlamaApi) {
     return attachDefillamaStats(cmsSynth);
   } else {
-    return fetchCompleteSynth(cmsSynth);
+    return constructClient(cmsSynth.chainId).fetchCompleteSynth(cmsSynth);
   }
 }
 
@@ -84,7 +80,7 @@ export const getStaticProps: GetStaticProps = async () => {
 
   await queryClient.prefetchQuery(
     "total tvm",
-    async () => await client.getLatestTvm()
+    async () => await getGlobalTvm()
   );
 
   await queryClient.prefetchQuery(
