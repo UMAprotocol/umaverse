@@ -23,28 +23,34 @@ const baseOptions = {
 };
 
 const API_URLS: Record<ChainId, string> = {
-  1: "https://prod.api.umaproject.org",
-  42: "https://dev.api.umaproject.org",
-  3: "https://dev.api.umaproject.org",
-  4: "https://dev.api.umaproject.org",
-  1337: "https://dev.api.umaproject.org",
-  137: "https://prod.api.umaproject.org",
+  1: process.env.NEXT_PUBLIC_UMA_API_URL_1 ?? "https://prod.api.umaproject.org",
+  42:
+    process.env.NEXT_PUBLIC_UMA_API_URL_42 ?? "https://dev.api.umaproject.org",
+  3: process.env.NEXT_PUBLIC_UMA_API_URL_3 ?? "https://dev.api.umaproject.org",
+  4: process.env.NEXT_PUBLIC_UMA_API_URL_4 ?? "https://dev.api.umaproject.org",
+  1337:
+    process.env.NEXT_PUBLIC_UMA_API_URL_1337 ??
+    "https://dev.api.umaproject.org",
+  137:
+    process.env.NEXT_PUBLIC_UMA_API_URL_137 ??
+    "https://prod.api.umaproject.org",
 };
-
-function _constructClient(chainId: ChainId): Client {
-  const baseUrl = API_URLS[chainId];
-
-  function constructRequest(...params: unknown[]) {
-    try {
-      return { ...baseOptions, body: JSON.stringify([...params]) };
-    } catch (e) {
-      throw new Error(`Could not stringify ${params}`);
-    }
+function constructRequest(...params: unknown[]) {
+  try {
+    return { ...baseOptions, body: JSON.stringify([...params]) };
+  } catch (e) {
+    throw new Error(`Could not stringify ${params}`);
   }
+}
 
-  async function request<T>(method: string, ...params: unknown[]): Promise<T> {
+class Client implements IClient {
+  baseUrl: string;
+  constructor(baseUrl: string) {
+    this.baseUrl = baseUrl;
+  }
+  async request<T>(method: string, ...params: unknown[]): Promise<T> {
     const response = await fetch(
-      `${baseUrl}/${method}`,
+      `${this.baseUrl}/${method}`,
       constructRequest(...params)
     );
 
@@ -59,53 +65,55 @@ function _constructClient(chainId: ChainId): Client {
     return response.json();
   }
 
-  const getLatestTvl: GetStat = (address) =>
-    address ? request("global/tvl", address) : request("global/globalTvl");
-  const getLatestTvm: GetStat = (address) =>
-    address ? request("global/tvm", address) : request("global/globalTvm");
-  const getTvl: GetStatBetween = (
+  getLatestTvl: GetStat = (address) =>
+    address
+      ? this.request("global/tvl", address)
+      : this.request("global/globalTvl");
+  getTvl: GetStatBetween = (
     address,
     startTimestamp = Math.floor(time90DaysAgo().toSeconds())
-  ) => request("tvlHistoryBetween", address, startTimestamp);
+  ) => this.request("tvlHistoryBetween", address, startTimestamp);
+  getLatestTvm: GetStat = (address) =>
+    address
+      ? this.request("global/tvm", address)
+      : this.request("global/globalTvm");
 
-  // FIXME: This the bot price, not the last traded price. Needs to be handled API side.
-  const getYesterdayPrice: GetPriceSlice = (address: string) =>
-    request(
+  getYesterdayPrice: GetPriceSlice = (address: string) =>
+    this.request(
       "sliceHistoricalSynthPrices",
       address,
       Math.floor(oneDayAgo().toSeconds())
     );
 
-  const getAddresses: GetAddresses = async () => {
-    const empAddresses: string[] = await request("listEmpAddresses");
-    const lspAddresses: string[] = await request("listAddresses");
+  getAddresses: GetAddresses = async () => {
+    const empAddresses: string[] = await this.request("listEmpAddresses");
+    const lspAddresses: string[] = await this.request("listAddresses");
     return [...empAddresses, ...lspAddresses];
   };
-
-  const getState: GetState = async <T extends { type: ContractType }>(
+  getState: GetState = async <T extends { type: ContractType }>(
     address: string
   ) => {
-    const state: SynthState<T> = await request("global/getState", address);
+    const state: SynthState<T> = await this.request("global/getState", address);
     return state;
   };
 
-  const getSynthStats: GetSynthStats = async (address) => {
+  getSynthStats: GetSynthStats = async (address) => {
     return {
       id: address,
       address,
-      tvl: await getLatestTvl(address).catch(() => "0"),
-      tvm: await getLatestTvm(address).catch(() => "0"),
+      tvl: await this.getLatestTvl(address).catch(() => "0"),
+      tvm: await this.getLatestTvm(address).catch(() => "0"),
     };
   };
 
-  async function fetchCompleteSynth<T extends { type: ContractType }>(
+  async fetchCompleteSynth<T extends { type: ContractType }>(
     synth: ContentfulSynth
   ): Promise<Synth<T> | Error> {
     try {
-      const stats = await getSynthStats(synth.address);
-      const state = await getState<T>(synth.address);
-      const lastTvl = await getLatestTvl(synth.address).catch(() => "0");
-      const [{ value: ydayTvl = NaN } = {}] = await request(
+      const stats = await this.getSynthStats(synth.address);
+      const state = await this.getState<T>(synth.address);
+      const lastTvl = await this.getLatestTvl(synth.address).catch(() => "0");
+      const [{ value: ydayTvl = NaN } = {}] = await this.request(
         "global/tvlHistorySlice",
         synth.address,
         Math.floor(oneDayAgo().toSeconds())
@@ -128,20 +136,14 @@ function _constructClient(chainId: ChainId): Client {
       return new SynthFetchingError(err.message, synth);
     }
   }
+}
 
-  const client = {
-    request,
-    getAddresses,
-    getState,
-    getSynthStats,
-    getLatestTvl,
-    getLatestTvm,
-    getTvl,
-    getYesterdayPrice,
-    fetchCompleteSynth,
-  };
-
-  return client;
+function _constructClient(chainId: ChainId): Client {
+  const baseUrl = API_URLS[chainId];
+  if (!baseUrl) {
+    throw new Error(`No API URL found for chainId ${chainId}`);
+  }
+  return new Client(baseUrl);
 }
 export const constructClient = memoize(_constructClient);
 
@@ -270,7 +272,7 @@ type FetchCompleteSynth = <T extends { type: ContractType }>(
   synth: ContentfulSynth
 ) => Promise<Synth<T> | Error>;
 
-type Client = {
+interface IClient {
   request: RequestFn;
   getAddresses: GetAddresses;
   getState: GetState;
@@ -280,4 +282,4 @@ type Client = {
   getTvl: GetStatBetween;
   getYesterdayPrice: GetPriceSlice;
   fetchCompleteSynth: FetchCompleteSynth;
-};
+}
