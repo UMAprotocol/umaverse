@@ -29,8 +29,8 @@ import {
   errorFilter,
   formatWeiString,
   contentfulClient,
-  chainIdFromChainName,
-  chainNameFromChainId,
+  chainIdToNameLookup,
+  nameToChainIdLookup,
 } from "../../utils";
 import { nDaysAgo } from "../../utils/time";
 import LeftArrow from "../../public/icons/arrow-left.svg";
@@ -75,7 +75,7 @@ const oneDayAgo = nDaysAgo(1);
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
   const { address, chain } = ctx.params as { address: string; chain: string };
-  const chainId = chainIdFromChainName(chain);
+  const chainId = nameToChainIdLookup[chain];
   const cmsSynth = await contentfulClient.getSynth(address, chainId);
 
   const queryClient = new QueryClient();
@@ -183,7 +183,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const paths = allCmsSynths.map((synth) => ({
     params: {
       address: synth.address,
-      chain: chainNameFromChainId(synth.chainId),
+      chain: chainIdToNameLookup[synth.chainId],
     },
   }));
 

@@ -18,40 +18,14 @@ export class UnsupportedChainIdError extends Error {
   }
 }
 
-export function chainIdFromChainName(name: string): ChainId {
-  switch (name) {
-    case "ethereum":
-      return 1;
-    case "kovan":
-      return 42;
-    case "ropsten":
-      return 3;
-    case "rinkeby":
-      return 4;
-    case "polygon":
-      return 137;
-    case "local":
-      return 1337;
-    default:
-      throw new Error(`Unsupported chain name: ${name}`);
-  }
-}
-
-export function chainNameFromChainId(chainId: ChainId): string {
-  switch (chainId) {
-    case 1:
-      return "ethereum";
-    case 42:
-      return "kovan";
-    case 3:
-      return "ropsten";
-    case 4:
-      return "rinkeby";
-    case 137:
-      return "polygon";
-    case 1337:
-      return "local";
-    default:
-      throw new Error(`Unsupported chain id: ${chainId}`);
-  }
-}
+export const chainIdToNameLookup: Record<ChainId, string> = {
+  1: "ethereum",
+  3: "ropsten",
+  4: "rinkeby",
+  42: "kovan",
+  137: "polygon",
+  1337: "local",
+};
+export const nameToChainIdLookup: Record<string, ChainId> = Object.fromEntries(
+  Object.entries(chainIdToNameLookup).map((e) => e.reverse())
+);
