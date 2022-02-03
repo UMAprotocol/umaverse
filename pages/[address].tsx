@@ -20,8 +20,8 @@ import {
   ResponsiveLineChart,
   EmpHero,
   LspHero,
-} from "../../components";
-import LSP from "../../components/lsp";
+} from "../components";
+import LSP from "../components/lsp";
 
 import {
   QUERIES,
@@ -31,11 +31,11 @@ import {
   contentfulClient,
   chainIdToNameLookup,
   nameToChainIdLookup,
-} from "../../utils";
-import { nDaysAgo } from "../../utils/time";
-import LeftArrow from "../../public/icons/arrow-left.svg";
-import UnstyledRightArrow from "../../public/icons/arrow-right.svg";
-import UnstyledExternalLink from "../../public/icons/external-link.svg";
+} from "../utils";
+import { nDaysAgo } from "../utils/time";
+import LeftArrow from "../public/icons/arrow-left.svg";
+import UnstyledRightArrow from "../public/icons/arrow-right.svg";
+import UnstyledExternalLink from "../public/icons/external-link.svg";
 import {
   constructClient,
   SynthState,
@@ -43,11 +43,11 @@ import {
   ContractType,
   formatLSPName,
   SynthStats,
-} from "../../utils/umaApi";
-import useERC20ContractValues from "../../hooks/useERC20ContractValues";
-import { useConnection } from "../../hooks";
+} from "../utils/umaApi";
+import useERC20ContractValues from "../hooks/useERC20ContractValues";
+import { useConnection } from "../hooks";
 import { ethers } from "ethers";
-import createERC20ContractInstance from "../../components/lsp/createERC20ContractInstance";
+import createERC20ContractInstance from "../components/lsp/createERC20ContractInstance";
 import { useMemo } from "react";
 import { ChainId } from "utils/chainId";
 
@@ -74,9 +74,12 @@ const ActionWrapper = styled(UnstyledLink)`
 const oneDayAgo = nDaysAgo(1);
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
-  const { address, chain } = ctx.params as { address: string; chain: string };
-  const chainId = nameToChainIdLookup[chain];
-  const cmsSynth = await contentfulClient.getSynth(address, chainId);
+  console.log("address page", ctx);
+  const { address } = ctx.params as {
+    address: string;
+  };
+  const cmsSynth = await contentfulClient.getSynth(address);
+  console.log(cmsSynth);
 
   const queryClient = new QueryClient();
   const cmsSynths = await contentfulClient.getAllSynths();

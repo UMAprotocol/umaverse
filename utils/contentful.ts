@@ -87,7 +87,7 @@ async function getSynth(
   chainId = 1
 ): Promise<ContentfulSynth> {
   const synths = await getSynthsByField<string>("fields.address")(address);
-  return synths.find((synth) => synth.chainId === chainId) as ContentfulSynth;
+  return synths.find((synth) => synth.chainId == chainId) as ContentfulSynth;
 }
 
 async function getRelatedSynths(

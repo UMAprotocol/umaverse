@@ -32,15 +32,6 @@ const config = {
   images: {
     domains: ["images.ctfassets.net"],
   },
-  async redirects() {
-    return [
-      {
-        source: "/:address",
-        destination: "/ethereum/:address",
-        permanent: true,
-      },
-    ];
-  },
 };
 
 const SentryWebpackPluginOptions = {

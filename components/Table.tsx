@@ -30,6 +30,7 @@ import { MaxWidthWrapper } from "./Wrapper";
 import { BaseButton } from "./Button";
 import { Synth, formatLSPName, ContractType } from "../utils/umaApi";
 import { useCachedState } from "../hooks";
+import { chainIdToNameLookup } from "../utils/chainId";
 
 const RankCircle = styled.div`
   border-radius: 9999px;
@@ -279,7 +280,11 @@ export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
       );
       if (newWindow) newWindow.opener = null;
     } else {
-      router.push(`/${row.original.address}`);
+      router.push(
+        `/${row.original.address}/${
+          chainIdToNameLookup[row.original.chainId] || row.original.chainId
+        }`
+      );
     }
   }
 
