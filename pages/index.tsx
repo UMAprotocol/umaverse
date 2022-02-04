@@ -18,7 +18,6 @@ import {
   formatMillions,
   QUERIES,
   errorFilter,
-  formatWeiString,
   ContentfulSynth,
   SynthFetchingError,
 } from "../utils";
@@ -116,10 +115,6 @@ const IndexPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
     "total tvl",
     async () => await getDefillamaTvl()
   );
-  const { data: totalTvm } = useQuery(
-    "total tvm",
-    async () => await client.getLatestTvm()
-  );
   const { data: totalTvlChange } = useQuery(
     "total tvl change",
     async () => await getDefillamaPercentChange()
@@ -145,31 +140,6 @@ const IndexPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
                 value={totalTvl ?? 0}
                 format={(v) => {
                   const parsedValue = Number(v);
-                  return (
-                    <>
-                      ${formatMillions(Math.floor(parsedValue))}{" "}
-                      <span style={{ fontWeight: 400 }}>
-                        {parsedValue >= 10 ** 9
-                          ? "B"
-                          : parsedValue >= 10 ** 6
-                          ? "M"
-                          : ""}
-                      </span>
-                    </>
-                  );
-                }}
-              />
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent>
-              <CardHeading>
-                Total Value Minted <span>(TVM)</span>
-              </CardHeading>
-              <Value
-                value={totalTvm ?? 0}
-                format={(v) => {
-                  const parsedValue = formatWeiString(v);
                   return (
                     <>
                       ${formatMillions(Math.floor(parsedValue))}{" "}
@@ -223,10 +193,12 @@ export default IndexPage;
 const CardWrapper = styled.div`
   display: grid;
   color: var(--gray-700);
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   column-gap: 10px;
   row-gap: 10px;
   margin-top: 30px;
+  max-width: 900px;
+  margin: 0 auto;
   @media ${QUERIES.tabletAndUp} {
     column-gap: 20px;
   }
