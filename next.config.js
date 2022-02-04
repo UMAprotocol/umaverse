@@ -35,7 +35,7 @@ const config = {
   async redirects() {
     return [
       {
-        source: "/:address",
+        source: "/:address(0x[a-zA-Z0-9]+)",
         destination: "/ethereum/:address",
         permanent: true,
       },
