@@ -18,7 +18,6 @@ import {
   formatMillions,
   QUERIES,
   errorFilter,
-  formatWeiString,
   ContentfulSynth,
   SynthFetchingError,
 } from "../utils";
@@ -115,10 +114,6 @@ const IndexPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
   const { data: totalTvl } = useQuery(
     "total tvl",
     async () => await getDefillamaTvl()
-  );
-  const { data: totalTvm } = useQuery(
-    "total tvm",
-    async () => await client.getLatestTvm()
   );
   const { data: totalTvlChange } = useQuery(
     "total tvl change",
