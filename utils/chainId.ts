@@ -27,5 +27,8 @@ export const chainIdToNameLookup: Record<ChainId, string> = {
   1337: "local",
 };
 export const nameToChainIdLookup: Record<string, ChainId> = Object.fromEntries(
-  Object.entries(chainIdToNameLookup).map((e) => e.reverse())
+  Object.entries(chainIdToNameLookup).map(([chainId, name]) => [
+    name,
+    +chainId as ChainId,
+  ])
 );

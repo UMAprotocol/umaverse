@@ -77,7 +77,6 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
   const { address, chain } = ctx.params as { address: string; chain: string };
   const chainId = nameToChainIdLookup[chain];
   const cmsSynth = await contentfulClient.getSynth(address, chainId);
-
   const queryClient = new QueryClient();
   const cmsSynths = await contentfulClient.getAllSynths();
   const client = constructClient(cmsSynth.chainId);
