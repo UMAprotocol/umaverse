@@ -4,3 +4,4 @@ export * from "./constants";
 export * from "./contentful";
 export * from "./errors";
 export * from "./umaApi";
+export * from "./chainId";
