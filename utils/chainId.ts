@@ -17,3 +17,18 @@ export class UnsupportedChainIdError extends Error {
     this.message = `Unsupported chain id: ${unsupportedChainId}. Supported chain ids are: ${supportedChainIds}.`;
   }
 }
+
+export const chainIdToNameLookup: Record<ChainId, string> = {
+  1: "ethereum",
+  3: "ropsten",
+  4: "rinkeby",
+  42: "kovan",
+  137: "polygon",
+  1337: "local",
+};
+export const nameToChainIdLookup: Record<string, ChainId> = Object.fromEntries(
+  Object.entries(chainIdToNameLookup).map(([chainId, name]) => [
+    name,
+    +chainId as ChainId,
+  ])
+);
