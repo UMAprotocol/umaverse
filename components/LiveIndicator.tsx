@@ -23,13 +23,14 @@ export const LiveIndicator: React.FC<LiveIndicatorProps> = ({
 };
 
 const Wrapper = styled.div`
-  background-color: var(--gray-600);
+  background-color: var(--white);
   border-radius: 5px;
   padding: 5px 25px 5px 10px;
   text-transform: uppercase;
   display: flex;
   align-items: center;
   width: fit-content;
+  color: #272528;
 `;
 
 const Dot = styled.div`
