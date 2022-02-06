@@ -1,10 +1,6 @@
 import styled from "@emotion/styled";
 import { BaseButton } from "..";
 
-export const Container = styled.div`
-  padding: 78px 15px 188px;
-`;
-
 export const Disclaimer = styled.p`
   margin: 0 0 26px;
   font-weight: 600;

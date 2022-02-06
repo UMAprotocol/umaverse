@@ -1,14 +1,8 @@
 import { useConnection } from "hooks";
 import React, { useMemo } from "react";
-import {
-  capitalize,
-  ChainId,
-  chainIdToNameLookup,
-  SUPPORTED_CHAIN_IDS,
-} from "utils";
+import { capitalize, ChainId, chainIdToNameLookup } from "utils";
 import {
   ChainIconContainer,
-  Container,
   Disclaimer,
   SwitchButton,
 } from "./SwitchWalletLsp.styled";
@@ -49,7 +43,7 @@ export const SwitchWalletLsp: React.FC<Props> = ({ targetChainId }) => {
   };
 
   const switchToNetwork = async (chainId: ChainId) => {
-    if (provider?.provider) {
+    if (provider?.provider.request) {
       return provider?.provider.request({
         method: "wallet_switchEthereumChain",
         params: [{ chainId: ethers.utils.hexValue(chainId) }],
@@ -58,7 +52,7 @@ export const SwitchWalletLsp: React.FC<Props> = ({ targetChainId }) => {
   };
 
   const addNetwork = async (chainId: ChainId) => {
-    if (provider?.provider && chainId === 137) {
+    if (provider?.provider.request) {
       return provider?.provider.request({
         method: "wallet_addEthereumChain",
         params: [addChainParameters[chainId]],

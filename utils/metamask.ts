@@ -1,5 +1,4 @@
 import { utils } from "ethers";
-import { ChainId } from "utils";
 
 interface AddEthereumChainParameter {
   chainId: string;

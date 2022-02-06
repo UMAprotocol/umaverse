@@ -12,6 +12,7 @@ import { ethers } from "ethers";
 import MintForm from "./MintForm";
 import RedeemForm from "./RedeemForm";
 import { ContractState } from "./LSP";
+import { ChainId } from "utils";
 
 interface Props {
   address: string;
