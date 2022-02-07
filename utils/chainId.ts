@@ -1,3 +1,6 @@
+import EthereumLogo from "../assets/ethereum.svg";
+import PolygonLogo from "../assets/polygon.svg";
+
 export type ValidChainId = 1 | 42 | 1337;
 export type ChainId = 1 | 42 | 1337 | 3 | 4 | 137;
 
@@ -32,3 +35,12 @@ export const nameToChainIdLookup: Record<string, ChainId> = Object.fromEntries(
     +chainId as ChainId,
   ])
 );
+
+export const chainIdToLogoLookup: Record<ChainId, any> = {
+  1: EthereumLogo,
+  3: EthereumLogo,
+  4: EthereumLogo,
+  42: EthereumLogo,
+  137: PolygonLogo,
+  1337: EthereumLogo,
+};
