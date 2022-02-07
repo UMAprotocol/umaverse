@@ -8,6 +8,7 @@ import createLSPContractInstance from "./createLSPContractInstance";
 import { useConnection } from "../../hooks";
 
 import { Synth } from "../../utils/umaApi";
+import { ChainId } from "utils";
 export enum ContractState {
   Open,
   ExpiredPriceRequested,
@@ -25,6 +26,7 @@ interface Props {
   collateralBalance: ethers.BigNumber;
   collateralERC20Contract: ethers.Contract | null;
   setCollateralBalance: React.Dispatch<React.SetStateAction<ethers.BigNumber>>;
+  chainId: ChainId;
 }
 
 const toBN = ethers.BigNumber.from;
@@ -37,6 +39,7 @@ const LSP: FC<Props> = ({
   collateralBalance,
   setCollateralBalance,
   collateralERC20Contract,
+  chainId,
 }) => {
   const { account = "", signer, provider } = useConnection();
 
@@ -166,6 +169,7 @@ const LSP: FC<Props> = ({
       collateralSymbol={data.collateralSymbol}
       settleButtonDisabled={settleButtonDisabled}
       setSettleButtonDisabled={setSettleButtonDisabled}
+      chainId={chainId}
     />
   );
 };

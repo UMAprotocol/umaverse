@@ -1,4 +1,4 @@
-import React, { FC, useState, useCallback, useEffect } from "react";
+import React, { FC, useState, useCallback, useEffect, useMemo } from "react";
 import {
   SmallTitle,
   TopFormWrapper,
@@ -7,6 +7,7 @@ import {
   ButtonWrapper,
   MintButton,
   LSPFormError,
+  SwitchWalletContainer,
 } from "./LSP.styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDown } from "@fortawesome/free-solid-svg-icons";
@@ -19,6 +20,8 @@ import Collateral from "./Collateral";
 import ConnectWallet from "./ConnectWallet";
 
 import { INSUFFICIENT_COLLATERAL_ERROR, INVALID_STRING_ERROR } from "./helpers";
+import { SwitchWalletLsp } from "./SwitchWalletLsp";
+import { ChainId } from "utils";
 
 const toBN = ethers.BigNumber.from;
 const scaledToWei = toBN("10").pow("18");
@@ -46,6 +49,7 @@ interface Props {
   collateralSymbol: string;
   showWallet: boolean;
   setShowWallet: (value: React.SetStateAction<boolean>) => void;
+  chainId: ChainId;
 }
 
 const MintForm: FC<Props> = ({
@@ -64,17 +68,21 @@ const MintForm: FC<Props> = ({
   collateralSymbol,
   showWallet,
   setShowWallet,
+  chainId,
+  web3Provider,
 }) => {
   const [amount, setAmount] = useState("");
   const [longTokenAmount, setLongTokenAmount] = useState("");
   const [shortTokenAmount, setShortTokenAmount] = useState("");
   const [showMintError, setShowMintError] = useState("");
   const [userNeedsToApprove, setUserNeedsToApprove] = useState(false);
-  const { signer } = useConnection();
+  const { signer, chainId: connectionChainId } = useConnection();
   const [knownAllowance, setKnownAllowance] = useState<BigNumber>(
     BigNumber.from(0)
   );
-
+  const isUserConnectedToContractChain = useMemo(() => {
+    return !!connectionChainId && connectionChainId === chainId;
+  }, [connectionChainId, chainId]);
   const getKnownAllowance = useCallback(() => {
     if (!collateralERC20Contract || !address || !contractAddress) return;
     collateralERC20Contract
@@ -179,6 +187,14 @@ const MintForm: FC<Props> = ({
     refetchShortTokenBalance,
     userNeedsToApprove,
   ]);
+
+  if (web3Provider && !isUserConnectedToContractChain) {
+    return (
+      <SwitchWalletContainer>
+        <SwitchWalletLsp targetChainId={chainId} />
+      </SwitchWalletContainer>
+    );
+  }
 
   return (
     <div>
