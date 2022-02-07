@@ -12,6 +12,7 @@ import { ethers } from "ethers";
 import MintForm from "./MintForm";
 import RedeemForm from "./RedeemForm";
 import { ContractState } from "./LSP";
+import { ChainId } from "utils";
 
 interface Props {
   address: string;
@@ -35,6 +36,7 @@ interface Props {
   collateralSymbol: string;
   settleButtonDisabled: boolean;
   setSettleButtonDisabled: React.Dispatch<React.SetStateAction<boolean>>;
+  chainId: ChainId;
 }
 
 const LSPForm: FC<Props> = ({
@@ -58,6 +60,7 @@ const LSPForm: FC<Props> = ({
   collateralSymbol,
   settleButtonDisabled,
   setSettleButtonDisabled,
+  chainId,
 }) => {
   const expire = useCallback(async () => {
     if (lspContract) {
@@ -132,6 +135,7 @@ const LSPForm: FC<Props> = ({
               collateralSymbol={collateralSymbol}
               showWallet={showWallet}
               setShowWallet={setShowWallet}
+              chainId={chainId}
             />
           </div>
           <div data-label="Redeem">
