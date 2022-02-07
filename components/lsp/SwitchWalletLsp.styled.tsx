@@ -38,7 +38,7 @@ export const ChainIconContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #fff;
+  background-color: var(--white);
   border-radius: 50%;
 
   svg {
