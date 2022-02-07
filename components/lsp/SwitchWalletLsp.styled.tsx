@@ -4,10 +4,10 @@ import { BaseButton } from "..";
 export const Disclaimer = styled.p`
   margin: 0 0 26px;
   font-weight: 600;
-  font-size: 20px;
-  line-height: 22px;
+  font-size: ${20 / 16}rem;
+  line-height: ${22 / 16}rem;
   text-align: center;
-  color: #272528;
+  color: var(--gray-700);
 `;
 
 export const SwitchButton = styled(BaseButton)`
@@ -21,10 +21,14 @@ export const SwitchButton = styled(BaseButton)`
   font-size: 1.125rem;
   font-weight: 400;
   font-family: inherit;
-  color: #272528;
-  background-color: #fbfafb;
+  color: var(--gray-700);
+  background-color: var(--gray-100);
   border: 1px solid hsla(0, 0%, 77%, 1);
   text-transform: capitalize;
+
+  :hover {
+    background-color: var(--gray-300);
+  }
 `;
 
 export const ChainIconContainer = styled.div`

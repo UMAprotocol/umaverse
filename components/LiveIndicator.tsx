@@ -30,7 +30,7 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
   width: fit-content;
-  color: #272528;
+  color: var(--gray-700);
 `;
 
 const Dot = styled.div`
