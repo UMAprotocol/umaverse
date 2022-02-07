@@ -35,9 +35,9 @@ export const LspHero: React.FC<Props> = ({
       initOnboard();
     }
   }, [initOnboard, isConnected, resetOnboard]);
-  const isUserConnectedToContractChain = useMemo(() => {
-    return !!connectionChainId && connectionChainId === chainId;
-  }, [connectionChainId, chainId]);
+  const hasToChangeChain = useMemo(() => {
+    return isConnected && !(connectionChainId && connectionChainId === chainId);
+  }, [connectionChainId, chainId, isConnected]);
 
   return (
     <Wrapper>
@@ -69,12 +69,12 @@ export const LspHero: React.FC<Props> = ({
           </Button>
         </CardHead>
         {isConnected && <Account id="walletAccount">{account}</Account>}
-        {isConnected && !isUserConnectedToContractChain && (
+        {hasToChangeChain && (
           <SwitchWalletContainer>
             <SwitchWalletLsp targetChainId={chainId} />
           </SwitchWalletContainer>
         )}
-        {isConnected && isUserConnectedToContractChain && (
+        {!hasToChangeChain && (
           <BalancesWrapper>
             <Balance>
               <span>Long Token</span>
