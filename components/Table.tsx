@@ -24,6 +24,8 @@ import {
   formatContentfulUrl,
   formatWeiString,
   ContentfulSynth,
+  chainIdToNameLookup,
+  chainIdToLogoLookup,
 } from "../utils";
 
 import { MaxWidthWrapper } from "./Wrapper";
@@ -128,6 +130,23 @@ const NameHeading = styled.h6`
   }
 `;
 
+const ChainWrapper = styled.div`
+  display: flex;
+
+  span {
+    text-transform: capitalize;
+    margin-left: 10px;
+    display: none;
+    @media ${QUERIES.laptopAndUp} {
+      display: revert;
+    }
+  }
+  svg {
+    width: 25px;
+    height: 25px;
+  }
+`;
+
 const columns = [
   {
     Header: "Rank",
@@ -140,13 +159,22 @@ const columns = [
     accessor: (row) => <Name synth={row} />,
   },
   {
+    Header: "Chain",
+    // eslint-disable-next-line react/display-name
+    accessor: (row) => (
+      <ChainWrapper>
+        {chainIdToLogoLookup[row.chainId]()}
+        <span>{chainIdToNameLookup[row.chainId]}</span>
+      </ChainWrapper>
+    ),
+  },
+  {
     Header: "Category",
     // set the Id here so we can reference it safely when filtering™
     id: "category",
     accessor: (row) => capitalize(row.category),
     filter: "category",
   },
-
   {
     Header: "TVL",
     id: "tvl",
