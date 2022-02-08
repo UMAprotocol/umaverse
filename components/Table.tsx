@@ -80,6 +80,7 @@ const NameWrapper = styled.div`
 `;
 const ImageWrapper = styled.div`
   display: none;
+  align-self: center;
   @media ${QUERIES.tabletAndUp} {
     display: revert;
     margin-right: 25px;
