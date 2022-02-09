@@ -308,11 +308,9 @@ export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
       if (newWindow) newWindow.opener = null;
     } else {
       const chainName = chainIdToNameLookup[row.original.chainId];
-      if (chainName) {
-        router.push(`/${chainName}/${row.original.address}`);
-      } else {
-        router.push(`/${row.original.chainId}/${row.original.address}`);
-      }
+      router.push(
+        `/${chainName ?? row.original.chainId}/${row.original.address}`
+      );
     }
   }
 
