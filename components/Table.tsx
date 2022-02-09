@@ -307,7 +307,10 @@ export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
       );
       if (newWindow) newWindow.opener = null;
     } else {
-      router.push(`/${row.original.address}`);
+      const chainName = chainIdToNameLookup[row.original.chainId];
+      router.push(
+        `/${chainName ?? row.original.chainId}/${row.original.address}`
+      );
     }
   }
 
