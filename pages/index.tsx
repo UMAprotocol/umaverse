@@ -126,10 +126,7 @@ const IndexPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
         <Heading>
           Explore the <span>UMA</span>verse
         </Heading>
-        <Description>
-          UMA — a fast, flexible, and secure protocol for decentralized
-          financial products
-        </Description>
+        <Description>UMA — The optimistic oracle built for Web3</Description>
         <CardWrapper>
           <Card>
             <CardContent>
@@ -244,4 +241,5 @@ const Description = styled.span`
   text-align: center;
   font-size: ${20 / 16}rem;
   display: block;
+  margin-bottom: ${16 / 16}rem;
 `;

@@ -65,7 +65,7 @@ const Name: React.FC<NameProps> = ({ synth }) => {
   return (
     <NameWrapper>
       <ImageWrapper>
-        <Image src={formattedUrl} width="52" height="52" layout="fixed" />
+        <StyledImage src={formattedUrl} width="52" height="52" layout="fixed" />
       </ImageWrapper>
       <div>
         <NameHeading>{heading}</NameHeading>
@@ -80,10 +80,17 @@ const NameWrapper = styled.div`
 `;
 const ImageWrapper = styled.div`
   display: none;
+  align-self: center;
+  height: 52px;
   @media ${QUERIES.tabletAndUp} {
     display: revert;
     margin-right: 25px;
   }
+`;
+const StyledImage = styled(Image)`
+  display: block;
+  margin-top: auto;
+  margin-bottom: auto;
 `;
 const NameHeading = styled.h6`
   font-weight: bold;
