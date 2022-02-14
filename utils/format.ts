@@ -37,7 +37,7 @@ export function capitalize(s: string): string {
 }
 
 export function formatWeiString(v: ethers.BigNumberish): number {
-  return v ? Number(ethers.utils.formatEther(v)) : 0;
+  return Number(ethers.utils.formatEther(v));
 }
 
 export function formatTvlChange(
