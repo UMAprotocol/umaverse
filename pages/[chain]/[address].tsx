@@ -171,7 +171,10 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
       data,
       chainId: cmsSynth.chainId,
       relatedSynths: relatedSynths
-        .sort((a, b) => formatWeiString(b.tvl) - formatWeiString(a.tvl))
+        .sort(
+          (a, b) =>
+            formatWeiString(b.tvl || "0") - formatWeiString(a.tvl || "0")
+        )
         .slice(0, 5),
       dehydratedState: dehydrate(queryClient),
     },
