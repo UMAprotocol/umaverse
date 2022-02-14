@@ -21,7 +21,7 @@ export const EmpHero: React.FC<Props> = ({ synth, change24h }) => {
             Total Value Locked <span>(TVL)</span>
           </CardHeading>
           <Value
-            value={synth.tvl}
+            value={synth.tvl || "0"}
             format={(v) => {
               const formattedValue = formatWeiString(v);
               return (

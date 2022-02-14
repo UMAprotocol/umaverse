@@ -179,7 +179,7 @@ const columns = [
     Header: "TVL",
     id: "tvl",
     accessor: (row) => {
-      const parsedTvl = formatWeiString(row.tvl);
+      const parsedTvl = row.tvl ? formatWeiString(row.tvl) : 0;
       const postFix =
         parsedTvl >= 10 ** 9 ? "B" : parsedTvl >= 10 ** 6 ? "M" : "";
       return `$${formatMillions(Math.floor(parsedTvl))} ${postFix}`;
@@ -237,7 +237,10 @@ const SET_GLOBAL_FILTER_ACTION = "setGlobalFilter";
 
 export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
   const tableData = useMemo(
-    () => data.sort((a, b) => formatWeiString(b.tvl) - formatWeiString(a.tvl)),
+    () =>
+      data.sort(
+        (a, b) => formatWeiString(b.tvl || "0") - formatWeiString(a.tvl || "0")
+      ),
     [data]
   );
   const filterTypes = React.useMemo(
