@@ -236,7 +236,7 @@ export type SynthState<T extends { type: ContractType }> = T extends {
 export type SynthStats = {
   id: string;
   address: string;
-  tvl: string;
+  tvl?: string;
   tvm: string;
 };
 export type Synth<T extends { type: ContractType }> = ContentfulSynth &
