@@ -267,3 +267,7 @@ export const LSPFormError = styled.div`
   border: 1px solid #ff4b4b;
   border-radius: 8px;
 `;
+
+export const SwitchWalletContainer = styled.div`
+  padding: 78px 15px 188px;
+`;

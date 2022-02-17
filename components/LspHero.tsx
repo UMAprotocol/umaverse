@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useMemo } from "react";
 import styled from "@emotion/styled";
-import { QUERIES } from "../utils";
+import { ChainId, QUERIES } from "../utils";
 
 import { Card as UnstyledCard } from "./Card";
 import { BaseButton } from "./Button";
@@ -9,12 +9,14 @@ import type { Synth } from "../utils/umaApi";
 import { useConnection, useOnboard } from "../hooks";
 import UnstyledWalletIcon from "../public/icons/wallet.svg";
 import { ethers } from "ethers";
+import { SwitchWalletLsp } from "./lsp/SwitchWalletLsp";
 
 type Props = {
   synth: Synth<{ type: "lsp" }>;
   longTokenBalance: ethers.BigNumber;
   shortTokenBalance: ethers.BigNumber;
   collateralBalance: ethers.BigNumber;
+  chainId: ChainId;
 };
 
 export const LspHero: React.FC<Props> = ({
@@ -22,9 +24,10 @@ export const LspHero: React.FC<Props> = ({
   longTokenBalance,
   shortTokenBalance,
   collateralBalance,
+  chainId,
 }) => {
   const { initOnboard, resetOnboard } = useOnboard();
-  const { account, isConnected } = useConnection();
+  const { account, isConnected, chainId: connectionChainId } = useConnection();
   const handleConnectionClick = React.useCallback(() => {
     if (isConnected) {
       resetOnboard();
@@ -32,6 +35,9 @@ export const LspHero: React.FC<Props> = ({
       initOnboard();
     }
   }, [initOnboard, isConnected, resetOnboard]);
+  const hasToChangeChain = useMemo(() => {
+    return connectionChainId && connectionChainId !== chainId;
+  }, [connectionChainId, chainId]);
 
   return (
     <Wrapper>
@@ -63,7 +69,12 @@ export const LspHero: React.FC<Props> = ({
           </Button>
         </CardHead>
         {isConnected && <Account id="walletAccount">{account}</Account>}
-        {isConnected && (
+        {isConnected && hasToChangeChain && (
+          <SwitchWalletContainer>
+            <SwitchWalletLsp targetChainId={chainId} />
+          </SwitchWalletContainer>
+        )}
+        {isConnected && !hasToChangeChain && (
           <BalancesWrapper>
             <Balance>
               <span>Long Token</span>
@@ -103,7 +114,7 @@ export const LspHero: React.FC<Props> = ({
 };
 
 const Wrapper = styled.div`
-  padding: 20px 0;
+  padding: 25px 0 0;
   background-color: var(--gray-200);
 `;
 
@@ -201,4 +212,8 @@ const Account = styled.div`
   @media ${QUERIES.tabletAndUp} {
     text-align: left;
   }
+`;
+
+export const SwitchWalletContainer = styled.div`
+  padding: 32px 8px 8px;
 `;

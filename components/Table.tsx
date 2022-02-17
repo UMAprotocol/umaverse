@@ -24,6 +24,8 @@ import {
   formatContentfulUrl,
   formatWeiString,
   ContentfulSynth,
+  chainIdToNameLookup,
+  chainIdToLogoLookup,
 } from "../utils";
 
 import { MaxWidthWrapper } from "./Wrapper";
@@ -128,6 +130,23 @@ const NameHeading = styled.h6`
   }
 `;
 
+const ChainWrapper = styled.div`
+  display: flex;
+
+  span {
+    text-transform: capitalize;
+    margin-left: 10px;
+    display: none;
+    @media ${QUERIES.laptopAndUp} {
+      display: revert;
+    }
+  }
+  svg {
+    width: 25px;
+    height: 25px;
+  }
+`;
+
 const columns = [
   {
     Header: "Rank",
@@ -140,18 +159,27 @@ const columns = [
     accessor: (row) => <Name synth={row} />,
   },
   {
+    Header: "Chain",
+    // eslint-disable-next-line react/display-name
+    accessor: (row) => (
+      <ChainWrapper>
+        {chainIdToLogoLookup[row.chainId]()}
+        <span>{chainIdToNameLookup[row.chainId]}</span>
+      </ChainWrapper>
+    ),
+  },
+  {
     Header: "Category",
     // set the Id here so we can reference it safely when filtering™
     id: "category",
     accessor: (row) => capitalize(row.category),
     filter: "category",
   },
-
   {
     Header: "TVL",
     id: "tvl",
     accessor: (row) => {
-      const parsedTvl = formatWeiString(row.tvl);
+      const parsedTvl = row.tvl ? formatWeiString(row.tvl) : 0;
       const postFix =
         parsedTvl >= 10 ** 9 ? "B" : parsedTvl >= 10 ** 6 ? "M" : "";
       return `$${formatMillions(Math.floor(parsedTvl))} ${postFix}`;
@@ -209,7 +237,10 @@ const SET_GLOBAL_FILTER_ACTION = "setGlobalFilter";
 
 export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
   const tableData = useMemo(
-    () => data.sort((a, b) => formatWeiString(b.tvl) - formatWeiString(a.tvl)),
+    () =>
+      data.sort(
+        (a, b) => formatWeiString(b.tvl || "0") - formatWeiString(a.tvl || "0")
+      ),
     [data]
   );
   const filterTypes = React.useMemo(
@@ -286,7 +317,10 @@ export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
       );
       if (newWindow) newWindow.opener = null;
     } else {
-      router.push(`/${row.original.address}`);
+      const chainName = chainIdToNameLookup[row.original.chainId];
+      router.push(
+        `/${chainName ?? row.original.chainId}/${row.original.address}`
+      );
     }
   }
 

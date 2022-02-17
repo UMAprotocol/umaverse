@@ -5,6 +5,8 @@ import Image from "next/image";
 import { useQuery, QueryClient } from "react-query";
 import { dehydrate } from "react-query/hydration";
 import { DateTime } from "luxon";
+import PolygonIcon from "../../public/icons/polygon.svg";
+import EthereumIcon from "../../public/icons/eth-icon.svg";
 
 import {
   Layout,
@@ -20,8 +22,8 @@ import {
   ResponsiveLineChart,
   EmpHero,
   LspHero,
-} from "../components";
-import LSP from "../components/lsp";
+} from "../../components";
+import LSP from "../../components/lsp";
 
 import {
   QUERIES,
@@ -29,25 +31,28 @@ import {
   errorFilter,
   formatWeiString,
   contentfulClient,
-} from "../utils";
-import { nDaysAgo } from "../utils/time";
-import LeftArrow from "../public/icons/arrow-left.svg";
-import UnstyledRightArrow from "../public/icons/arrow-right.svg";
-import UnstyledExternalLink from "../public/icons/external-link.svg";
+  chainIdToNameLookup,
+  nameToChainIdLookup,
+  capitalize,
+} from "../../utils";
+import { nDaysAgo } from "../../utils/time";
+import LeftArrow from "../../public/icons/arrow-left.svg";
+import UnstyledRightArrow from "../../public/icons/arrow-right.svg";
+import UnstyledExternalLink from "../../public/icons/external-link.svg";
 import {
-  client,
+  constructClient,
   SynthState,
   Synth,
   ContractType,
-  fetchCompleteSynth,
   formatLSPName,
   SynthStats,
-} from "../utils/umaApi";
-import useERC20ContractValues from "../hooks/useERC20ContractValues";
-import { useConnection } from "../hooks";
+} from "../../utils/umaApi";
+import useERC20ContractValues from "../../hooks/useERC20ContractValues";
+import { useConnection } from "../../hooks";
 import { ethers } from "ethers";
-import createERC20ContractInstance from "../components/lsp/createERC20ContractInstance";
+import createERC20ContractInstance from "../../components/lsp/createERC20ContractInstance";
 import { useMemo } from "react";
+import { ChainId } from "utils/chainId";
 
 const toBN = ethers.BigNumber.from;
 
@@ -72,15 +77,21 @@ const ActionWrapper = styled(UnstyledLink)`
 const oneDayAgo = nDaysAgo(1);
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
-  const { address } = ctx.params as { address: string };
-
-  const cmsSynth = await contentfulClient.getSynth(address);
-
+  const { address, chain } = ctx.params as { address: string; chain: string };
+  const chainId = nameToChainIdLookup[chain];
+  const cmsSynth = await contentfulClient.getSynth(address, chainId);
   const queryClient = new QueryClient();
   const cmsSynths = await contentfulClient.getAllSynths();
+  const client = constructClient(cmsSynth.chainId);
 
   await queryClient.prefetchQuery("all synths", async () =>
-    (await Promise.all(cmsSynths.map(fetchCompleteSynth))).filter(errorFilter)
+    (
+      await Promise.all(
+        cmsSynths.map((synth) =>
+          constructClient(synth.chainId).fetchCompleteSynth(synth)
+        )
+      )
+    ).filter(errorFilter)
   );
 
   await queryClient.prefetchQuery(
@@ -124,7 +135,11 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
   const cmsRelatedSynths = await contentfulClient.getRelatedSynths(data);
 
   const relatedSynths = (
-    await Promise.all(cmsRelatedSynths.map(fetchCompleteSynth))
+    await Promise.all(
+      cmsRelatedSynths.map((synth) =>
+        constructClient(synth.chainId).fetchCompleteSynth(synth)
+      )
+    )
   ).filter(errorFilter) as Synth<{ type: ContractType }>[];
 
   // get TVL history for this synth
@@ -154,8 +169,12 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
   return {
     props: {
       data,
+      chainId: cmsSynth.chainId,
       relatedSynths: relatedSynths
-        .sort((a, b) => formatWeiString(b.tvl) - formatWeiString(a.tvl))
+        .sort(
+          (a, b) =>
+            formatWeiString(b.tvl || "0") - formatWeiString(a.tvl || "0")
+        )
         .slice(0, 5),
       dehydratedState: dehydrate(queryClient),
     },
@@ -169,6 +188,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const paths = allCmsSynths.map((synth) => ({
     params: {
       address: synth.address,
+      chain: chainIdToNameLookup[synth.chainId],
     },
   }));
 
@@ -183,18 +203,22 @@ type Props =
       data: Synth<{ type: "emp" }>;
       relatedSynths: Synth<{ type: ContractType }>[];
       change24h: number;
+      chainId: ChainId;
     }
   | {
       data: Synth<{ type: "lsp" }>;
       relatedSynths: Synth<{ type: ContractType }>[];
       change24h: number;
+      chainId: ChainId;
     };
 
-const SynthPage: React.FC<Props> = ({ data, relatedSynths }) => {
+const SynthPage: React.FC<Props> = ({ data, chainId, relatedSynths }) => {
   const { account = "", signer, isConnected } = useConnection();
   const formattedLogo = data?.logo?.fields.file.url
     ? formatContentfulUrl(data.logo.fields.file.url)
     : null;
+
+  const client = constructClient(chainId);
 
   const { data: synthState } = useQuery(
     ["synth state", data.address],
@@ -309,10 +333,13 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths }) => {
                 ? data.tokenName
                 : formatLSPName(data.longTokenName || "")}
             </Heading>
-            <Description>{data.address}</Description>
           </div>
-          <StyledLiveIndicator isLive={!isExpired} />
         </HeroContentWrapper>
+        <HeroChain
+          chainId={chainId}
+          contractAddress={data.address}
+          isExpired={isExpired}
+        />
         {data.type === "emp" ? (
           <EmpHero
             synth={freshData as Synth<{ type: "emp" }>}
@@ -324,6 +351,7 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths }) => {
             shortTokenBalance={shortTokenBalance}
             synth={freshData as Synth<{ type: "lsp" }>}
             collateralBalance={collateralBalance}
+            chainId={chainId}
           />
         )}
       </Hero>
@@ -384,6 +412,7 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths }) => {
               collateralERC20Contract={collateralERC20Contract}
               collateralBalance={collateralBalance}
               setCollateralBalance={setCollateralBalance}
+              chainId={chainId}
             />
           )}
         </AsideWrapper>
@@ -403,6 +432,51 @@ const SynthPage: React.FC<Props> = ({ data, relatedSynths }) => {
 
 export default SynthPage;
 
+type HeroChainProps = {
+  chainId: ChainId;
+  contractAddress: string;
+  isExpired: boolean;
+};
+
+const HeroChain: React.FC<HeroChainProps> = ({
+  chainId,
+  contractAddress,
+  isExpired,
+}) => {
+  const chainIcon = useMemo(() => {
+    if (chainId === 137) {
+      return <PolygonIcon />;
+    }
+    if (chainId === 1) {
+      return <EthereumIcon />;
+    }
+  }, [chainId]);
+  const chainName = useMemo(
+    () => capitalize(chainIdToNameLookup[chainId]),
+    [chainId]
+  );
+
+  return (
+    <HeroChainWrapper>
+      <HeroChainItem>
+        <HeroChainCaption>CHAIN</HeroChainCaption>
+        <HeroChainNameWrapper>
+          <HeroChainIconContainer>{chainIcon}</HeroChainIconContainer>
+          <span>{chainName}</span>
+        </HeroChainNameWrapper>
+      </HeroChainItem>
+      <HeroChainItem>
+        <HeroChainCaption>TOKEN ADDRESS</HeroChainCaption>
+        <HeroChainAddress>{contractAddress}</HeroChainAddress>
+      </HeroChainItem>
+      <HeroChainItem>
+        <HeroChainCaption>STATUS</HeroChainCaption>
+        <LiveIndicator isLive={!isExpired} />
+      </HeroChainItem>
+    </HeroChainWrapper>
+  );
+};
+
 const Heading = styled.h1`
   font-weight: 700;
   /* Fluid typography, will make the font range between 1.5rem and 2.125rem depending on screen size */
@@ -411,17 +485,6 @@ const Heading = styled.h1`
   @media ${QUERIES.tabletAndUp} {
     max-width: revert;
   }
-`;
-const Description = styled.span`
-  font-size: ${14 / 16}rem;
-  display: none;
-
-  @media ${QUERIES.tabletAndUp} {
-    display: block;
-  }
-`;
-const StyledLiveIndicator = styled(LiveIndicator)`
-  margin-left: auto;
 `;
 
 const HeroContentWrapper = styled.div`
@@ -521,5 +584,89 @@ const TableWrapper = styled.section`
   padding-top: 40px;
   & > ${SecondaryHeading} {
     padding: 15px;
+  }
+`;
+
+const HeroChainWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 0 12px;
+  margin: 25px 0 0;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 5px;
+
+  @media ${QUERIES.tabletAndUp} {
+    flex-direction: row;
+    padding: 10px 0;
+  }
+`;
+
+const HeroChainItem = styled.div`
+  padding: 12px 0;
+  height: 76px;
+  display: flex;
+  flex-grow: 1;
+  flex-shrink: 0;
+  flex-direction: column;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 20px;
+  color: var(--white);
+  overflow: hidden;
+
+  :last-of-type {
+    border-bottom: none;
+  }
+
+  :nth-child(2) {
+    flex-shrink: 1;
+  }
+
+  @media ${QUERIES.tabletAndUp} {
+    padding: 0 30px;
+    height: 52px;
+    border-right: 1px solid rgba(255, 255, 255, 0.25);
+    border-bottom: none;
+
+    :last-of-type {
+      border-right: none;
+    }
+  }
+`;
+
+const HeroChainCaption = styled.span`
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 14px;
+  color: rgba(255, 255, 255, 0.75);
+`;
+
+const HeroChainNameWrapper = styled.div`
+  display: flex;
+`;
+
+const HeroChainAddress = styled.span`
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 28px;
+`;
+
+export const HeroChainIconContainer = styled.div`
+  width: 25px;
+  height: 25px;
+  margin-right: 0.875rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--white);
+  border-radius: 50%;
+
+  svg {
+    width: 16px;
+    height: 16px;
   }
 `;
