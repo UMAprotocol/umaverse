@@ -148,7 +148,7 @@ const MintForm: FC<Props> = ({
       }
 
       if (amount) {
-        const weiAmount = toWeiSafe(amount);
+        const weiAmount = toWeiSafe(amount, Number(collateralDecimals));
         try {
           // Need to send the correct amount based on the collateral pair ** the amount
           // User has specified in the input.

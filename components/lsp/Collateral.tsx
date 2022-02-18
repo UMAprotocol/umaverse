@@ -95,8 +95,10 @@ const Collateral: FC<Props> = ({
           {(collateralOnTop || !redeemForm) && (
             <span
               onClick={() => {
-                const normalizedBalance =
-                  ethers.utils.formatEther(collateralBalance);
+                const normalizedBalance = ethers.utils.formatUnits(
+                  collateralBalance,
+                  collateralDecimals
+                );
                 setAmount(normalizedBalance);
 
                 setLongShortPairInputs(normalizedBalance);
