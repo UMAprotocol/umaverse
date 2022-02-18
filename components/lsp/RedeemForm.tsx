@@ -23,9 +23,6 @@ import {
   INVALID_STRING_ERROR,
 } from "./helpers";
 
-const toBN = ethers.BigNumber.from;
-const scaledToWei = toBN("10").pow("18");
-
 interface Props {
   collateralBalance: ethers.BigNumber;
   collateralPerPair: ethers.BigNumber;
