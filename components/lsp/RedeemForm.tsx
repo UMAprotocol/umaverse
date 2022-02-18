@@ -23,9 +23,6 @@ import {
   INVALID_STRING_ERROR,
 } from "./helpers";
 
-const toBN = ethers.BigNumber.from;
-const scaledToWei = toBN("10").pow("18");
-
 interface Props {
   collateralBalance: ethers.BigNumber;
   collateralPerPair: ethers.BigNumber;
@@ -114,14 +111,10 @@ const RedeemForm: FC<Props> = ({
       // Note: You need to have an equal amount of long and short tokens in order to redeem.
       // So what value you use of long token or short token should be arbitrary, as long as both are equal.
       // It should be noted too, as you can have more of one than the other, we need to make sure the user is not trying to redeem more tokens than they have of the matching pair.
-      const weiAmount = toWeiSafe(longTokenAmount);
+      const weiAmount = toWeiSafe(longTokenAmount, Number(collateralDecimals));
       try {
-        // Need to send the correct amount based on the collateral pair ** the amount
-        // User has specified in the input.
-        // All operations that make the number larger come first. All the operations that make the number smaller come last.
-        const redeemAmount = weiAmount.mul(scaledToWei);
         await lspContract
-          .redeem(redeemAmount.div(scaledToWei))
+          .redeem(weiAmount)
           .then((tx: any) => {
             setAmount("");
             setLongTokenAmount("");
