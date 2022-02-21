@@ -183,13 +183,13 @@ const MintForm: FC<Props> = ({
     userNeedsToApprove,
   ]);
 
-  // if (web3Provider && !isUserConnectedToContractChain) {
-  //   return (
-  //     <SwitchWalletContainer>
-  //       <SwitchWalletLsp targetChainId={chainId} />
-  //     </SwitchWalletContainer>
-  //   );
-  // }
+  if (web3Provider && !isUserConnectedToContractChain) {
+    return (
+      <SwitchWalletContainer>
+        <SwitchWalletLsp targetChainId={chainId} />
+      </SwitchWalletContainer>
+    );
+  }
 
   return (
     <div>
