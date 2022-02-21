@@ -154,22 +154,17 @@ const MintForm: FC<Props> = ({
           // User has specified in the input.
           // All operations that make the number larger come first. All the operations that make the number smaller come last.
           const mintAmount = weiAmount.mul(scaledToWei).div(collateralPerPair);
-          lspContract
-            .create(mintAmount)
-            .then((tx: any) => {
-              setAmount("");
-              setLongTokenAmount("");
-              setShortTokenAmount("");
-              return tx.wait(1);
-            })
-            .then(async () => {
-              const balance = (await collateralERC20Contract.balanceOf(
-                address
-              )) as ethers.BigNumber;
-              setCollateralBalance(balance);
-              refetchLongTokenBalance();
-              refetchShortTokenBalance();
-            });
+          const tx = await lspContract.create(mintAmount);
+          await tx.wait(1);
+          setAmount("");
+          setLongTokenAmount("");
+          setShortTokenAmount("");
+          const balance = (await collateralERC20Contract.balanceOf(
+            address
+          )) as ethers.BigNumber;
+          setCollateralBalance(balance);
+          refetchLongTokenBalance();
+          refetchShortTokenBalance();
         } catch (err) {
           console.log("err", err);
         }
@@ -188,13 +183,13 @@ const MintForm: FC<Props> = ({
     userNeedsToApprove,
   ]);
 
-  if (web3Provider && !isUserConnectedToContractChain) {
-    return (
-      <SwitchWalletContainer>
-        <SwitchWalletLsp targetChainId={chainId} />
-      </SwitchWalletContainer>
-    );
-  }
+  // if (web3Provider && !isUserConnectedToContractChain) {
+  //   return (
+  //     <SwitchWalletContainer>
+  //       <SwitchWalletLsp targetChainId={chainId} />
+  //     </SwitchWalletContainer>
+  //   );
+  // }
 
   return (
     <div>

@@ -113,22 +113,17 @@ const RedeemForm: FC<Props> = ({
       // It should be noted too, as you can have more of one than the other, we need to make sure the user is not trying to redeem more tokens than they have of the matching pair.
       const weiAmount = toWeiSafe(longTokenAmount, Number(collateralDecimals));
       try {
-        await lspContract
-          .redeem(weiAmount)
-          .then((tx: any) => {
-            setAmount("");
-            setLongTokenAmount("");
-            setShortTokenAmount("");
-            return tx.wait(1);
-          })
-          .then(async () => {
-            const balance = (await collateralERC20Contract.balanceOf(
-              address
-            )) as ethers.BigNumber;
-            setCollateralBalance(balance);
-            refetchLongTokenBalance();
-            refetchShortTokenBalance();
-          });
+        const tx = await lspContract.redeem(weiAmount);
+        await tx.wait(1);
+        setAmount("");
+        setLongTokenAmount("");
+        setShortTokenAmount("");
+        const balance = (await collateralERC20Contract.balanceOf(
+          address
+        )) as ethers.BigNumber;
+        setCollateralBalance(balance);
+        refetchLongTokenBalance();
+        refetchShortTokenBalance();
       } catch (err) {
         console.log("err", err);
       }
