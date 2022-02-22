@@ -98,9 +98,7 @@ async function getRelatedSynths(
   // Get the synths state to see if they're expired or not
   const allRelatedSynths = (
     await Promise.all(
-      relatedCmsSynths.map((synth) =>
-        constructClient(synth.chainId).fetchCompleteSynth(synth)
-      )
+      relatedCmsSynths.map(constructClient(synth.chainId).fetchCompleteSynth)
     )
   ).filter(errorFilter) as Synth<{ type: ContractType }>[];
   const relevantRelatedSynths = allRelatedSynths.filter((relatedSynth) => {
