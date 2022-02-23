@@ -48,7 +48,7 @@ class Client implements IClient {
   constructor(baseUrl: string) {
     this.baseUrl = baseUrl;
   }
-  async request<T>(method: string, ...params: unknown[]): Promise<T> {
+  request = async <T>(method: string, ...params: unknown[]): Promise<T> => {
     const response = await fetch(
       `${this.baseUrl}/${method}`,
       constructRequest(...params)
@@ -63,7 +63,7 @@ class Client implements IClient {
       );
     }
     return response.json();
-  }
+  };
 
   getLatestTvl: GetStat = (address) =>
     address
@@ -106,9 +106,9 @@ class Client implements IClient {
     };
   };
 
-  async fetchCompleteSynth<T extends { type: ContractType }>(
+  fetchCompleteSynth = async <T extends { type: ContractType }>(
     synth: ContentfulSynth
-  ): Promise<Synth<T> | Error> {
+  ): Promise<Synth<T> | Error> => {
     try {
       const stats = await this.getSynthStats(synth.address);
       const state = await this.getState<T>(synth.address);
@@ -135,7 +135,7 @@ class Client implements IClient {
     } catch (err) {
       return new SynthFetchingError(err.message, synth);
     }
-  }
+  };
 }
 
 function _constructClient(chainId: ChainId): Client {
