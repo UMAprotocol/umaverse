@@ -22,6 +22,8 @@ import {
   INSUFFICIENT_SHORT_TOKENS,
   INVALID_STRING_ERROR,
 } from "./helpers";
+import { ChainId } from "utils";
+import { SwitchWalletLsp } from "./SwitchWalletLsp";
 
 interface Props {
   collateralBalance: ethers.BigNumber;
@@ -38,6 +40,8 @@ interface Props {
   showWallet: boolean;
   setShowWallet: (value: React.SetStateAction<boolean>) => void;
   collateralSymbol: string;
+  chainId: ChainId;
+  web3Provider?: ethers.providers.Web3Provider;
 }
 
 const RedeemForm: FC<Props> = ({
@@ -55,6 +59,8 @@ const RedeemForm: FC<Props> = ({
   showWallet,
   setShowWallet,
   collateralSymbol,
+  chainId,
+  web3Provider,
 }) => {
   const [amount, setAmount] = useState("");
   const [longTokenAmount, setLongTokenAmount] = useState("");
@@ -201,7 +207,9 @@ const RedeemForm: FC<Props> = ({
         </>
       )}
 
-      {showWallet && <ConnectWallet setShowWallet={setShowWallet} />}
+      {showWallet && (
+        <ConnectWallet setShowWallet={setShowWallet} chainId={chainId} />
+      )}
     </div>
   );
 };

@@ -68,6 +68,9 @@ const getNetworkName = (chainId: number) => {
     case 4: {
       return "rinkeby";
     }
+    case 137: {
+      return "polygon-mainnet";
+    }
   }
 };
 
@@ -76,11 +79,10 @@ export function onboardBaseConfig(_chainId?: number): Initialization {
   const infuraRpc = `https://${getNetworkName(
     chainId
   )}.infura.io/v3/${infuraId}`;
-
   return {
     dappId: process.env.NEXT_PUBLIC_ONBOARD_API_KEY || "",
     hideBranding: true,
-    networkId: 1, // Default to main net. If on a different network will change with the subscription.
+    networkId: chainId, // Default to main net. If on a different network will change with the subscription.
     walletSelect: {
       wallets: [
         { walletName: "metamask", preferred: true },

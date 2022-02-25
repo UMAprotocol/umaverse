@@ -26,7 +26,7 @@ export const LspHero: React.FC<Props> = ({
   collateralBalance,
   chainId,
 }) => {
-  const { initOnboard, resetOnboard } = useOnboard();
+  const { initOnboard, resetOnboard } = useOnboard(chainId);
   const { account, isConnected, chainId: connectionChainId } = useConnection();
   const handleConnectionClick = React.useCallback(() => {
     if (isConnected) {

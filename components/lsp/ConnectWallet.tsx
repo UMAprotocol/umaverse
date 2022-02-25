@@ -8,12 +8,14 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { useConnection, useOnboard } from "../../hooks";
+import { ChainId } from "utils";
 
 interface Props {
   setShowWallet: (value: React.SetStateAction<boolean>) => void;
+  chainId?: ChainId;
 }
-const ConnectWallet: FC<Props> = ({ setShowWallet }) => {
-  const { initOnboard, resetOnboard } = useOnboard();
+const ConnectWallet: FC<Props> = ({ setShowWallet, chainId }) => {
+  const { initOnboard, resetOnboard } = useOnboard(chainId);
   const { isConnected } = useConnection();
   const handleConnectionClick = React.useCallback(() => {
     if (isConnected) {
