@@ -4,11 +4,7 @@ import Onboard from "bnc-onboard";
 
 import { useConnection } from "./useConnection";
 import { onboardBaseConfig } from "../utils/constants";
-import {
-  UnsupportedChainIdError,
-  isValidChainId,
-  ChainId,
-} from "../utils/chainId";
+import { ChainId } from "../utils/chainId";
 
 export function useOnboard(chainId?: ChainId) {
   const { connect, disconnect, update, setError } = useConnection();
