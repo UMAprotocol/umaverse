@@ -1,4 +1,4 @@
-import React, { FC, useState, useCallback, useEffect } from "react";
+import React, { FC, useState, useCallback, useEffect, useMemo } from "react";
 import {
   SmallTitle,
   TopFormWrapper,
@@ -7,6 +7,7 @@ import {
   ButtonWrapper,
   MintButton,
   LSPFormError,
+  SwitchWalletContainer,
 } from "./LSP.styled";
 import { ethers } from "ethers";
 import LongShort from "./LongShort";
@@ -41,7 +42,6 @@ interface Props {
   setShowWallet: (value: React.SetStateAction<boolean>) => void;
   collateralSymbol: string;
   chainId: ChainId;
-  web3Provider?: ethers.providers.Web3Provider;
 }
 
 const RedeemForm: FC<Props> = ({
@@ -60,14 +60,19 @@ const RedeemForm: FC<Props> = ({
   setShowWallet,
   collateralSymbol,
   chainId,
-  web3Provider,
 }) => {
   const [amount, setAmount] = useState("");
   const [longTokenAmount, setLongTokenAmount] = useState("");
   const [shortTokenAmount, setShortTokenAmount] = useState("");
-
-  const { signer } = useConnection();
   const [showRedeemError, setShowRedeemError] = useState("");
+
+  const { signer, chainId: connectionChainId } = useConnection();
+  const hasToSwitchChain = useMemo(() => {
+    if (signer && connectionChainId !== chainId) {
+      return true;
+    }
+    return false;
+  }, [connectionChainId, chainId, signer]);
 
   useEffect(() => {
     if (signer) {
@@ -149,6 +154,14 @@ const RedeemForm: FC<Props> = ({
     refetchLongTokenBalance,
     refetchShortTokenBalance,
   ]);
+
+  if (hasToSwitchChain) {
+    return (
+      <SwitchWalletContainer>
+        <SwitchWalletLsp targetChainId={chainId} />
+      </SwitchWalletContainer>
+    );
+  }
 
   return (
     <div>
