@@ -21,9 +21,6 @@ export function useOnboard(chainId?: ChainId) {
             update({ account: address });
           },
           network: (networkId: number) => {
-            const error = isValidChainId(networkId)
-              ? undefined
-              : new UnsupportedChainIdError(networkId);
             update({
               chainId: networkId,
             });
