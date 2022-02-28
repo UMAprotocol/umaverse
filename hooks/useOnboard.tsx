@@ -27,22 +27,16 @@ export function useOnboard(chainId?: ChainId) {
             update({
               chainId: networkId,
             });
-            if (error) {
-              setError(error);
-            }
           },
           wallet: async (wallet: Wallet) => {
             if (wallet.provider) {
               const provider = wallet.provider;
-
-              update({
-                provider,
-              });
+              update({ account: provider.selectedAddress, provider });
             }
           },
         },
       }),
-    [setError, update]
+    [setError, update, chainId]
   );
   const initOnboard = React.useCallback(async () => {
     try {

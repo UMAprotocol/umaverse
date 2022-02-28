@@ -118,12 +118,7 @@ export function onboardBaseConfig(_chainId?: number): Initialization {
         },
       ],
     },
-    walletCheck: [
-      { checkName: "connect" },
-      { checkName: "accounts" },
-      { checkName: "network" },
-      { checkName: "balance", minimumBalance: "0" },
-    ],
+    walletCheck: [{ checkName: "connect" }, { checkName: "accounts" }],
     // To prevent providers from requesting block numbers every 4 seconds (see https://github.com/WalletConnect/walletconnect-monorepo/issues/357)
     blockPollingInterval: 1000 * 60 * 60,
   };
