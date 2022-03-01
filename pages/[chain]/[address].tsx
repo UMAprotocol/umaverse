@@ -466,7 +466,7 @@ const HeroChain: React.FC<HeroChainProps> = ({
         </HeroChainNameWrapper>
       </HeroChainItem>
       <HeroChainItem>
-        <HeroChainCaption>TOKEN ADDRESS</HeroChainCaption>
+        <HeroChainCaption>CONTRACT ADDRESS</HeroChainCaption>
         <HeroChainAddress>{contractAddress}</HeroChainAddress>
       </HeroChainItem>
       <HeroChainItem>
