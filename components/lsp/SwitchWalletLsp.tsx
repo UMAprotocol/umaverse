@@ -1,13 +1,16 @@
 import { useConnection } from "hooks";
 import React, { useMemo } from "react";
-import { capitalize, ChainId, chainIdToNameLookup } from "utils";
+import {
+  capitalize,
+  ChainId,
+  chainIdToLogoLookup,
+  chainIdToNameLookup,
+} from "utils";
 import {
   ChainIconContainer,
   Disclaimer,
   SwitchButton,
 } from "./SwitchWalletLsp.styled";
-import PolygonIcon from "../../public/icons/polygon.svg";
-import EthereumIcon from "../../public/icons/eth-icon.svg";
 import { ethers } from "ethers";
 import { addChainParameters } from "utils/metamask";
 
@@ -19,12 +22,7 @@ interface Props {
 export const SwitchWalletLsp: React.FC<Props> = ({ targetChainId }) => {
   const { provider } = useConnection();
   const chainIcon = useMemo(() => {
-    if (targetChainId === 137) {
-      return <PolygonIcon />;
-    }
-    if (targetChainId === 1) {
-      return <EthereumIcon />;
-    }
+    return chainIdToLogoLookup[targetChainId]();
   }, [targetChainId]);
   const chainName = useMemo(
     () => capitalize(chainIdToNameLookup[targetChainId]),

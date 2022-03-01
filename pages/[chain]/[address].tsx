@@ -5,8 +5,6 @@ import Image from "next/image";
 import { useQuery, QueryClient } from "react-query";
 import { dehydrate } from "react-query/hydration";
 import { DateTime } from "luxon";
-import PolygonIcon from "../../public/icons/polygon.svg";
-import EthereumIcon from "../../public/icons/eth-icon.svg";
 
 import {
   Layout,
@@ -52,7 +50,7 @@ import { useConnection } from "../../hooks";
 import { ethers } from "ethers";
 import createERC20ContractInstance from "../../components/lsp/createERC20ContractInstance";
 import { useMemo } from "react";
-import { ChainId } from "utils/chainId";
+import { ChainId, chainIdToLogoLookup } from "utils/chainId";
 
 const toBN = ethers.BigNumber.from;
 
@@ -446,12 +444,7 @@ const HeroChain: React.FC<HeroChainProps> = ({
   isExpired,
 }) => {
   const chainIcon = useMemo(() => {
-    if (chainId === 137) {
-      return <PolygonIcon />;
-    }
-    if (chainId === 1) {
-      return <EthereumIcon />;
-    }
+    return chainIdToLogoLookup[chainId]();
   }, [chainId]);
   const chainName = useMemo(
     () => capitalize(chainIdToNameLookup[chainId]),
