@@ -250,7 +250,9 @@ const MintForm: FC<Props> = ({
           </ButtonWrapper>
         </>
       )}
-      {showWallet && <ConnectWallet setShowWallet={setShowWallet} />}
+      {showWallet && (
+        <ConnectWallet setShowWallet={setShowWallet} chainId={chainId} />
+      )}
     </div>
   );
 };

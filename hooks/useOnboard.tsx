@@ -4,41 +4,32 @@ import Onboard from "bnc-onboard";
 
 import { useConnection } from "./useConnection";
 import { onboardBaseConfig } from "../utils/constants";
-import { UnsupportedChainIdError, isValidChainId } from "../utils/chainId";
+import { ChainId } from "../utils/chainId";
 
-export function useOnboard() {
+export function useOnboard(chainId?: ChainId) {
   const { connect, disconnect, update, setError } = useConnection();
   const instance = React.useMemo(
     () =>
       Onboard({
-        ...onboardBaseConfig(),
+        ...onboardBaseConfig(chainId),
         subscriptions: {
           address: (address: string) => {
             update({ account: address });
           },
           network: (networkId: number) => {
-            const error = isValidChainId(networkId)
-              ? undefined
-              : new UnsupportedChainIdError(networkId);
             update({
               chainId: networkId,
             });
-            if (error) {
-              setError(error);
-            }
           },
           wallet: async (wallet: Wallet) => {
             if (wallet.provider) {
               const provider = wallet.provider;
-
-              update({
-                provider,
-              });
+              update({ account: provider.selectedAddress, provider });
             }
           },
         },
       }),
-    [setError, update]
+    [setError, update, chainId]
   );
   const initOnboard = React.useCallback(async () => {
     try {

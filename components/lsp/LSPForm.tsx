@@ -154,6 +154,7 @@ const LSPForm: FC<Props> = ({
               showWallet={showWallet}
               setShowWallet={setShowWallet}
               collateralSymbol={collateralSymbol}
+              chainId={chainId}
             />
           </div>
         </Tabs>

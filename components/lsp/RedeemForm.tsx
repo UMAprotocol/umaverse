@@ -1,4 +1,4 @@
-import React, { FC, useState, useCallback, useEffect } from "react";
+import React, { FC, useState, useCallback, useEffect, useMemo } from "react";
 import {
   SmallTitle,
   TopFormWrapper,
@@ -7,6 +7,7 @@ import {
   ButtonWrapper,
   MintButton,
   LSPFormError,
+  SwitchWalletContainer,
 } from "./LSP.styled";
 import { ethers } from "ethers";
 import LongShort from "./LongShort";
@@ -22,6 +23,8 @@ import {
   INSUFFICIENT_SHORT_TOKENS,
   INVALID_STRING_ERROR,
 } from "./helpers";
+import { ChainId } from "utils";
+import { SwitchWalletLsp } from "./SwitchWalletLsp";
 
 interface Props {
   collateralBalance: ethers.BigNumber;
@@ -38,6 +41,7 @@ interface Props {
   showWallet: boolean;
   setShowWallet: (value: React.SetStateAction<boolean>) => void;
   collateralSymbol: string;
+  chainId: ChainId;
 }
 
 const RedeemForm: FC<Props> = ({
@@ -55,13 +59,20 @@ const RedeemForm: FC<Props> = ({
   showWallet,
   setShowWallet,
   collateralSymbol,
+  chainId,
 }) => {
   const [amount, setAmount] = useState("");
   const [longTokenAmount, setLongTokenAmount] = useState("");
   const [shortTokenAmount, setShortTokenAmount] = useState("");
-
-  const { signer } = useConnection();
   const [showRedeemError, setShowRedeemError] = useState("");
+
+  const { signer, chainId: connectionChainId } = useConnection();
+  const hasToSwitchChain = useMemo(() => {
+    if (signer && connectionChainId !== chainId) {
+      return true;
+    }
+    return false;
+  }, [connectionChainId, chainId, signer]);
 
   useEffect(() => {
     if (signer) {
@@ -144,6 +155,14 @@ const RedeemForm: FC<Props> = ({
     refetchShortTokenBalance,
   ]);
 
+  if (hasToSwitchChain) {
+    return (
+      <SwitchWalletContainer>
+        <SwitchWalletLsp targetChainId={chainId} />
+      </SwitchWalletContainer>
+    );
+  }
+
   return (
     <div>
       {!showWallet && (
@@ -201,7 +220,9 @@ const RedeemForm: FC<Props> = ({
         </>
       )}
 
-      {showWallet && <ConnectWallet setShowWallet={setShowWallet} />}
+      {showWallet && (
+        <ConnectWallet setShowWallet={setShowWallet} chainId={chainId} />
+      )}
     </div>
   );
 };
