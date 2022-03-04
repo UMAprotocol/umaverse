@@ -265,6 +265,12 @@ const SynthPage: React.FC<Props> = ({ data, chainId, relatedSynths }) => {
     toBN("0")
   );
 
+  const showLspForm = useMemo(() => {
+    if (data.type !== "lsp") return false;
+    if (isExpired && !isConnected) return false;
+    return true;
+  }, [data.type, isConnected, isExpired]);
+
   const { balance: longTokenBalance, refetchBalance: refetchLongTokenBalance } =
     useERC20ContractValues(
       data.type === "lsp" ? data.longToken : "",
@@ -361,7 +367,7 @@ const SynthPage: React.FC<Props> = ({ data, chainId, relatedSynths }) => {
           <Information synth={freshData as Synth<{ type: ContractType }>} />
         </div>
         <AsideWrapper>
-          {data.type === "emp" ? (
+          {data.type === "emp" && (
             <>
               <div>
                 <SecondaryHeading>Total Value Locked (TVL)</SecondaryHeading>
@@ -400,7 +406,8 @@ const SynthPage: React.FC<Props> = ({ data, chainId, relatedSynths }) => {
                 </ul>
               </div>
             </>
-          ) : (
+          )}
+          {data.type === "lsp" && showLspForm && (
             <LSP
               data={data}
               contractAddress={data.address}
