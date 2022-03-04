@@ -1,5 +1,10 @@
 import { Initialization } from "bnc-onboard/dist/src/interfaces";
 
+export const TEST_CHAIN_ID = Number(
+  process.env.NEXT_PUBLIC_TEST_CHAIN_ID || 1337
+);
+export const CONFIRMATIONS = Number(process.env.NEXT_PUBLIC_CONFIRMATIONS || 1);
+
 export const BREAKPOINTS = {
   tabletMin: 550,
   laptopMin: 1100,

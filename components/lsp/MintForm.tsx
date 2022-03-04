@@ -14,6 +14,7 @@ import { faArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { ethers, BigNumber } from "ethers";
 import toWeiSafe from "../../utils/convertToWeiSafely";
 import { useConnection } from "../../hooks";
+import { TEST_CHAIN_ID, CONFIRMATIONS } from "utils/constants";
 
 import LongShort from "./LongShort";
 import Collateral from "./Collateral";
@@ -81,7 +82,11 @@ const MintForm: FC<Props> = ({
     BigNumber.from(0)
   );
   const isUserConnectedToContractChain = useMemo(() => {
-    return !!connectionChainId && connectionChainId === chainId;
+    return (
+      !!connectionChainId &&
+      (Number(connectionChainId) === TEST_CHAIN_ID ||
+        connectionChainId === chainId)
+    );
   }, [connectionChainId, chainId]);
   const getKnownAllowance = useCallback(() => {
     if (!collateralERC20Contract || !address || !contractAddress) return;
@@ -140,7 +145,7 @@ const MintForm: FC<Props> = ({
           );
 
           // update our known allowance once approval passes
-          return approveTx.wait(1).then(() => getKnownAllowance());
+          return approveTx.wait(CONFIRMATIONS).then(() => getKnownAllowance());
         }
       } catch (err) {
         console.log("err in approval check", err);
@@ -155,7 +160,7 @@ const MintForm: FC<Props> = ({
           // All operations that make the number larger come first. All the operations that make the number smaller come last.
           const mintAmount = weiAmount.mul(scaledToWei).div(collateralPerPair);
           const tx = await lspContract.create(mintAmount);
-          await tx.wait(1);
+          await tx.wait(CONFIRMATIONS);
           setAmount("");
           setLongTokenAmount("");
           setShortTokenAmount("");
