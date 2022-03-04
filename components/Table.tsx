@@ -132,6 +132,7 @@ const NameHeading = styled.h6`
 
 const ChainWrapper = styled.div`
   display: flex;
+  align-items: center;
 
   span {
     text-transform: capitalize;
@@ -141,10 +142,14 @@ const ChainWrapper = styled.div`
       display: revert;
     }
   }
-  svg {
-    width: 25px;
-    height: 25px;
-  }
+`;
+
+export const Logo = styled.img`
+  width: 25px;
+  height: 25px;
+  object-fit: cover;
+  border-radius: 50%;
+  overflow: hidden;
 `;
 
 const columns = [
@@ -163,7 +168,10 @@ const columns = [
     // eslint-disable-next-line react/display-name
     accessor: (row) => (
       <ChainWrapper>
-        {chainIdToLogoLookup[row.chainId]()}
+        <Logo
+          src={chainIdToLogoLookup[row.chainId]}
+          alt={chainIdToNameLookup[row.chainId]}
+        />
         <span>{chainIdToNameLookup[row.chainId]}</span>
       </ChainWrapper>
     ),

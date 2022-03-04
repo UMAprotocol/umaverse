@@ -1,9 +1,3 @@
-import EthereumLogo from "../assets/ethereum.svg";
-import PolygonLogo from "../assets/polygon.svg";
-import ArbitrumLogo from "../public/icons/arbitrum.svg";
-import OptimismLogo from "../public/icons/optimism.svg";
-import BobaLogo from "../public/icons/boba.svg";
-
 export type ValidChainId = 1 | 42 | 137 | 1337;
 export type ChainId = 1 | 42 | 1337 | 3 | 4 | 137 | 10 | 42161 | 288;
 
@@ -42,14 +36,14 @@ export const nameToChainIdLookup: Record<string, ChainId> = Object.fromEntries(
   ])
 );
 
-export const chainIdToLogoLookup: Record<ChainId, any> = {
-  1: EthereumLogo,
-  3: EthereumLogo,
-  4: EthereumLogo,
-  42: EthereumLogo,
-  137: PolygonLogo,
-  1337: EthereumLogo,
-  10: OptimismLogo,
-  42161: ArbitrumLogo,
-  288: BobaLogo,
+export const chainIdToLogoLookup: Record<ChainId, string> = {
+  1: "/icons/logos/ethereum.svg",
+  3: "/icons/logos/ethereum.svg",
+  4: "/icons/logos/ethereum.svg",
+  42: "/icons/logos/ethereum.svg",
+  137: "/icons/logos/polygon.svg",
+  1337: "/icons/logos/ethereum.svg",
+  10: "/icons/logos/optimism.svg",
+  42161: "/icons/logos/arbitrum.svg",
+  288: "/icons/logos/boba.svg",
 };

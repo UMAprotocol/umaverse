@@ -443,21 +443,16 @@ const HeroChain: React.FC<HeroChainProps> = ({
   contractAddress,
   isExpired,
 }) => {
-  const chainIcon = useMemo(() => {
-    return chainIdToLogoLookup[chainId]();
-  }, [chainId]);
-  const chainName = useMemo(
-    () => capitalize(chainIdToNameLookup[chainId]),
-    [chainId]
-  );
-
   return (
     <HeroChainWrapper>
       <HeroChainItem>
         <HeroChainCaption>CHAIN</HeroChainCaption>
         <HeroChainNameWrapper>
-          <HeroChainIconContainer>{chainIcon}</HeroChainIconContainer>
-          <span>{chainName}</span>
+          <Logo
+            src={chainIdToLogoLookup[chainId]}
+            alt={capitalize(chainIdToNameLookup[chainId])}
+          />
+          <span>{capitalize(chainIdToNameLookup[chainId])}</span>
         </HeroChainNameWrapper>
       </HeroChainItem>
       <HeroChainItem>
@@ -650,18 +645,11 @@ const HeroChainAddress = styled.span`
   line-height: 28px;
 `;
 
-export const HeroChainIconContainer = styled.div`
+export const Logo = styled.img`
   width: 25px;
   height: 25px;
-  margin-right: 0.875rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: var(--white);
+  margin-right: 15px;
+  object-fit: cover;
   border-radius: 50%;
-
-  svg {
-    width: 16px;
-    height: 16px;
-  }
+  overflow: hidden;
 `;
