@@ -22,7 +22,7 @@ const baseOptions = {
   method: "POST",
 };
 
-const API_URLS: Record<ChainId, string> = {
+const API_URLS: Record<number, string> = {
   1: process.env.NEXT_PUBLIC_UMA_API_URL_1 ?? "https://prod.api.umaproject.org",
   42:
     process.env.NEXT_PUBLIC_UMA_API_URL_42 ?? "https://dev.api.umaproject.org",
@@ -34,7 +34,17 @@ const API_URLS: Record<ChainId, string> = {
   137:
     process.env.NEXT_PUBLIC_UMA_API_URL_137 ??
     "https://prod.api.umaproject.org",
+  10:
+    process.env.NEXT_PUBLIC_UMA_API_URL_10 ??
+    "https://optimism-api-read-prod-2n22nauw7q-ue.a.run.app/",
+  42161:
+    process.env.NEXT_PUBLIC_UMA_API_URL_42161 ??
+    "https://arbitrum-api-read-prod-qr2lw57sea-ue.a.run.app/",
+  288:
+    process.env.NEXT_PUBLIC_UMA_API_URL_288 ??
+    "https://boba-api-read-prod-wlw4wnjimq-ue.a.run.app/",
 };
+
 function constructRequest(...params: unknown[]) {
   try {
     return { ...baseOptions, body: JSON.stringify([...params]) };
