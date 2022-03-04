@@ -17,6 +17,7 @@ import {
   QUERIES,
   formatContentfulUrl,
   CATEGORIES_PLACEHOLDERS,
+  chainIdToNameLookup,
 } from "../utils";
 import { AnySynth } from "../utils/umaApi";
 
@@ -34,7 +35,17 @@ export const Hero: React.FC<HeroProps> = ({ children, topAction = null }) => {
     if (!selectedSynth) {
       return;
     }
-    router.push(`/${selectedSynth.address}`);
+    if (selectedSynth.externalUrl) {
+      const newWindow = window.open(
+        selectedSynth.externalUrl,
+        "_blank",
+        "noopener,noreferrer"
+      );
+      if (newWindow) newWindow.opener = null;
+    } else {
+      const chainName = chainIdToNameLookup[selectedSynth.chainId];
+      router.push(`/${chainName}/${selectedSynth.address}`);
+    }
   };
   // we use this to hook into downshift state changes and route to a new page when an item is selected.
   const stateReducer = (
