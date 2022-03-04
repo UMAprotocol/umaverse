@@ -88,7 +88,9 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
     (
       await Promise.all(
         cmsSynths.map((synth) =>
-          constructClient(synth.chainId).fetchCompleteSynth(synth)
+          constructClient(synth.chainId)
+            .fetchCompleteSynth(synth)
+            .catch((err) => err)
         )
       )
     ).filter(errorFilter)
