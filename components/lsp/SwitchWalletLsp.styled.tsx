@@ -31,18 +31,11 @@ export const SwitchButton = styled(BaseButton)`
   }
 `;
 
-export const ChainIconContainer = styled.div`
-  width: 35px;
-  height: 35px;
-  margin-right: 1.25rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: var(--white);
+export const Logo = styled.img`
+  width: 25px;
+  height: 25px;
+  margin-right: 15px;
+  object-fit: cover;
   border-radius: 50%;
-
-  svg {
-    width: 22px;
-    height: 22px;
-  }
+  overflow: hidden;
 `;

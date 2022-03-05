@@ -648,8 +648,10 @@ const HeroChainAddress = styled.span`
 export const Logo = styled.img`
   width: 25px;
   height: 25px;
+  padding: 4px;
   margin-right: 15px;
   object-fit: cover;
   border-radius: 50%;
   overflow: hidden;
+  background-color: var(--white);
 `;

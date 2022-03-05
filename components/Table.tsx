@@ -150,6 +150,7 @@ export const Logo = styled.img`
   object-fit: cover;
   border-radius: 50%;
   overflow: hidden;
+  background-color: var(--white);
 `;
 
 const columns = [

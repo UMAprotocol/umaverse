@@ -6,11 +6,7 @@ import {
   chainIdToLogoLookup,
   chainIdToNameLookup,
 } from "utils";
-import {
-  ChainIconContainer,
-  Disclaimer,
-  SwitchButton,
-} from "./SwitchWalletLsp.styled";
+import { Logo, Disclaimer, SwitchButton } from "./SwitchWalletLsp.styled";
 import { ethers } from "ethers";
 import { addChainParameters } from "utils/metamask";
 
@@ -21,9 +17,6 @@ interface Props {
 
 export const SwitchWalletLsp: React.FC<Props> = ({ targetChainId }) => {
   const { provider } = useConnection();
-  const chainIcon = useMemo(() => {
-    return chainIdToLogoLookup[targetChainId]();
-  }, [targetChainId]);
   const chainName = useMemo(
     () => capitalize(chainIdToNameLookup[targetChainId]),
     [targetChainId]
@@ -64,7 +57,10 @@ export const SwitchWalletLsp: React.FC<Props> = ({ targetChainId }) => {
         Please switch to {chainName} to interact with this contract
       </Disclaimer>
       <SwitchButton onClick={onClickSwitch}>
-        <ChainIconContainer>{chainIcon}</ChainIconContainer>
+        <Logo
+          src={chainIdToLogoLookup[targetChainId]}
+          alt={chainIdToNameLookup[targetChainId]}
+        />
         Switch to {chainName}
       </SwitchButton>
     </div>
