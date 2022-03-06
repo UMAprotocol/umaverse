@@ -44,7 +44,9 @@ export const Hero: React.FC<HeroProps> = ({ children, topAction = null }) => {
       if (newWindow) newWindow.opener = null;
     } else {
       const chainName = chainIdToNameLookup[selectedSynth.chainId];
-      router.push(`/${chainName}/${selectedSynth.address}`);
+      router.push(
+        `/${chainName ?? selectedSynth.chainId}/${selectedSynth.address}`
+      );
     }
   };
   // we use this to hook into downshift state changes and route to a new page when an item is selected.
