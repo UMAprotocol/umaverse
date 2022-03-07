@@ -84,8 +84,7 @@ const MintForm: FC<Props> = ({
   const isUserConnectedToContractChain = useMemo(() => {
     return (
       !!connectionChainId &&
-      (Number(connectionChainId) === TEST_CHAIN_ID ||
-        connectionChainId === chainId)
+      (connectionChainId === TEST_CHAIN_ID || connectionChainId === chainId)
     );
   }, [connectionChainId, chainId]);
   const getKnownAllowance = useCallback(() => {
