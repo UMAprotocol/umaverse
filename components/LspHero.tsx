@@ -97,7 +97,7 @@ export const LspHero: React.FC<Props> = ({
               </div>
             </Balance>
             <Balance>
-              <span>Collateral</span>
+              <span>Balance</span>
               <div>
                 {ethers.utils.formatUnits(
                   collateralBalance,
