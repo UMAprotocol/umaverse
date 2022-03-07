@@ -5,8 +5,6 @@ import Image from "next/image";
 import { useQuery, QueryClient } from "react-query";
 import { dehydrate } from "react-query/hydration";
 import { DateTime } from "luxon";
-import PolygonIcon from "../../public/icons/polygon.svg";
-import EthereumIcon from "../../public/icons/eth-icon.svg";
 
 import {
   Layout,
@@ -52,7 +50,7 @@ import { useConnection } from "../../hooks";
 import { ethers } from "ethers";
 import createERC20ContractInstance from "../../components/lsp/createERC20ContractInstance";
 import { useMemo } from "react";
-import { ChainId } from "utils/chainId";
+import { ChainId, chainIdToLogoLookup } from "utils/chainId";
 
 const toBN = ethers.BigNumber.from;
 
@@ -445,26 +443,16 @@ const HeroChain: React.FC<HeroChainProps> = ({
   contractAddress,
   isExpired,
 }) => {
-  const chainIcon = useMemo(() => {
-    if (chainId === 137) {
-      return <PolygonIcon />;
-    }
-    if (chainId === 1) {
-      return <EthereumIcon />;
-    }
-  }, [chainId]);
-  const chainName = useMemo(
-    () => capitalize(chainIdToNameLookup[chainId]),
-    [chainId]
-  );
-
   return (
     <HeroChainWrapper>
       <HeroChainItem>
         <HeroChainCaption>CHAIN</HeroChainCaption>
         <HeroChainNameWrapper>
-          <HeroChainIconContainer>{chainIcon}</HeroChainIconContainer>
-          <span>{chainName}</span>
+          <Logo
+            src={chainIdToLogoLookup[chainId]}
+            alt={capitalize(chainIdToNameLookup[chainId])}
+          />
+          <span>{capitalize(chainIdToNameLookup[chainId])}</span>
         </HeroChainNameWrapper>
       </HeroChainItem>
       <HeroChainItem>
@@ -657,18 +645,13 @@ const HeroChainAddress = styled.span`
   line-height: 28px;
 `;
 
-export const HeroChainIconContainer = styled.div`
+export const Logo = styled.img`
   width: 25px;
   height: 25px;
-  margin-right: 0.875rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: var(--white);
+  padding: 4px;
+  margin-right: 15px;
+  object-fit: cover;
   border-radius: 50%;
-
-  svg {
-    width: 16px;
-    height: 16px;
-  }
+  overflow: hidden;
+  background-color: var(--white);
 `;

@@ -71,6 +71,15 @@ const getNetworkName = (chainId: number) => {
     case 137: {
       return "polygon-mainnet";
     }
+    case 42161: {
+      return "arbitrum-mainnet";
+    }
+    case 10: {
+      return "optimism-mainnet";
+    }
+    case 288: {
+      return "boba-mainnet";
+    }
   }
 };
 
