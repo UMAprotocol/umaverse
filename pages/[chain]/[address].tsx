@@ -264,12 +264,12 @@ const SynthPage: React.FC<Props> = ({ data, chainId, relatedSynths }) => {
   const [collateralBalance, setCollateralBalance] = useState<ethers.BigNumber>(
     toBN("0")
   );
-
+  const { type } = data;
   const showLspForm = useMemo(() => {
-    if (data.type !== "lsp") return false;
+    if (type !== "lsp") return false;
     if (isExpired && !isConnected) return false;
     return true;
-  }, [data.type, isConnected, isExpired]);
+  }, [type, isConnected, isExpired]);
 
   const { balance: longTokenBalance, refetchBalance: refetchLongTokenBalance } =
     useERC20ContractValues(
