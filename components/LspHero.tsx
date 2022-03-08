@@ -10,6 +10,7 @@ import { useConnection, useOnboard } from "../hooks";
 import UnstyledWalletIcon from "../public/icons/wallet.svg";
 import { ethers } from "ethers";
 import { SwitchWalletLsp } from "./lsp/SwitchWalletLsp";
+import { TEST_CHAIN_ID } from "utils/constants";
 
 type Props = {
   synth: Synth<{ type: "lsp" }>;
@@ -36,7 +37,11 @@ export const LspHero: React.FC<Props> = ({
     }
   }, [initOnboard, isConnected, resetOnboard]);
   const hasToChangeChain = useMemo(() => {
-    return connectionChainId && connectionChainId !== chainId;
+    return (
+      connectionChainId &&
+      connectionChainId !== TEST_CHAIN_ID &&
+      connectionChainId !== chainId
+    );
   }, [connectionChainId, chainId]);
 
   return (

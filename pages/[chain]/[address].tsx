@@ -185,12 +185,14 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
 export const getStaticPaths: GetStaticPaths = async () => {
   const allCmsSynths = await contentfulClient.getAllSynths();
 
-  const paths = allCmsSynths.map((synth) => ({
-    params: {
-      address: synth.address,
-      chain: chainIdToNameLookup[synth.chainId],
-    },
-  }));
+  const paths = allCmsSynths
+    .filter((synth) => !!chainIdToNameLookup[synth.chainId])
+    .map((synth) => ({
+      params: {
+        address: synth.address,
+        chain: chainIdToNameLookup[synth.chainId],
+      },
+    }));
 
   return {
     paths,

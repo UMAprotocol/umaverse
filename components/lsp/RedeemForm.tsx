@@ -9,6 +9,7 @@ import {
   LSPFormError,
   SwitchWalletContainer,
 } from "./LSP.styled";
+import { TEST_CHAIN_ID, CONFIRMATIONS } from "utils/constants";
 import { ethers } from "ethers";
 import LongShort from "./LongShort";
 import Collateral from "./Collateral";
@@ -68,7 +69,11 @@ const RedeemForm: FC<Props> = ({
 
   const { signer, chainId: connectionChainId } = useConnection();
   const hasToSwitchChain = useMemo(() => {
-    if (signer && connectionChainId !== chainId) {
+    if (
+      signer &&
+      connectionChainId !== TEST_CHAIN_ID &&
+      connectionChainId !== chainId
+    ) {
       return true;
     }
     return false;
@@ -125,7 +130,7 @@ const RedeemForm: FC<Props> = ({
       const weiAmount = toWeiSafe(longTokenAmount, Number(collateralDecimals));
       try {
         const tx = await lspContract.redeem(weiAmount);
-        await tx.wait(1);
+        await tx.wait(CONFIRMATIONS);
         setAmount("");
         setLongTokenAmount("");
         setShortTokenAmount("");

@@ -39,13 +39,8 @@ export const LineChart: React.FC<ChartProps> = ({
   data,
   onDataHover,
 }) => {
-  const {
-    showTooltip,
-    hideTooltip,
-    tooltipData,
-    tooltipTop,
-    tooltipLeft,
-  } = useTooltip<TimeSeriesEntry>();
+  const { showTooltip, hideTooltip, tooltipData, tooltipTop, tooltipLeft } =
+    useTooltip<TimeSeriesEntry>();
   // define the scales. This is necessary because timeseries need to be converted to pixel values
   const dateScale = useMemo(
     () =>
