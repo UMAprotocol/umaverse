@@ -197,7 +197,7 @@ const LSPForm: FC<Props> = ({
           )}
           <SettleButton
             id="settleButton"
-            showDisabled={settleButtonDisabled}
+            disabled={settleButtonDisabled}
             onClick={() => {
               // On click function only works when open or final price received.
               if (contractState === ContractState.Open) return expire();

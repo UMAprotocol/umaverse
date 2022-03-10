@@ -204,7 +204,7 @@ const RedeemForm: FC<Props> = ({
           <ButtonWrapper>
             <MintButton
               id="redeemButton"
-              showDisabled={!signer || showRedeemError ? true : false}
+              disabled={!signer || showRedeemError ? true : false}
               onClick={() => {
                 if (showRedeemError) return false;
                 if (signer) {

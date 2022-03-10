@@ -141,7 +141,7 @@ export const ButtonWrapper = styled.div`
 `;
 
 interface ILSPButton {
-  showDisabled?: boolean;
+  disabled?: boolean;
 }
 
 export const MintButton = styled(BaseButton)<ILSPButton>`
@@ -154,7 +154,7 @@ export const MintButton = styled(BaseButton)<ILSPButton>`
   font-family: inherit;
   padding: 0.75rem 0;
   width: 100%;
-  opacity: ${(props) => (props.showDisabled ? "0.5" : "1")};
+  opacity: ${(props) => (props.disabled ? "0.5" : "1")};
   @media ${QUERIES.laptopAndUp} {
     width: 370px;
   }
@@ -179,8 +179,8 @@ export const SettleButton = styled(BaseButton)<ILSPButton>`
   font-weight: 600;
   font-family: inherit;
   padding: 0.66rem 0;
-  opacity: ${(props) => (props.showDisabled ? "0.5" : "1")};
-  cursor: ${(props) => (props.showDisabled ? "not-allowed" : "pointer")};
+  opacity: ${(props) => (props.disabled ? "0.5" : "1")};
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
   @media ${QUERIES.laptopAndUp} {
     width: 380px;
   }

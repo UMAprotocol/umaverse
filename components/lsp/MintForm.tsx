@@ -234,7 +234,7 @@ const MintForm: FC<Props> = ({
           <ButtonWrapper>
             <MintButton
               id="mintButton"
-              showDisabled={!signer || !!showMintError || Number(amount) <= 0}
+              disabled={!signer || !!showMintError || Number(amount) <= 0}
               onClick={() => {
                 if (showMintError) return false;
                 if (signer) {
