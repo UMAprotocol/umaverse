@@ -348,7 +348,7 @@ const SynthPage: React.FC<Props> = ({ data, chainId, relatedSynths }) => {
           contractAddress={data.address}
           isExpired={isExpired}
         />
-        {data.type === "emp" ? (
+        {freshData && data.type === "emp" ? (
           <EmpHero
             synth={freshData as Synth<{ type: "emp" }>}
             change24h={change24h ?? 0}
@@ -366,7 +366,9 @@ const SynthPage: React.FC<Props> = ({ data, chainId, relatedSynths }) => {
       <MainWrapper>
         <div>
           <About description={data.description} />
-          <Information synth={freshData as Synth<{ type: ContractType }>} />
+          {freshData && (
+            <Information synth={freshData as Synth<{ type: ContractType }>} />
+          )}
         </div>
         <AsideWrapper>
           {data.type === "emp" && (
