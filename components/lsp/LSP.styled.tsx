@@ -140,11 +140,7 @@ export const ButtonWrapper = styled.div`
   padding: 1rem;
 `;
 
-interface ILSPButton {
-  showDisabled?: boolean;
-}
-
-export const MintButton = styled(BaseButton)<ILSPButton>`
+export const MintButton = styled(BaseButton)`
   background-color: var(--primary, 500);
   color: var(--white);
   text-align: center;
@@ -154,9 +150,12 @@ export const MintButton = styled(BaseButton)<ILSPButton>`
   font-family: inherit;
   padding: 0.75rem 0;
   width: 100%;
-  opacity: ${(props) => (props.showDisabled ? "0.5" : "1")};
   @media ${QUERIES.laptopAndUp} {
     width: 370px;
+  }
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 `;
 
@@ -168,7 +167,7 @@ export const SettleWrapper = styled.div`
   background: var(--gray-300);
 `;
 
-export const SettleButton = styled(BaseButton)<ILSPButton>`
+export const SettleButton = styled(BaseButton)`
   width: 90%;
   margin: 0 auto;
   background-color: #ff4b4b;
@@ -179,10 +178,12 @@ export const SettleButton = styled(BaseButton)<ILSPButton>`
   font-weight: 600;
   font-family: inherit;
   padding: 0.66rem 0;
-  opacity: ${(props) => (props.showDisabled ? "0.5" : "1")};
-  cursor: ${(props) => (props.showDisabled ? "not-allowed" : "pointer")};
   @media ${QUERIES.laptopAndUp} {
     width: 380px;
+  }
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 `;
 
