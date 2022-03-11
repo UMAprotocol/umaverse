@@ -30,7 +30,7 @@ import {
 
 import { MaxWidthWrapper } from "./Wrapper";
 import { BaseButton } from "./Button";
-import { Synth, formatLSPName, ContractType } from "../utils/umaApi";
+import { Synth, formatLSPName, ContractType, AnySynth } from "../utils/umaApi";
 import { useCachedState } from "../hooks";
 
 const RankCircle = styled.div`
@@ -46,7 +46,7 @@ const RankCircle = styled.div`
   }
 `;
 type NameProps = {
-  synth: Synth<any>;
+  synth: AnySynth;
 };
 const Name: React.FC<NameProps> = ({ synth }) => {
   const { logo, category } = synth;

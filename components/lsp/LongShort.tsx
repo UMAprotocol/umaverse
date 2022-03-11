@@ -47,7 +47,7 @@ const LongShort: FC<Props> = ({
       setAmount(newAmount.toString());
       valueCallback(tokenAmount);
     },
-    [collateralPerPair]
+    [collateralPerPair, setAmount]
   );
 
   const maxTokensRedeemable = useCallback(() => {
@@ -80,7 +80,15 @@ const LongShort: FC<Props> = ({
     setShortTokenAmount(ltbStb);
     setLongTokenAmount(ltbStb);
     setAmount(am);
-  }, [longTokenBalance, shortTokenBalance, collateralPerPair]);
+  }, [
+    longTokenBalance,
+    shortTokenBalance,
+    collateralPerPair,
+    setShortTokenAmount,
+    collateralDecimals,
+    setAmount,
+    setLongTokenAmount,
+  ]);
 
   return (
     <>

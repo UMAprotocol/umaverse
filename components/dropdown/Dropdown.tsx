@@ -48,7 +48,7 @@ const Dropdown: FC<Props> = ({
     } else {
       setValue("");
     }
-  }, [selectedItem]);
+  }, [selectedItem, setValue]);
 
   return (
     <DropdownContainer variant={variant}>

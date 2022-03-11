@@ -1,7 +1,7 @@
 import { DateTime, Duration } from "luxon";
 
 // Stub function to show effect.
-export const calculateTimeRemaining = () => {
+export const calculateTimeRemaining = (): string => {
   const utc = DateTime.local().toUTC().endOf("hour").toMillis();
   const difference = utc - DateTime.local().toMillis();
 
@@ -17,7 +17,7 @@ export const calculateTimeRemaining = () => {
 // Tab, Backspace, and copy+paste also goes through.
 export const onlyAllowNumbersAndDecimals = (
   event: React.KeyboardEvent<HTMLInputElement>
-) => {
+): boolean => {
   if (
     Number(event.key) >= 0 ||
     event.key === "." ||
