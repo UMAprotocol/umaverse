@@ -153,6 +153,7 @@ const RedeemForm: FC<Props> = ({
     setCollateralBalance,
     refetchLongTokenBalance,
     refetchShortTokenBalance,
+    collateralDecimals,
   ]);
 
   if (hasToSwitchChain) {

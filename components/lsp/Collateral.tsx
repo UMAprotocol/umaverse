@@ -52,7 +52,7 @@ const Collateral: FC<Props> = ({
       setLongTokenAmount(newTokenPairAmounts.toString());
       setShortTokenAmount(newTokenPairAmounts.toString());
     },
-    [collateralPerPair]
+    [collateralPerPair, setLongTokenAmount, setShortTokenAmount]
   );
 
   return (

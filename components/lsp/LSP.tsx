@@ -70,7 +70,7 @@ const LSP: FC<Props> = ({
               setContractState(ContractState.ExpiredPriceRequested);
             }
           })
-          .catch((err: any) => {
+          .catch((err) => {
             setSettleButtonDisabled(true);
             console.error("Error testing expire()", err);
           });
@@ -88,7 +88,7 @@ const LSP: FC<Props> = ({
               setContractState(ContractState.ExpiredPriceReceived);
             }
           })
-          .catch((err: any) => {
+          .catch((err) => {
             setSettleButtonDisabled(true);
             console.error("Error testing settle()", err);
           });
@@ -114,13 +114,13 @@ const LSP: FC<Props> = ({
   }, [
     contractState,
     settleButtonDisabled,
-    longTokenBalance.toString(),
-    shortTokenBalance.toString(),
+    longTokenBalance,
+    shortTokenBalance,
   ]);
 
   // Get contract data and set values.
   useEffect(() => {
-    if (signer && data.address && account && collateralERC20Contract) {
+    if (signer && data?.address && account && collateralERC20Contract) {
       const lspCon = createLSPContractInstance(signer, data.address);
 
       lspCon
@@ -139,13 +139,7 @@ const LSP: FC<Props> = ({
 
       setLSPContract(lspCon);
     }
-  }, [
-    signer,
-    account,
-    data.address,
-    data.collateralToken,
-    setCollateralBalance,
-  ]);
+  }, [signer, account, data, setCollateralBalance, collateralERC20Contract]);
 
   return (
     <LSPForm

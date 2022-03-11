@@ -4,7 +4,7 @@ import { Link } from "../Link";
 import DropdownMenu, { IDropdownMenuLinks } from "./DropdownMenu";
 import { LinkList, ListItem, SocialsList, ImageItem } from "./Header.styled";
 
-const NavLinks = () => {
+const NavLinks: React.FC = () => {
   return (
     <>
       <LinkList>

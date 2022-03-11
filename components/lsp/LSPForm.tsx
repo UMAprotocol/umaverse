@@ -1,4 +1,5 @@
 import React, { FC, useCallback, useState } from "react";
+import type { TransactionResponse } from "@ethersproject/abstract-provider";
 import Tabs from "../tabs";
 import {
   Wrapper,
@@ -67,7 +68,7 @@ const LSPForm: FC<Props> = ({
       try {
         await lspContract
           .expire()
-          .then((tx: any) => tx.wait(1))
+          .then((tx: TransactionResponse) => tx.wait(1))
           .then(() => {
             setContractState(ContractState.ExpiredPriceRequested);
             setSettleButtonDisabled(true);
@@ -76,7 +77,7 @@ const LSPForm: FC<Props> = ({
         console.log("err in expire call", err);
       }
     }
-  }, [lspContract, setContractState]);
+  }, [lspContract, setContractState, setSettleButtonDisabled]);
   const [showWallet, setShowWallet] = useState(false);
 
   const settle = useCallback(async () => {
@@ -84,7 +85,7 @@ const LSPForm: FC<Props> = ({
       try {
         await lspContract
           .settle(longTokenBalance, shortTokenBalance)
-          .then((tx: any) => tx.wait(1))
+          .then((tx: TransactionResponse) => tx.wait(1))
           .then(async () => {
             refetchLongTokenBalance();
             refetchShortTokenBalance();

@@ -8,6 +8,8 @@ type Props = {
 };
 
 export const About: React.FC<Props> = ({ description, ...delegated }) => {
+  // for some reason eslint wont pass when importing the type from remark-breaks, so this is left as any
+  // eslint-disable-next-line
   const plugins = useRef<any[]>([]);
   useEffect(() => {
     async function loadPlugins() {

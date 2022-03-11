@@ -14,6 +14,6 @@ const abi = [
 export default function createERC20ContractInstance(
   signer: ethers.Signer,
   contractAddress: string
-) {
+): ethers.Contract {
   return new ethers.Contract(contractAddress, abi, signer);
 }

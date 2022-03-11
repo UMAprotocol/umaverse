@@ -26,7 +26,7 @@ export const SwitchWalletLsp: React.FC<Props> = ({ targetChainId }) => {
     try {
       await switchToNetwork(targetChainId);
     } catch (error) {
-      if ((error as any).code === 4902) {
+      if ((error as { code: number }).code === 4902) {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         addNetwork(targetChainId).catch(() => {});
       }

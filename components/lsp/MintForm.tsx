@@ -101,7 +101,7 @@ const MintForm: FC<Props> = ({
       // get known allowance for the contract when wallet connects
       getKnownAllowance();
     }
-  }, [signer, setShowWallet, address, contractAddress]);
+  }, [signer, setShowWallet, address, contractAddress, getKnownAllowance]);
 
   useEffect(() => {
     try {
@@ -185,6 +185,8 @@ const MintForm: FC<Props> = ({
     refetchLongTokenBalance,
     refetchShortTokenBalance,
     userNeedsToApprove,
+    collateralDecimals,
+    getKnownAllowance,
   ]);
 
   if (web3Provider && !isUserConnectedToContractChain) {
