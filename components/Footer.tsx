@@ -16,7 +16,7 @@ type TLink = {
 };
 const LINKS: TLink[] = [
   {
-    href: "https://docs.umaproject.org/getting-started/overview",
+    href: "https://docs.umaproject.org/getting-started/oracle",
     name: "How UMA Works",
   },
   {
