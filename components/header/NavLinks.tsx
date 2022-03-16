@@ -36,19 +36,19 @@ const productsDropdownLinks: IDropdownMenuLinks[] = [
     name: "Optimistic Oracle",
   },
   {
-    href: "https://docs.umaproject.org/synthetic-tokens/long-short-pair.html",
+    href: "https://docs.umaproject.org/synthetic-tokens/long-short-pair",
     name: "Long Short Pair (LSP)",
   },
   {
-    href: "https://docs.umaproject.org/products/calloption.html",
+    href: "https://docs.umaproject.org/products/calloption",
     name: "Call/Put Options",
   },
   {
-    href: "https://docs.umaproject.org/range-tokens/summary.html",
+    href: "https://docs.umaproject.org/range-tokens/summary",
     name: "Range Tokens",
   },
   {
-    href: "https://docs.umaproject.org/kpi-options/summary.html",
+    href: "https://docs.umaproject.org/kpi-options/summary",
     name: "KPI Options",
   },
 ];
