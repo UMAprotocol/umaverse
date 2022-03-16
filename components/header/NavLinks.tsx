@@ -32,7 +32,7 @@ const NavLinks: React.FC = () => {
 
 const productsDropdownLinks: IDropdownMenuLinks[] = [
   {
-    href: "https://umaproject.org/products.html",
+    href: "https://umaproject.org/products",
     name: "Optimistic Oracle",
   },
   {
