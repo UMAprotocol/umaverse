@@ -200,19 +200,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-type Props =
-  | {
-      data: Synth<{ type: "emp" }>;
-      relatedSynths: Synth<{ type: ContractType }>[];
-      change24h: number;
-      chainId: ChainId;
-    }
-  | {
-      data: Synth<{ type: "lsp" }>;
-      relatedSynths: Synth<{ type: ContractType }>[];
-      change24h: number;
-      chainId: ChainId;
-    };
+interface Props {
+  data: Synth<{ type: "emp" }> | Synth<{ type: "lsp" }>;
+  relatedSynths: Synth<{ type: ContractType }>[];
+  change24h: number;
+  chainId: ChainId;
+}
 
 const SynthPage: React.FC<Props> = ({ data, chainId, relatedSynths }) => {
   const { account = "", signer, isConnected } = useConnection();
@@ -220,6 +213,7 @@ const SynthPage: React.FC<Props> = ({ data, chainId, relatedSynths }) => {
     ? formatContentfulUrl(data.logo.fields.file.url)
     : null;
 
+  console.log("synth data", data);
   const client = constructClient(chainId);
 
   const { data: synthState } = useQuery(
