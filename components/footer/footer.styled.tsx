@@ -40,8 +40,8 @@ export const ContentItem = styled.div`
 `;
 
 export const Logo = styled.img`
-  width: 100;
-  height: 25;
+  width: 100px;
+  height: 25px;
   color: var(--primary);
 `;
 
