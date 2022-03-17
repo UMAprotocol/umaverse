@@ -1,198 +1,258 @@
+import { keyframes } from "@emotion/react";
 import styled from "@emotion/styled";
-import { motion } from "framer-motion";
-import { DialogOverlay, DialogContent } from "@reach/dialog";
+import { COLORS, QUERIES } from "utils";
 import { BaseButton } from "../Button";
-import { MaxWidthWrapper } from "../Wrapper";
-import { QUERIES } from "../../utils";
+import { Link } from "../Link";
 
-export const Slice = styled(motion.div)`
-  min-height: 2px;
-  background-color: var(--black);
-  position: absolute;
-  left: 0;
-  right: 0;
-`;
-export const Overlay = styled(motion(DialogOverlay))`
-  position: fixed;
-  top: 100px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: var(--gray-transparent-dark);
-`;
-export const Content = styled(motion(DialogContent))`
-  background-color: var(--white);
-  display: flex;
-  flex-direction: column;
-  padding: 40px 12px 12px;
-`;
+const RevealDropdownAnimation = keyframes`
+  from {
+    opacity: 0;
+  }
 
-export const CloseButton = styled(BaseButton)`
-  width: 32px;
-  height: 32px;
-  position: relative;
-`;
-
-export const Wrapper = styled.header`
-  height: 100px;
-  padding: 40px 0 30px;
-  @media ${QUERIES.laptopAndUp} {
-    padding: 50px 0 55px;
-    height: 140px;
+  to {
+    opacity: 1;
   }
 `;
 
-export const MaxWidth = styled(MaxWidthWrapper)`
+export const Container = styled.header`
+  position: relative;
+
+  ::after {
+    position: absolute;
+    content: "";
+    bottom: -10px;
+    left: 0;
+    width: 100%;
+    height: 10px;
+    background: linear-gradient(
+      180deg,
+      hsla(${COLORS.black} / 0.03) 0%,
+      hsla(${COLORS.black} / 0) 100%
+    );
+  }
+`;
+
+export const Content = styled.div`
+  margin: auto;
+  padding: 25px 15px;
+  max-width: 1200px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 5;
+
+  @media ${QUERIES.tabletAndUp} {
+    padding: 25px 20px;
+  }
+
+  @media ${QUERIES.laptopAndUp} {
+    padding: 30px 40px;
+  }
+`;
+
+export const LogoLink = styled(Link)`
+  display: flex;
+  color: var(--primary);
+`;
+
+export const LogoLinkIcon = styled.img`
+  height: 20px;
+  width: 78px;
+
+  @media ${QUERIES.laptopAndUp} {
+    height: 35px;
+    width: 137px;
+  }
+`;
+
+export const NavContainer = styled.nav`
+  display: none;
+  align-items: center;
+
+  @media ${QUERIES.laptopAndUp} {
+    display: flex;
+  }
+`;
+
+export const LinkList = styled.ul`
+  display: flex;
+  list-style: none;
+`;
+
+export const LinkListItem = styled.li`
+  margin-left: 60px;
+`;
+
+export const NavLink = styled(Link)<{ active?: boolean }>`
+  position: relative;
+  display: block;
+
+  ::after {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: ${({ active }) => (active ? "100%" : 0)};
+    height: 3px;
+    background-color: var(--primary);
+    transition: width 0.2s ease-out;
+  }
+
+  :hover {
+    ::after {
+      width: 100%;
+    }
+  }
+`;
+
+export const DropdownValuesContainer = styled.div`
+  position: relative;
+  display: none;
+  padding: 20px 0 0;
+  width: 260px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  animation: ${RevealDropdownAnimation} 0.2s ease-out forwards;
+`;
+
+export const CommunityDropdownContainer = styled.div`
+  position: relative;
+
+  :hover ${DropdownValuesContainer} {
+    display: block;
+  }
+`;
+
+export const DropdownButton = styled(BaseButton)`
+  svg {
+    margin: 0 0 2px 10px;
+  }
+`;
+
+export const CommunityLinks = styled.div`
+  background-color: var(--white);
+  border-radius: 5px;
+  box-shadow: 0px 0px 20px hsla(${COLORS.black} / 0.1);
+  overflow: hidden;
+`;
+
+export const CommunityLink = styled(Link)`
+  margin: 0 20px;
+  padding: 15px 0;
   display: flex;
   align-items: center;
-`;
+  border-bottom: 1px solid var(--gray-300);
 
-export const Navigation = styled.nav`
-  display: none;
-  margin-left: auto;
-  @media ${QUERIES.laptopAndUp} {
-    display: revert;
-  }
-`;
-
-export const LinkList = styled.ol`
-  display: inline-flex;
-  flex-direction: column;
-  font-weight: 600;
-  @media ${QUERIES.laptopAndUp} {
-    flex-direction: revert;
-    & > *:not(:last-of-type) {
-      margin-right: 32px;
-    }
-  }
-`;
-
-export const ListItem = styled.li`
-  width: fit-content;
-  transition: all ease-in 0.1s;
-
-  &:hover {
-    box-shadow: 0px 3px 0px 0px var(--primary);
-  }
-  @media ${QUERIES.tabletAndDown} {
-    width: 95%;
-    margin: 0.5rem auto;
-    box-shadow: 0px 2px 0px 0px var(--gray-300);
-    padding-bottom: 0.5rem;
-    &:hover {
-      box-shadow: none;
-    }
-  }
-`;
-
-export const ImageItem = styled.li`
-  opacity: 1;
-  transition: all ease-in 0.1s;
-  &:hover {
-    opacity: 0.5;
-  }
-`;
-
-export const SocialsList = styled(LinkList)`
-  flex-direction: row;
-  & > *:not(:last-of-type) {
-    margin-right: 32px;
-  }
-  margin-top: 16px;
-  margin-left: 8px;
-  @media ${QUERIES.laptopAndUp} {
-    margin-left: 85px;
-    margin-top: 0;
-  }
-`;
-
-export const Dropdown = styled.div`
-  overflow: hidden;
-  width: 100%;
-  button {
-    font-size: 100%;
-    border: none;
-    outline: none;
-    color: var(--black);
-    font-weight: 600;
-    background-color: inherit;
-    font-family: inherit; /* Important for vertical align on mobile phones */
-    margin: 0; /* Important for vertical align on mobile phones */
-    border-bottom: 2px solid transparent;
-    display: inline-block;
-    height: 0.67rem;
-    margin-left: 6px;
-    svg {
-      height: 0.75rem;
-      margin-left: 4px;
-      @media ${QUERIES.tabletAndDown} {
-        float: right;
-      }
-    }
-
-    @media ${QUERIES.tabletAndDown} {
-      margin-left: 0;
-      width: 100%;
-    }
-  }
-`;
-
-export const DropdownContent = styled.div`
-  display: none;
-  position: absolute;
-  background-color: #ffffff;
-  min-width: 260px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  z-index: 1;
-  margin-top: 8px;
-  @media ${QUERIES.tabletAndDown} {
-    transform: translateX(0);
-    position: relative;
-    width: 100%;
-    background-color: var(--white);
-  }
-  &.open {
-    display: block;
-    z-index: 999999;
-    @media ${QUERIES.tabletAndDown} {
-      display: block;
-      width: 100%;
-    }
+  :last-of-type {
+    border-bottom: none;
   }
 
-  a {
-    float: none;
-    color: var(--black);
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-    text-align: left;
-    font-weight: 400;
-    z-index: 99999;
-    border-bottom: 1px solid var(--gray-500);
+  span {
+    margin-left: 15px;
+    transition: color 0.2s ease-out;
+  }
 
-    &:hover {
-      background-color: var(--gray-300);
+  :hover {
+    span {
       color: var(--primary);
     }
-    &:last-of-type {
-      border-bottom: none;
-    }
-  }
-  > div {
-    @media ${QUERIES.tabletAndDown} {
-      border-bottom: 1px solid var(--gray-500);
-    }
   }
 `;
 
-export const ProductsButton = styled(BaseButton)`
-  min-height: 1.5rem;
-`;
+export const MenuToggleButton = styled(BaseButton)<{ toggled?: boolean }>`
+  display: block;
+  position: relative;
+  height: 18px;
+  width: 25px;
 
-export const MobileNavigation = motion(styled(Navigation)`
-  display: revert;
+  span {
+    position: absolute;
+    display: block;
+    height: 2px;
+    width: 25px;
+    background-color: ${({ toggled }) =>
+      toggled ? "var(--gray-600)" : "var(--gray-700)"};
+    transition: ${({ toggled }) =>
+      toggled
+        ? "background .2s, top .2s, opacity .2s, transform .2s .25s"
+        : "top .2s .25s, opacity .2s .25s, transform .2s"};
+
+    :nth-of-type(1) {
+      top: ${({ toggled }) => (toggled ? "9px" : 0)};
+      transform: ${({ toggled }) => (toggled ? "rotate(45deg)" : "rotate(0)")};
+    }
+
+    :nth-of-type(2) {
+      top: 8px;
+      opacity: ${({ toggled }) => (toggled ? 0 : 1)};
+    }
+
+    :nth-of-type(3) {
+      top: ${({ toggled }) => (toggled ? "9px" : "16px")};
+      transform: ${({ toggled }) => (toggled ? "rotate(-45deg)" : "rotate(0)")};
+    }
+  }
+
   @media ${QUERIES.laptopAndUp} {
     display: none;
   }
-`);
+`;
+
+export const MobileMenuContainer = styled.div<{ show: boolean }>`
+  width: 100%;
+  position: absolute;
+  top: 60px;
+  left: 0;
+  padding: 0 20px;
+  background-color: var(--white);
+  transform: ${({ show }) => (show ? "translateY(0)" : "translateY(-20px)")};
+  opacity: ${({ show }) => (show ? 1 : 0)};
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+  z-index: 5;
+  pointer-events: ${({ show }) => (show ? "all" : "none")};
+
+  ::after {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    opacity: 0;
+    content: "";
+    height: 99999px;
+    background: #000;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  @media ${QUERIES.laptopAndUp} {
+    display: none;
+  }
+`;
+
+export const MobileNavLink = styled(Link)<{ active?: boolean }>`
+  position: relative;
+  display: block;
+  font-weight: 600;
+  font-size: ${16 / 16}rem;
+  line-height: 22px;
+  padding: 25px 0 4px;
+  border-bottom: 1px solid;
+  border-color: ${({ active }) =>
+    active ? "var(--primary)" : "var(--gray-500)"};
+
+  @media ${QUERIES.tabletAndUp} {
+    font-size: ${18 / 16}rem;
+    line-height: 24px;
+  }
+`;
+
+export const MobileCommunityLinks = styled.div`
+  display: flex;
+  padding: 30px 0 25px;
+`;
+
+export const MobileCommunityLink = styled(Link)`
+  margin-right: 25px;
+`;
