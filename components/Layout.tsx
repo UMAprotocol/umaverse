@@ -1,8 +1,8 @@
 import React from "react";
 import Head from "next/head";
-import Header from "./header";
+import { Header } from "./header";
 import styled from "@emotion/styled";
-import { Footer } from "./Footer";
+import { Footer } from "./footer";
 
 type Props = {
   title?: string;
@@ -17,6 +17,7 @@ export const Layout: React.FC<Props> = ({
       width: "100%",
       // Do not change these properties. Required for dropdown in the navbar to overlay the input in this section
       position: "relative",
+      overflow: "hidden",
       zIndex: -1,
     }}
   >

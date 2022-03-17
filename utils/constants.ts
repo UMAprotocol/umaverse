@@ -137,3 +137,50 @@ export function onboardBaseConfig(_chainId?: number): Initialization {
     blockPollingInterval: 1000 * 60 * 60,
   };
 }
+
+export const COMMUNITY_LINKS = [
+  {
+    name: "Medium",
+    href: "https://medium.com/uma-project",
+    iconSrc: "/icons/social/medium.svg",
+    alt: "medium",
+  },
+  {
+    name: "Github",
+    href: "https://github.com/umaprotocol",
+    iconSrc: "/icons/social/github.svg",
+    alt: "github",
+  },
+  {
+    name: "Twitter",
+    href: "https://twitter.com/umaprotocol",
+    iconSrc: "/icons/social/twitter.svg",
+    alt: "twitter",
+  },
+  {
+    name: "Discord",
+    href: "https://discord.com/invite/jsb9XQJ",
+    iconSrc: "/icons/social/discord.svg",
+    alt: "discord",
+  },
+  {
+    name: "Discourse",
+    href: "https://discourse.umaproject.org/",
+    iconSrc: "/icons/social/discourse.svg",
+    alt: "discourse",
+  },
+];
+
+export const LINKS = {
+  docs: "https://docs.umaproject.org/",
+  projects: "https://projects.umaproject.org/",
+  oo: "https://docs.umaproject.org/getting-started/oracle",
+  kpiOptions: "https://docs.umaproject.org/kpi-options/summary",
+  successTokens: "https://docs.umaproject.org/success-tokens/summary",
+  rangeTokens: "https://docs.umaproject.org/range-tokens/summary",
+  callPutOption: "https://docs.umaproject.org/products/calloption",
+  lsp: "https://docs.umaproject.org/synthetic-tokens/long-short-pair",
+  getStarted: "https://docs.umaproject.org/build-walkthrough/build-process",
+  faq: "https://umaproject.org/faq",
+  vote: "https://vote.umaproject.org/",
+};
