@@ -181,6 +181,6 @@ export const LINKS = {
   callPutOption: "https://docs.umaproject.org/products/calloption",
   lsp: "https://docs.umaproject.org/synthetic-tokens/long-short-pair",
   getStarted: "https://docs.umaproject.org/build-walkthrough/build-process",
-  faq: "https://umaproject.org/faq.html",
+  faq: "https://umaproject.org/faq",
   vote: "https://vote.umaproject.org/",
 };
