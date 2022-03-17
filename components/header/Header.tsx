@@ -38,12 +38,7 @@ export const Header: React.FunctionComponent = () => {
           <NavLinks />
         </UI.NavContainer>
         <MenuToggle toggled={showMobileMenu} onToggle={onToggle} />
-        <MobileMenuComponent
-          show={showMobileMenu}
-          onClickLink={() => {
-            onToggle(false);
-          }}
-        />
+        <MobileMenuComponent show={showMobileMenu} onClickLink={onToggle} />
       </UI.Content>
     </UI.Container>
   );
