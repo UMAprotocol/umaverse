@@ -32,23 +32,23 @@ const NavLinks: React.FC = () => {
 
 const productsDropdownLinks: IDropdownMenuLinks[] = [
   {
-    href: "https://umaproject.org/optimistic-oracle.html",
+    href: "https://umaproject.org/products",
     name: "Optimistic Oracle",
   },
   {
-    href: "https://umaproject.org/lsp.html",
+    href: "https://docs.umaproject.org/synthetic-tokens/long-short-pair",
     name: "Long Short Pair (LSP)",
   },
   {
-    href: "https://umaproject.org/call-put.html",
+    href: "https://docs.umaproject.org/products/calloption",
     name: "Call/Put Options",
   },
   {
-    href: "https://umaproject.org/range-tokens.html",
+    href: "https://docs.umaproject.org/range-tokens/summary",
     name: "Range Tokens",
   },
   {
-    href: "https://umaproject.org/kpi-options.html",
+    href: "https://docs.umaproject.org/kpi-options/summary",
     name: "KPI Options",
   },
 ];
