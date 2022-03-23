@@ -16,7 +16,6 @@ import {
 import {
   contentfulClient,
   formatMillions,
-  getGlobalTvm,
   QUERIES,
   errorFilter,
   ContentfulSynth,
@@ -76,11 +75,6 @@ export const getStaticProps: GetStaticProps = async () => {
   await queryClient.prefetchQuery(
     "total tvl",
     async () => await getDefillamaTvl()
-  );
-
-  await queryClient.prefetchQuery(
-    "total tvm",
-    async () => await getGlobalTvm()
   );
 
   await queryClient.prefetchQuery(

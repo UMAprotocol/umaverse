@@ -213,7 +213,6 @@ const SynthPage: React.FC<Props> = ({ data, chainId, relatedSynths }) => {
     ? formatContentfulUrl(data.logo.fields.file.url)
     : null;
 
-  console.log("synth data", data);
   const client = constructClient(chainId);
 
   const { data: synthState } = useQuery(
@@ -333,7 +332,7 @@ const SynthPage: React.FC<Props> = ({ data, chainId, relatedSynths }) => {
             <Heading>
               {data.type === "emp"
                 ? data.tokenName
-                : formatLSPName(data.longTokenName || "")}
+                : formatLSPName(data.pairName || data.longTokenName || "")}
             </Heading>
           </div>
         </HeroContentWrapper>
