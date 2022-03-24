@@ -200,19 +200,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-type Props =
-  | {
-      data: Synth<{ type: "emp" }>;
-      relatedSynths: Synth<{ type: ContractType }>[];
-      change24h: number;
-      chainId: ChainId;
-    }
-  | {
-      data: Synth<{ type: "lsp" }>;
-      relatedSynths: Synth<{ type: ContractType }>[];
-      change24h: number;
-      chainId: ChainId;
-    };
+interface Props {
+  data: Synth<{ type: "emp" }> | Synth<{ type: "lsp" }>;
+  relatedSynths: Synth<{ type: ContractType }>[];
+  change24h: number;
+  chainId: ChainId;
+}
 
 const SynthPage: React.FC<Props> = ({ data, chainId, relatedSynths }) => {
   const { account = "", signer, isConnected } = useConnection();
@@ -339,7 +332,7 @@ const SynthPage: React.FC<Props> = ({ data, chainId, relatedSynths }) => {
             <Heading>
               {data.type === "emp"
                 ? data.tokenName
-                : formatLSPName(data.longTokenName || "")}
+                : formatLSPName(data.pairName || data.longTokenName || "")}
             </Heading>
           </div>
         </HeroContentWrapper>

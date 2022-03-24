@@ -25,7 +25,9 @@ export const Information: React.FC<Props> = ({ synth, className }) => {
         <Row>
           <div>Name:</div>
           <div>
-            {synth.type == "emp" ? synth.tokenName : synth.longTokenName}
+            {synth.type == "emp"
+              ? synth.tokenName
+              : synth.pairName || synth.longTokenName}
           </div>
         </Row>
         {synth.type == "emp" ? (
