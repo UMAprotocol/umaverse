@@ -139,23 +139,25 @@ const Row = styled.div`
   padding: 0 10px;
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-between;
 
   @media ${QUERIES.tabletAndUp} {
     padding: 0 20px;
     align-items: baseline;
   }
   @media ${QUERIES.tabletAndUp} {
-    & > div {
-      flex: 1;
-    }
   }
   & > div:first-of-type {
     font-weight: bold;
     margin-right: 5px;
+    width: 160px;
+    flex-shrink: 0;
   }
   & > div:not(:first-of-type) {
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: 420px;
+    flex-grow: 1;
   }
 `;
 
@@ -174,13 +176,15 @@ const Heading = styled.h3`
 `;
 
 const StyledDuplicateIcon = styled(DuplicateIcon)`
+  margin-left: 10px;
   color: var(--primary);
   width: 20px;
   height: 20px;
   cursor: pointer;
-  margin: auto;
 `;
 
 const Address = styled.div`
   word-break: break-all;
+  display: flex;
+  align-items: center;
 `;
