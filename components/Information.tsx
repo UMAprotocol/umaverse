@@ -113,7 +113,7 @@ export const Information: React.FC<Props> = ({ synth, className }) => {
             </Row>
             <Row>
               <div>Unique Sponsors:</div>
-              <div>{synth.sponsors.length}</div>
+              <div>{synth.sponsors?.length || "-"}</div>
             </Row>
             <Row>
               <div>Minimum Sponsor Tokens:</div>
