@@ -85,6 +85,7 @@ const LSP: FC<Props> = ({
           )
           .then((isExpiredPriceReceived: boolean) => {
             if (isExpiredPriceReceived) {
+              setSettleButtonDisabled(false);
               setContractState(ContractState.ExpiredPriceReceived);
             }
           })
@@ -105,7 +106,7 @@ const LSP: FC<Props> = ({
   // Coverage in case there is a transition between states and the price settles.
   useEffect(() => {
     if (
-      contractState > ContractState.ExpiredPriceRequested &&
+      contractState === ContractState.ExpiredPriceReceived &&
       (longTokenBalance.gt(0) || shortTokenBalance.gt(0)) &&
       settleButtonDisabled
     ) {
