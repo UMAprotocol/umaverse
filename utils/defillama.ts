@@ -1,68 +1,41 @@
 import axios from "axios";
 
-const baseUrl = "https://api.llama.fi/protocol/uma-protocol";
-const defillamaUrls: string[] = [
-  "https://api.llama.fi/protocol/polymarket",
-  "https://api.llama.fi/protocol/sherlock",
-  "https://api.llama.fi/protocol/jarvis-network",
-  "https://api.llama.fi/protocol/across",
-  "https://api.llama.fi/protocol/uma-protocol",
-];
+const baseUrl = "https://api.llama.fi/oracles";
+
+interface TvsData {
+  tvl: number;
+}
 
 interface TvlData {
   date: string;
   totalLiquidityUSD: number;
 }
 
-export async function getTvl(url: string = baseUrl) {
+export async function getDefillamaTvl(url: string = baseUrl) {
   const { data } = await axios.get(url);
-  const defillamaTvlData: TvlData[] = data.tvl.slice(-1);
-  const latestTvl = defillamaTvlData[0].totalLiquidityUSD;
-  return latestTvl;
+  const defillamaTvlData: TvsData =
+    data.chart[Object.keys(data.chart)[Object.keys(data.chart).length - 1]][
+      "UMA"
+    ].tvl;
+
+  return defillamaTvlData;
 }
 
-export async function getPercentChange(url: string = baseUrl) {
+export async function getDefillamaPercentChange(url: string = baseUrl) {
   const { data } = await axios.get(url);
-  const defillamaTvlData: TvlData[] = data.tvl.slice(-2);
-  const latestTvl = defillamaTvlData[1].totalLiquidityUSD;
-  const previousDayTvl = defillamaTvlData[0].totalLiquidityUSD;
-  return {
-    latestTvl,
-    previousDayTvl,
-  };
-}
+  const latestTvl: TvsData =
+    data.chart[Object.keys(data.chart)[Object.keys(data.chart).length - 1]][
+      "UMA"
+    ];
+  const priorTvlData: TvsData =
+    data.chart[Object.keys(data.chart)[Object.keys(data.chart).length - 2]][
+      "UMA"
+    ];
+  const tvl24hChange =
+    Math.round(((latestTvl.tvl - priorTvlData.tvl) / priorTvlData.tvl) * 1000) /
+    10;
 
-export async function getDefillamaTvl(url: string[] = defillamaUrls) {
-  const totalLatestTvl = [];
-
-  for (let i = 0; i < defillamaUrls.length; i++) {
-    const todayTvl = await getTvl(url[i]);
-    totalLatestTvl.push(todayTvl);
-  }
-  const latestTvl = totalLatestTvl.reduce(function (totalLatestTvl, a) {
-    return totalLatestTvl + a;
-  }, 0);
-  return latestTvl;
-}
-
-export async function getDefillamaPercentChange(url: string[] = defillamaUrls) {
-  const todayTvl = [];
-  const yesterdayTvl = [];
-
-  for (let i = 0; i < defillamaUrls.length; i++) {
-    const llamaTvl = await getPercentChange(url[i]);
-    todayTvl.push(llamaTvl.latestTvl);
-    yesterdayTvl.push(llamaTvl.previousDayTvl);
-  }
-  const latestTvl = todayTvl.reduce(function (todayTvl, a) {
-    return todayTvl + a;
-  }, 0);
-  const previousDayTvl = yesterdayTvl.reduce(function (yesterdayTvl, b) {
-    return yesterdayTvl + b;
-  }, 0);
-  const defillamaPercentChange =
-    Math.round(((latestTvl - previousDayTvl) / previousDayTvl) * 1000) / 10;
-  return defillamaPercentChange;
+  return tvl24hChange;
 }
 
 export async function getDefillamaStats(url: string = baseUrl) {
