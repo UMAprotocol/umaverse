@@ -16,9 +16,10 @@ export async function getDefillamaTvl(url: string = baseUrl) {
   const defillamaTvlData: TvsData =
     data.chart[Object.keys(data.chart)[Object.keys(data.chart).length - 1]][
       "UMA"
-    ].tvl;
+    ];
+  const latestTvl = defillamaTvlData.tvl;
 
-  return defillamaTvlData;
+  return latestTvl;
 }
 
 export async function getDefillamaPercentChange(url: string = baseUrl) {
