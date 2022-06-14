@@ -11,7 +11,10 @@ export async function getDefillamaTvl(url: string = baseUrl) {
   const { data } = await axios.get(url);
 
   const result = Object.keys(data.chart).map((key) => [key, data.chart[key]]);
-  const defillamaData = result.slice(-1);
+  const sortedResult = result.sort(
+    (timestampA, timestampB) => timestampA[0] - timestampB[0]
+  );
+  const defillamaData = sortedResult.slice(-1);
 
   const latestTvl = defillamaData[0][1].UMA.tvl;
 
@@ -22,7 +25,10 @@ export async function getDefillamaPercentChange(url: string = baseUrl) {
   const { data } = await axios.get(url);
 
   const result = Object.keys(data.chart).map((key) => [key, data.chart[key]]);
-  const defillamaData = result.slice(-2);
+  const sortedResult = result.sort(
+    (timestampA, timestampB) => timestampA[0] - timestampB[0]
+  );
+  const defillamaData = sortedResult.slice(-2);
 
   const latestTvl = defillamaData[0][1].UMA;
   const priorTvlData = defillamaData[1][1].UMA;
