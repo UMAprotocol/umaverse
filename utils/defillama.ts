@@ -12,7 +12,7 @@ export async function getDefillamaTvl(url: string = baseUrl) {
 
   const result = Object.keys(data.chart).map((key) => [key, data.chart[key]]);
   const sortedResult = result.sort(
-    ([timestampA], [timestampB]) => timestampA[0] - timestampB[0]
+    ([timestampA], [timestampB]) => timestampA - timestampB
   );
   const defillamaData = sortedResult.slice(-1);
 
@@ -26,12 +26,13 @@ export async function getDefillamaPercentChange(url: string = baseUrl) {
 
   const result = Object.keys(data.chart).map((key) => [key, data.chart[key]]);
   const sortedResult = result.sort(
-    ([timestampA], [timestampB]) => timestampA[0] - timestampB[0]
+    ([timestampA], [timestampB]) => timestampA - timestampB
   );
-  const defillamaData = sortedResult.slice(-2);
+  const [yesterday, today] = sortedResult.slice(-2);
 
-  const latestTvl = defillamaData[0][1].UMA;
-  const priorTvlData = defillamaData[1][1].UMA;
+  const latestTvl = today[1].UMA;
+  const priorTvlData = yesterday[1].UMA;
+
   const tvl24hChange =
     Math.round(((latestTvl.tvl - priorTvlData.tvl) / priorTvlData.tvl) * 1000) /
     10;
