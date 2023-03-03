@@ -112,7 +112,7 @@ const HEADER_LINKS = [
   {
     key: "Products",
     component: () => (
-      <UI.NavLink href="https://umaproject.org/products">Products</UI.NavLink>
+      <UI.NavLink href="https://uma.xyz">Homepage</UI.NavLink>
     ),
   },
   {
