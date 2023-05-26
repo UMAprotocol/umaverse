@@ -3,7 +3,7 @@
 
 This is a really simple project that shows the usage of Next.js with TypeScript.
 
-## Deploy your own
+## Deploy your owntest
 
 Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example):
 
