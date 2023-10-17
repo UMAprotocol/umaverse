@@ -5,18 +5,10 @@ import { useQuery, QueryClient } from "react-query";
 import { dehydrate } from "react-query/hydration";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
 
-import {
-  Layout,
-  Hero,
-  Card as UnstyledCard,
-  Value,
-  Table,
-} from "../components";
+import { Layout, Hero, Table } from "../components";
 
 import {
   contentfulClient,
-  formatMillions,
-  QUERIES,
   errorFilter,
   ContentfulSynth,
   SynthFetchingError,
@@ -101,14 +93,6 @@ const IndexPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
         errorFilter
       ) as Synth<{ type: ContractType }>[]
   );
-  const { data: totalTvl } = useQuery(
-    "total tvl",
-    async () => await getDefillamaTvl()
-  );
-  const { data: totalTvlChange } = useQuery(
-    "total tvl change",
-    async () => await getDefillamaPercentChange()
-  );
 
   return (
     <Layout title="Umaverse">
@@ -117,105 +101,13 @@ const IndexPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
           Explore the <span>UMA</span>verse
         </Heading>
         <Description>UMA — The optimistic oracle built for Web3</Description>
-        <CardWrapper>
-          <Card>
-            <CardContent>
-              <CardHeading>
-                Total Value Locked <span>(TVL)</span>
-              </CardHeading>
-              <Value
-                value={totalTvl ?? 0}
-                format={(v) => {
-                  const parsedValue = Number(v);
-                  return (
-                    <>
-                      ${formatMillions(Math.floor(parsedValue))}{" "}
-                      <span style={{ fontWeight: 400 }}>
-                        {parsedValue >= 10 ** 9
-                          ? "B"
-                          : parsedValue >= 10 ** 6
-                          ? "M"
-                          : ""}
-                      </span>
-                    </>
-                  );
-                }}
-              />
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent>
-              <CardHeading>
-                Change <span>(24h)</span>
-              </CardHeading>
-              <Value
-                value={totalTvlChange ?? 0}
-                format={(v) => (
-                  <span
-                    style={{
-                      color:
-                        v > 0
-                          ? "var(--green)"
-                          : v < 0
-                          ? "var(--primary)"
-                          : "var(--gray-700)",
-                    }}
-                  >
-                    {v} %
-                  </span>
-                )}
-              />
-            </CardContent>
-          </Card>
-        </CardWrapper>
       </Hero>
-
       <Table data={allSynths ?? []} />
     </Layout>
   );
 };
 
 export default IndexPage;
-
-const CardWrapper = styled.div`
-  display: grid;
-  color: var(--gray-700);
-  grid-template-columns: repeat(2, 1fr);
-  column-gap: 10px;
-  row-gap: 10px;
-  margin-top: 30px;
-  max-width: 900px;
-  margin: 0 auto;
-  @media ${QUERIES.tabletAndUp} {
-    column-gap: 20px;
-  }
-`;
-
-const Card = styled(UnstyledCard)`
-  position: relative;
-`;
-const CardContent = styled.div`
-  padding: 15px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-  & > h3 {
-    font-weight: 700;
-  }
-  & > div {
-    color: var(--primary);
-    font-size: clamp(1.375rem, 1.3vw + 1.1rem, 2.25rem);
-    font-weight: 700;
-  }
-`;
-
-const CardHeading = styled.h3`
-  font-weight: 600;
-  & > span {
-    font-weight: 300;
-  }
-`;
 
 const Heading = styled.h1`
   font-weight: 700;
