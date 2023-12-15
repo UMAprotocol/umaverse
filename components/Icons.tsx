@@ -42,3 +42,34 @@ export const ArrowRightTailIcon: (
     </svg>
   );
 };
+
+export const Alert: (
+  props: React.SVGProps<SVGSVGElement>
+) => React.ReactElement = (props) => {
+  return (
+    <svg viewBox="0 0 16 16" fill="none" {...props}>
+      <g>
+        <path
+          d="M8.00065 14.6673C11.6825 14.6673 14.6673 11.6825 14.6673 8.00065C14.6673 4.31875 11.6825 1.33398 8.00065 1.33398C4.31875 1.33398 1.33398 4.31875 1.33398 8.00065C1.33398 11.6825 4.31875 14.6673 8.00065 14.6673Z"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M8 10.6667V8"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M8 5.33398H8.00667"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </g>
+    </svg>
+  );
+};
