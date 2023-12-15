@@ -14,6 +14,7 @@ import MintForm from "./MintForm";
 import RedeemForm from "./RedeemForm";
 import { ContractState } from "./LSP";
 import { ChainId } from "utils";
+import { WalletConnectBanner } from "./WalletConnectBanner";
 
 interface Props {
   address: string;
