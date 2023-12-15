@@ -52,9 +52,13 @@ const MobileMenuComponent: React.FC<{
 
   return (
     <UI.MobileMenuContainer show={show}>
-      {MOBILE_HEADER_LINKS.map((link) =>
-        link.component({ path: router.pathname, onClick: onClickLink })
-      )}
+      {MOBILE_HEADER_LINKS.map((link) => (
+        <link.component
+          key={link.key}
+          onClick={onClickLink}
+          path={router.pathname}
+        />
+      ))}
       <UI.MobileCommunityLinks>
         {COMMUNITY_LINKS.map((link, idx) => (
           <UI.MobileCommunityLink key={idx} href={link.href} target="_blank">
@@ -111,9 +115,7 @@ const HEADER_LINKS = [
   },
   {
     key: "Products",
-    component: () => (
-      <UI.NavLink href="https://uma.xyz">Homepage</UI.NavLink>
-    ),
+    component: () => <UI.NavLink href="https://uma.xyz">Homepage</UI.NavLink>,
   },
   {
     key: "Docs",
