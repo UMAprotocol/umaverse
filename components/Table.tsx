@@ -15,7 +15,6 @@ import {
 } from "react-table";
 
 import {
-  formatMillions,
   capitalize,
   QUERIES,
   CATEGORIES_PLACEHOLDERS,
@@ -34,18 +33,6 @@ import { Synth, formatLSPName, ContractType, AnySynth } from "../utils/umaApi";
 import { useCachedState } from "../hooks";
 import { AnalyticsBanner } from "./banners/AnalyticsBanner";
 
-const RankCircle = styled.div`
-  border-radius: 9999px;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  @media ${QUERIES.tabletAndUp} {
-    background-color: var(--gray-300);
-    color: var(--gray-700);
-  }
-`;
 type NameProps = {
   synth: AnySynth;
 };
@@ -156,11 +143,6 @@ export const Logo = styled.img`
 
 const columns = [
   {
-    Header: "Rank",
-    // eslint-disable-next-line react/display-name
-    accessor: (_, rowIndex) => <RankCircle>{rowIndex + 1}</RankCircle>,
-  },
-  {
     Header: "Name",
     // eslint-disable-next-line react/display-name
     accessor: (row) => <Name synth={row} />,
@@ -184,40 +166,6 @@ const columns = [
     id: "category",
     accessor: (row) => capitalize(row.category),
     filter: "category",
-  },
-  {
-    Header: "TVL",
-    id: "tvl",
-    accessor: (row) => {
-      const parsedTvl = row.tvl ? formatWeiString(row.tvl) : 0;
-      const postFix =
-        parsedTvl >= 10 ** 9 ? "B" : parsedTvl >= 10 ** 6 ? "M" : "";
-      return `$${formatMillions(Math.floor(parsedTvl))} ${postFix}`;
-    },
-  },
-  {
-    Header: "24h Change",
-
-    // eslint-disable-next-line react/display-name
-    accessor: (row) => (
-      <span
-        style={{
-          color:
-            row.tvl24hChange > 0
-              ? "var(--green)"
-              : row.tvl24hChange < 0
-              ? "var(--primary)"
-              : "inherit",
-          textAlign: "right",
-        }}
-      >
-        {Number.isNaN(row.tvl24hChange) ||
-        row.tvl24hChange === null ||
-        row.tvl24hChange === undefined
-          ? "-"
-          : `${row.tvl24hChange}%`}
-      </span>
-    ),
   },
 ] as Column<Synth<{ type: ContractType }>>[];
 
@@ -512,13 +460,6 @@ const HeadRow = styled(Row)`
 const Cell = styled.div`
   flex: 1 1 120px;
   &:first-of-type {
-    flex: 0 0 30px;
-    margin-right: 25px;
-    @media ${QUERIES.tabletAndUp} {
-      margin-right: 50px;
-    }
-  }
-  &:nth-of-type(2) {
     flex: 1 2 550px;
     @media ${QUERIES.tabletAndUp} {
       min-width: 250px;
