@@ -32,6 +32,7 @@ import { MaxWidthWrapper } from "./Wrapper";
 import { BaseButton } from "./Button";
 import { Synth, formatLSPName, ContractType, AnySynth } from "../utils/umaApi";
 import { useCachedState } from "../hooks";
+import { AnalyticsBanner } from "./banners/AnalyticsBanner";
 
 const RankCircle = styled.div`
   border-radius: 9999px;
@@ -336,6 +337,7 @@ export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
   return (
     <TableWrapper {...getTableProps()}>
       <MaxWidthWrapper>
+        <AnalyticsBanner />
         {hasFilters && (
           <ControlsWrapper>
             <ButtonsWrapper>
