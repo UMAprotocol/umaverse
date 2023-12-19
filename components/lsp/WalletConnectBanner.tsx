@@ -10,7 +10,10 @@ export const WalletConnectBanner: React.FC = () => {
       <Title>
         For WalletConnect users please use alternative method to manage position
         described in{" "}
-        <StyledLink target="_blank" href="https://docs.uma.xyz/">
+        <StyledLink
+          target="_blank"
+          href="https://docs.google.com/document/d/1DAfWRmSsx1XpxN5kUD8sQ-ogc2WRpblq9Wp-asYg2TA/edit?usp=sharing"
+        >
           this document
         </StyledLink>
         .
