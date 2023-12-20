@@ -115,10 +115,7 @@ export function onboardBaseConfig(_chainId?: number): Initialization {
         },
         { walletName: "trust", rpcUrl: infuraRpc },
         { walletName: "dapper" },
-        {
-          walletName: "walletConnect",
-          rpc: { [chainId || 1]: infuraRpc },
-        },
+
         { walletName: "gnosis" },
         { walletName: "walletLink", rpcUrl: infuraRpc, preferred: true },
         { walletName: "opera" },

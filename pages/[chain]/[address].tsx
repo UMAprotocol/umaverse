@@ -51,6 +51,7 @@ import { ethers } from "ethers";
 import createERC20ContractInstance from "../../components/lsp/createERC20ContractInstance";
 import { useMemo } from "react";
 import { ChainId, chainIdToLogoLookup } from "utils/chainId";
+import { WalletConnectBanner } from "@/components/lsp/WalletConnectBanner";
 
 const toBN = ethers.BigNumber.from;
 
@@ -405,19 +406,22 @@ const SynthPage: React.FC<Props> = ({ data, chainId, relatedSynths }) => {
             </>
           )}
           {data.type === "lsp" && showLspForm && (
-            <LSP
-              data={data}
-              contractAddress={data.address}
-              collateralSymbol={data.collateralSymbol}
-              longTokenBalance={longTokenBalance}
-              refetchLongTokenBalance={refetchLongTokenBalance}
-              shortTokenBalance={shortTokenBalance}
-              refetchShortTokenBalance={refetchShortTokenBalance}
-              collateralERC20Contract={collateralERC20Contract}
-              collateralBalance={collateralBalance}
-              setCollateralBalance={setCollateralBalance}
-              chainId={chainId}
-            />
+            <>
+              <WalletConnectBanner />
+              <LSP
+                data={data}
+                contractAddress={data.address}
+                collateralSymbol={data.collateralSymbol}
+                longTokenBalance={longTokenBalance}
+                refetchLongTokenBalance={refetchLongTokenBalance}
+                shortTokenBalance={shortTokenBalance}
+                refetchShortTokenBalance={refetchShortTokenBalance}
+                collateralERC20Contract={collateralERC20Contract}
+                collateralBalance={collateralBalance}
+                setCollateralBalance={setCollateralBalance}
+                chainId={chainId}
+              />
+            </>
           )}
         </AsideWrapper>
       </MainWrapper>
