@@ -31,7 +31,6 @@ import { MaxWidthWrapper } from "./Wrapper";
 import { BaseButton } from "./Button";
 import { Synth, formatLSPName, ContractType, AnySynth } from "../utils/umaApi";
 import { useCachedState } from "../hooks";
-import { AnalyticsBanner } from "./banners/AnalyticsBanner";
 
 type NameProps = {
   synth: AnySynth;
@@ -285,7 +284,6 @@ export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
   return (
     <TableWrapper {...getTableProps()}>
       <MaxWidthWrapper>
-        <AnalyticsBanner />
         {hasFilters && (
           <ControlsWrapper>
             <ButtonsWrapper>

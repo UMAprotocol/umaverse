@@ -3,6 +3,7 @@ import Head from "next/head";
 import { Header } from "./header";
 import styled from "@emotion/styled";
 import { Footer } from "./footer";
+import { AnalyticsBanner } from "./banners";
 
 type Props = {
   title?: string;
@@ -48,6 +49,7 @@ export const Layout: React.FC<Props> = ({
       <meta name="msapplication-TileColor" content="#da532c" />
       <meta name="theme-color" content="#ffffff" />
     </Head>
+    <AnalyticsBanner />
     <Header />
     {children}
     <Footer />
