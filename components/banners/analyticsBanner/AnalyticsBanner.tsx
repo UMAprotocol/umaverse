@@ -6,12 +6,14 @@ export const AnalyticsBanner: React.FC = () => {
   return (
     <UI.Wrapper>
       <UI.AlertIcon />
-      <UI.Text>
+      <UI.TextSmall>View Dune Dashboard</UI.TextSmall>
+      <UI.TextLarge>
         Explore the latest UMA insights and data on our new Stats page
-      </UI.Text>
+      </UI.TextLarge>
+
       <UI.Divider />
       <UI.Link target="_blank" href="https://stats.uma.xyz/">
-        View Dune Dashboard
+        <UI.LargeScreenOnly>View Dune Dashboard</UI.LargeScreenOnly>
         <UI.Arrow icon={faArrowRight} />
       </UI.Link>
     </UI.Wrapper>
