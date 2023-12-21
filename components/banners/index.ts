@@ -1,1 +1,2 @@
-export * from "./AnalyticsBanner";
+export * from "./analyticsBanner";
+export * from "./banner";

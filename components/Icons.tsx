@@ -45,9 +45,16 @@ export const ArrowRightTailIcon: (
 
 export const Alert: (
   props: React.SVGProps<SVGSVGElement>
-) => React.ReactElement = (props) => {
+) => React.ReactElement = ({ className, ...props }) => {
   return (
-    <svg viewBox="0 0 16 16" fill="none" {...props}>
+    <svg
+      viewBox="0 0 16 16"
+      fill="none"
+      className={className}
+      width="1em"
+      height="1em"
+      {...props}
+    >
       <g>
         <path
           d="M8.00065 14.6673C11.6825 14.6673 14.6673 11.6825 14.6673 8.00065C14.6673 4.31875 11.6825 1.33398 8.00065 1.33398C4.31875 1.33398 1.33398 4.31875 1.33398 8.00065C1.33398 11.6825 4.31875 14.6673 8.00065 14.6673Z"
