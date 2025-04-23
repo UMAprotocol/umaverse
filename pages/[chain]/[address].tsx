@@ -17,8 +17,6 @@ import {
   LiveIndicator,
   MaxWidthWrapper,
   Table,
-  ResponsiveLineChart,
-  EmpHero,
   LspHero,
 } from "../../components";
 import LSP from "../../components/lsp";
@@ -27,13 +25,11 @@ import {
   QUERIES,
   formatContentfulUrl,
   errorFilter,
-  formatWeiString,
   contentfulClient,
   chainIdToNameLookup,
   nameToChainIdLookup,
   capitalize,
 } from "../../utils";
-import { nDaysAgo } from "../../utils/time";
 import LeftArrow from "../../public/icons/arrow-left.svg";
 import UnstyledRightArrow from "../../public/icons/arrow-right.svg";
 import UnstyledExternalLink from "../../public/icons/external-link.svg";
@@ -73,7 +69,6 @@ const ActionWrapper = styled(UnstyledLink)`
 
   margin-bottom: 16px;
 `;
-const oneDayAgo = nDaysAgo(1);
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
   const { address, chain } = ctx.params as { address: string; chain: string };
@@ -143,39 +138,11 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
     )
   ).filter(errorFilter) as Synth<{ type: ContractType }>[];
 
-  // get TVL history for this synth
-  await queryClient.prefetchQuery(
-    ["tvl history", address],
-    async () => await client.getTvl(address)
-  );
-
-  await queryClient.prefetchQuery(["tvl change", address], async () => {
-    const lastTvl = await client.getLatestTvl(address);
-    const [{ value: ydayTvl = NaN } = {}] = await client.request(
-      "global/tvlHistorySlice",
-      address,
-      Math.floor(oneDayAgo().toSeconds())
-    );
-    const tvl24hChange = !Number.isNaN(ydayTvl)
-      ? Math.round(
-          ((formatWeiString(lastTvl) - formatWeiString(ydayTvl)) /
-            formatWeiString(ydayTvl)) *
-            1000
-        ) / 10
-      : 0;
-
-    return tvl24hChange;
-  });
-
   return {
     props: {
       data,
       chainId: cmsSynth.chainId,
       relatedSynths: relatedSynths
-        .sort(
-          (a, b) =>
-            formatWeiString(b.tvl || "0") - formatWeiString(a.tvl || "0")
-        )
         .slice(0, 5),
       dehydratedState: dehydrate(queryClient),
     },
@@ -223,32 +190,6 @@ const SynthPage: React.FC<Props> = ({ data, chainId, relatedSynths }) => {
   const { data: synthStats } = useQuery(
     ["synth stats", data.address],
     async () => await client.getSynthStats(data.address)
-  );
-  const { data: tvlHistory, isLoading: isLoadingTvl } = useQuery(
-    ["tvl history", data.address],
-    async () => await client.getTvl(data.address)
-  );
-
-  const { data: change24h } = useQuery(
-    ["tvl change", data.address],
-    async () => {
-      const lastTvl = await client.getLatestTvl(data.address);
-      const [{ value: ydayTvl = NaN } = {}] = await client.request(
-        "global/tvlHistorySlice",
-        data.address,
-        Math.floor(oneDayAgo().toSeconds())
-      );
-      const tvl24hChange = !Number.isNaN(ydayTvl)
-        ? Math.round(
-            ((formatWeiString(lastTvl) - formatWeiString(ydayTvl)) /
-              formatWeiString(ydayTvl)) *
-              1000
-          ) / 10
-        : 0;
-
-      return tvl24hChange;
-    },
-    { enabled: synthStats != null }
   );
 
   const isExpired =
@@ -342,12 +283,7 @@ const SynthPage: React.FC<Props> = ({ data, chainId, relatedSynths }) => {
           contractAddress={data.address}
           isExpired={isExpired}
         />
-        {freshData && data.type === "emp" ? (
-          <EmpHero
-            synth={freshData as Synth<{ type: "emp" }>}
-            change24h={change24h ?? 0}
-          />
-        ) : (
+        {freshData && data.type === "lsp" && 
           <LspHero
             longTokenBalance={longTokenBalance}
             shortTokenBalance={shortTokenBalance}
@@ -355,7 +291,7 @@ const SynthPage: React.FC<Props> = ({ data, chainId, relatedSynths }) => {
             collateralBalance={collateralBalance}
             chainId={chainId}
           />
-        )}
+        }
       </Hero>
       <MainWrapper>
         <div>
@@ -367,16 +303,6 @@ const SynthPage: React.FC<Props> = ({ data, chainId, relatedSynths }) => {
         <AsideWrapper>
           {data.type === "emp" && (
             <>
-              <div>
-                <SecondaryHeading>Total Value Locked (TVL)</SecondaryHeading>
-                <ChartWrapper>
-                  <ResponsiveLineChart
-                    // @ts-expect-error bla
-                    data={tvlHistory ?? []}
-                    isLoading={isLoadingTvl}
-                  />
-                </ChartWrapper>
-              </div>
               <div>
                 <SecondaryHeading>Manage Position</SecondaryHeading>
                 <ul>
@@ -560,11 +486,6 @@ const AsideWrapper = styled.aside`
   & > div:nth-of-type(2) {
     padding-top: 20px;
   }
-`;
-
-const ChartWrapper = styled.div`
-  height: 300px;
-  margin: 0 calc(-1 * var(--offsetSpacing));
 `;
 
 const RightArrow = styled(UnstyledRightArrow)`

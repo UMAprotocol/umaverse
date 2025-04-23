@@ -9,10 +9,9 @@ import type { Synth } from "../utils/umaApi";
 
 type Props = {
   synth: Synth<{ type: "emp" }>;
-  change24h: number;
 };
 
-export const EmpHero: React.FC<Props> = ({ synth, change24h }) => {
+export const EmpHero: React.FC<Props> = () => {
   return (
     <CardWrapper>
       <Card>
@@ -21,7 +20,7 @@ export const EmpHero: React.FC<Props> = ({ synth, change24h }) => {
             Total Value Locked <span>(TVL)</span>
           </CardHeading>
           <Value
-            value={synth.tvl || "0"}
+            value={0}
             format={(v) => {
               const formattedValue = formatWeiString(v);
               return (
@@ -44,7 +43,7 @@ export const EmpHero: React.FC<Props> = ({ synth, change24h }) => {
         <CardContent>
           <CardHeading>Token Price</CardHeading>
           <Value
-            value={synth.tokenMarketPrice}
+            value={0}
             format={(v) => `$${formatWeiString(v).toFixed(2)}`}
           ></Value>
         </CardContent>
@@ -55,14 +54,14 @@ export const EmpHero: React.FC<Props> = ({ synth, change24h }) => {
             Change <span>(24h)</span>
           </CardHeading>
           <Value
-            value={change24h}
+            value={0}
             format={(v) => (
               <span
                 style={{
                   color:
-                    v > 0
+                    Number(v) > 0
                       ? "var(--green)"
-                      : v < 0
+                      : Number(v) < 0
                       ? "var(--primary)"
                       : "var(--gray-700)",
                 }}

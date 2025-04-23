@@ -1,13 +1,7 @@
 import type { ContentfulSynth } from "./contentful";
-import { nDaysAgo } from "./time";
-import { formatWeiString } from "./format";
 import { SynthFetchingError } from "./errors";
 import { ChainId } from "./chainId";
 import memoize from "lodash/memoize";
-import { BigNumber } from "ethers";
-
-const time90DaysAgo = nDaysAgo(90);
-const oneDayAgo = nDaysAgo(1);
 
 // longTokenName can return undefined if value wasn't found in API so we need to do a null check.
 export function formatLSPName(longTokenName: string): string {
@@ -75,26 +69,6 @@ class Client implements IClient {
     return response.json();
   };
 
-  getLatestTvl: GetStat = (address) =>
-    address
-      ? this.request("global/tvl", address)
-      : this.request("global/globalTvl");
-  getTvl: GetStatBetween = (
-    address,
-    startTimestamp = Math.floor(time90DaysAgo().toSeconds())
-  ) => this.request("tvlHistoryBetween", address, startTimestamp);
-  getLatestTvm: GetStat = (address) =>
-    address
-      ? this.request("global/tvm", address)
-      : this.request("global/globalTvm");
-
-  getYesterdayPrice: GetPriceSlice = (address: string) =>
-    this.request(
-      "sliceHistoricalSynthPrices",
-      address,
-      Math.floor(oneDayAgo().toSeconds())
-    );
-
   getAddresses: GetAddresses = async () => {
     const empAddresses: string[] = await this.request("listEmpAddresses");
     const lspAddresses: string[] = await this.request("listAddresses");
@@ -111,8 +85,6 @@ class Client implements IClient {
     return {
       id: address,
       address,
-      tvl: await this.getLatestTvl(address).catch(() => "0"),
-      tvm: await this.getLatestTvm(address).catch(() => "0"),
     };
   };
 
@@ -122,24 +94,10 @@ class Client implements IClient {
     try {
       const stats = await this.getSynthStats(synth.address);
       const state = await this.getState<T>(synth.address);
-      const lastTvl = await this.getLatestTvl(synth.address).catch(() => "0");
-      const [{ value: ydayTvl = NaN } = {}] = await this.request(
-        "global/tvlHistorySlice",
-        synth.address,
-        Math.floor(oneDayAgo().toSeconds())
-      );
-      const tvl24hChange = !Number.isNaN(ydayTvl)
-        ? Math.round(
-            ((formatWeiString(lastTvl) - formatWeiString(ydayTvl)) /
-              formatWeiString(ydayTvl)) *
-              1000
-          ) / 10
-        : 0;
 
       return {
         ...stats,
         ...state,
-        tvl24hChange,
         ...synth,
       };
     } catch (err) {
@@ -157,20 +115,6 @@ function _constructClient(chainId: ChainId): Client {
 }
 export const constructClient = memoize(_constructClient);
 
-export async function getGlobalTvm(): Promise<string> {
-  // TODO: should prob filter out errors here and only use prod chain ID
-
-  const tvms = await Promise.all(
-    (Object.keys(API_URLS) as unknown as ChainId[]).map((chainId) => {
-      return constructClient(chainId).getLatestTvm();
-    })
-  );
-
-  return tvms
-    .map((stringTvm) => BigNumber.from(stringTvm))
-    .reduce((acc: BigNumber, tvm: BigNumber) => acc.add(tvm), BigNumber.from(0))
-    .toString();
-}
 // Basic types
 interface EmpState {
   id: string;
@@ -246,12 +190,10 @@ export type SynthState<T extends { type: ContractType }> = T extends {
 export type SynthStats = {
   id: string;
   address: string;
-  tvl?: string;
-  tvm: string;
 };
 export type Synth<T extends { type: ContractType }> = ContentfulSynth &
   SynthStats &
-  SynthState<T> & { tvl24hChange: number };
+  SynthState<T>;
 
 export type AnySynth = Synth<EmpState | LspState>;
 
@@ -271,13 +213,7 @@ type GetState = <T extends { type: ContractType }>(
 
 // type GetSynthsState = (address: string) => Promise<SynthState[]>;
 type GetSynthStats = (address: string) => Promise<SynthStats>;
-type GetStat = (addresses?: string | string[]) => Promise<string>;
-type GetStatBetween = (
-  addresses: string | string[],
-  startTimestamp?: number
-) => Promise<SynthStats[]>;
 
-type GetPriceSlice = (address: string) => Promise<string[]>;
 type FetchCompleteSynth = <T extends { type: ContractType }>(
   synth: ContentfulSynth
 ) => Promise<Synth<T> | Error>;
@@ -287,9 +223,5 @@ interface IClient {
   getAddresses: GetAddresses;
   getState: GetState;
   getSynthStats: GetSynthStats;
-  getLatestTvl: GetStat;
-  getLatestTvm: GetStat;
-  getTvl: GetStatBetween;
-  getYesterdayPrice: GetPriceSlice;
   fetchCompleteSynth: FetchCompleteSynth;
 }
