@@ -21,7 +21,6 @@ import {
   Category,
   CATEGORIES,
   formatContentfulUrl,
-  formatWeiString,
   ContentfulSynth,
   chainIdToNameLookup,
   chainIdToLogoLookup,
@@ -193,13 +192,7 @@ const SET_FILTER_ACTION = "setFilter";
 const SET_GLOBAL_FILTER_ACTION = "setGlobalFilter";
 
 export const Table: React.FC<Props> = ({ data, hasFilters = true }) => {
-  const tableData = useMemo(
-    () =>
-      data.sort(
-        (a, b) => formatWeiString(b.tvl || "0") - formatWeiString(a.tvl || "0")
-      ),
-    [data]
-  );
+  const tableData = data;
   const filterTypes = React.useMemo(
     () => ({
       // Filter rows based on synth category
