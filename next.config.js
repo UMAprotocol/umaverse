@@ -30,7 +30,13 @@ const config = {
     return config;
   },
   images: {
-    domains: ["images.ctfassets.net"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "images.ctfassets.net",
+        pathname: `/${process.env.CONTENTFUL_SPACE_ID}/**`,
+      },
+    ],
   },
   async redirects() {
     return [
